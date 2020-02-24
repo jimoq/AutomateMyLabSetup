@@ -1,0 +1,17 @@
+- name: "Gather some facts from {{ vm_name }} using the vSphere API output schema"
+  vmware_guest_info:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: no
+    datacenter: "{{ vcenter_datacenter }}"
+    name: "{{ vm_name }}"
+    schema: "vsphere"
+    properties: ["guest.ipAddress"]
+  register: vm_facts
+
+- set_fact:
+     gaia_server: "{{ vm_facts.instance.guest.ipAddress }}"
+
+- debug:
+    msg: "{{ gaia_server }}"

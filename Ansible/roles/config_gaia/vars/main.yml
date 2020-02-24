@@ -1,0 +1,17 @@
+---
+# vars file for mgmt_api role
+# Gaia_API login parameters.
+#gaia_server: 127.0.0.1
+gaia_user: admin
+gaia_password: admin
+# Set default variables for gaia FTW
+target_masklen: 24
+#target: 192.168.233.89
+sickey: vpn123
+hostname: "{{ vm_name }}"
+# Set VMware login parameters
+vcenter_hostname: cloud.local
+#vcenter_username:
+#vcenter_password: 
+vcenter_datacenter: Darkness
+#vm_name: sg89

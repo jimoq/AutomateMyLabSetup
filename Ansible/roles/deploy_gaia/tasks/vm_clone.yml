@@ -1,0 +1,16 @@
+---
+- name:  "Clone {{ vm_name }} from gaia template and customize"
+  vmware_guest:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: no
+    datacenter: "{{ vcenter_datacenter }}"
+    state: poweredon
+    folder: "/cplab"
+    template: "{{ vm_template }}"
+    name: "{{ vm_name }}"
+    esxi_hostname: "{{ esxi_hostname }}"
+    linked_clone: yes
+    snapshot_src: "{{ vm_snapshot }}"
+  delegate_to: localhost

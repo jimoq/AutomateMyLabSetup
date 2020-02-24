@@ -9,6 +9,11 @@
 *.user
 *.userosscache
 *.sln.docstates
+#*.tfvars
+set_terrform_env_var.sh
+.terraform/
+*.tfstate*
+fingerprints.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

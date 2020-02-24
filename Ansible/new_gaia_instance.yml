@@ -1,0 +1,13 @@
+- name: Deploy new gaia instance and Runt FTW
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+#    vcenter_username: "{{ lookup('env','TF_VAR_vsphere_user') }}"
+    vcenter_username: "{{ lookup('env','TF_VAR_vsphere_user') }}"
+    vcenter_password: "{{ lookup('env','TF_VAR_vsphere_password') }}"
+    vm_name: 
+    target:
+  roles:
+    - role: roles/deploy_gaia
+    - role: roles/config_gaia
