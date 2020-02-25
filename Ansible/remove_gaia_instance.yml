@@ -9,5 +9,4 @@
     vm_name: 
     target:
   roles:
-    - role: roles/deploy_gaia_instance
-    - role: roles/config_gaia
+    - role: roles/remove_gaia_instance

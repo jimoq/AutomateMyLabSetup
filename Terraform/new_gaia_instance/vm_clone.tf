@@ -55,7 +55,7 @@ resource "vsphere_virtual_machine" "vm" {
 
   }
   provisioner "local-exec" {
-  command = "ansible-playbook configure_gaia.yml"
+  command = "ansible-playbook ../../Ansible/conf_gaia_instance_from_Terraform.yml -e \"target=192.168.233.89 vm_name=terra-sg89 type=sg\""
   }
 }
 
