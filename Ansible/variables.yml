@@ -1,0 +1,8 @@
+---
+# main variable file for the diffrent ansible roles
+vsphere_user: "{{ lookup('env','TF_VAR_vsphere_user') }}"
+vsphere_password: "{{ lookup('env','TF_VAR_vsphere_password') }}"
+vsphere_server: "{{ lookup('env','TF_VAR_vsphere_server') }}"
+vsphere_datacenter: "{{ lookup('env','TF_VAR_vsphere_datacenter') }}"
+#vm_name: 
+#target:

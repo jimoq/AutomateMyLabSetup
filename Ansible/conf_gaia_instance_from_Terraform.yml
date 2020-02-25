@@ -2,11 +2,7 @@
   hosts: localhost
   connection: local
   gather_facts: no
-  vars:
-#    vcenter_username: "{{ lookup('env','TF_VAR_vsphere_user') }}"
-    vcenter_username: "{{ lookup('env','TF_VAR_vsphere_user') }}"
-    vcenter_password: "{{ lookup('env','TF_VAR_vsphere_password') }}"
-    vm_name: 
-    target:
+  vars_files: 
+    - variables.yml
   roles:
     - role: roles/config_gaia

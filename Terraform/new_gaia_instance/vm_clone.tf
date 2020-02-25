@@ -1,36 +1,36 @@
 data "vsphere_datacenter" "dc" {
-  name = "Darkness"
+  name = var.vsphere_datacenter
 }
 
 data "vsphere_datastore" "datastore" {
-  name          = "datastore1"
+  name          = var.vsphere_datastore
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 data "vsphere_host" "host" {
-  name          = "cloud03.local"
+  name          = var.vsphere_host
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 data "vsphere_network" "network" {
-  name          = "VM Network"
+  name          = var.vsphere_network
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 data "vsphere_virtual_machine" "template" {
-  name          = "gaia_r80.40"
+  name          = var.vsphere_virtual_machine_template
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 resource "vsphere_virtual_machine" "vm" {
-  name             = "terra-sg89"
+  name             = var.vsphere_virtual_machine_vm
   resource_pool_id = data.vsphere_host.host.resource_pool_id
   datastore_id     = data.vsphere_datastore.datastore.id
  # vCenter Folder to place the VM in
- folder           = "cplab"
+ folder           = var.vsphere_server_folder
 
-  num_cpus = 4
-  memory   = 8192
+  num_cpus = var.vsphere_virtual_cpus
+  memory   = var.vsphere_virtual_memory
   guest_id = data.vsphere_virtual_machine.template.guest_id
 
   scsi_type = data.vsphere_virtual_machine.template.scsi_type
@@ -50,12 +50,12 @@ resource "vsphere_virtual_machine" "vm" {
  
   clone {
     template_uuid = data.vsphere_virtual_machine.template.id
-# Clone this virtual machine from a snapshot. Templates must have a single snapshot only in order to be eligible. Default
+# Clone this virtual machine from a snapshot. Templates must have a single snapshot only in order to be eligible. Default false
 #	linked_clone = true
 
   }
   provisioner "local-exec" {
-  command = "ansible-playbook ../../Ansible/conf_gaia_instance_from_Terraform.yml -e \"target=192.168.233.89 vm_name=terra-sg89 type=sg\""
+  command = "ansible-playbook ../../Ansible/conf_gaia_instance_from_Terraform.yml -e \"target=var.gaia_instance_target vm_name=var.vsphere_virtual_machine_vm type=var.gaia_instance_type\""
   }
 }
 

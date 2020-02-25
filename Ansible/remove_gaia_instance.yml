@@ -1,12 +1,8 @@
-- name: Deploy new gaia instance and Runt FTW
+- name: Remove gaia instance from vSphere
   hosts: localhost
   connection: local
   gather_facts: no
-  vars:
-#    vcenter_username: "{{ lookup('env','TF_VAR_vsphere_user') }}"
-    vcenter_username: "{{ lookup('env','TF_VAR_vsphere_user') }}"
-    vcenter_password: "{{ lookup('env','TF_VAR_vsphere_password') }}"
-    vm_name: 
-    target:
+  vars_files: 
+    - variables.yml
   roles:
     - role: roles/remove_gaia_instance

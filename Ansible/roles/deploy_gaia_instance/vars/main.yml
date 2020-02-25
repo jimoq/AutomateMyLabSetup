@@ -2,10 +2,10 @@
 # vars file for deploy_api role
 hostname: "{{ vm_name }}"
 # Set VMware login parameters
-vcenter_hostname: cloud.local
-#vcenter_username: 
-#vcenter_password: 
-vcenter_datacenter: Darkness
+#vsphere_server:
+#vsphere_user: 
+#vsphere_password: 
+#vsphere_datacenter:
 vcenter_folder: Templates
 #vm_name:
 vm_template: gaia_template

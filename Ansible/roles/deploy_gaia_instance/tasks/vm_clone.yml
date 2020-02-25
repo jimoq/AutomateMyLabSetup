@@ -1,11 +1,11 @@
 ---
 - name:  "Clone {{ vm_name }} from gaia template and customize"
   vmware_guest:
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
+    hostname: "{{ vsphere_server }}"
+    username: "{{ vsphere_user }}"
+    password: "{{ vsphere_password }}"
     validate_certs: no
-    datacenter: "{{ vcenter_datacenter }}"
+    datacenter: "{{ vsphere_datacenter }}"
     state: poweredon
     folder: "/cplab"
     template: "{{ vm_template }}"

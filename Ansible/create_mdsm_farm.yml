@@ -1,0 +1,69 @@
+- name: Build inventory
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Create a dynamic inventory
+      add_host:
+        hostname: "{{ item.vm_name }}"
+        groups: mylab
+        vm_name: "{{ item.vm_name }}"
+        target: "{{ item.target }}"
+        type: "{{ item.type }}"
+#      register: inventory
+      with_items:
+      - { vm_name: mds10, target: 192.168.233.10, type: primary_mds }
+      - { vm_name: mds20, target: 192.168.233.20, type: secondary_mds }
+      - { vm_name: mdls30, target: 192.168.233.30, type: mdls }
+      - { vm_name: sgvsx40, target: 192.168.233.40, type: sg }
+
+#    - debug:
+#        msg: "{{ inventory }}"
+
+- name: Deploy Primary Multi-Domain Server
+  hosts: mds10
+  connection: local
+  gather_facts: no
+  vars_files: 
+    - variables.yml
+  roles:
+    - role: roles/deploy_gaia_instance
+      delegate_to: localhost
+    - role: roles/config_gaia
+      delegate_to: localhost
+
+- name: Deploy Secondary Multi-Domain Server
+  hosts: mds20
+  connection: local
+  gather_facts: no
+  vars_files: 
+    - variables.yml
+  roles:
+    - role: roles/deploy_gaia_instance
+      delegate_to: localhost
+    - role: roles/config_gaia
+      delegate_to: localhost
+
+- name: Deploy Multi-Domain Log Server
+  hosts: mdls30
+  connection: local
+  gather_facts: no
+  vars_files: 
+    - variables.yml
+  roles:
+    - role: roles/deploy_gaia_instance
+      delegate_to: localhost
+    - role: roles/config_gaia
+      delegate_to: localhost
+
+- name: Deploy Multi-Domain Log Server
+  hosts: sgvsx40
+  connection: local
+  gather_facts: no
+  vars_files: 
+    - variables.yml
+  roles:
+    - role: roles/deploy_gaia_instance
+      delegate_to: localhost
+    - role: roles/config_gaia
+      delegate_to: localhost

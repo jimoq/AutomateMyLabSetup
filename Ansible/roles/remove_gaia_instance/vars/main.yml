@@ -1,10 +1,9 @@
 ---
-# vars file for deploy_api role
-##hostname: "{{ vm_name }}"
+# vars file for remove_gaia_instance role
 # Set VMware login parameters
-vcenter_hostname: cloud.local
-#vcenter_username: 
-#vcenter_password: 
-##an    vcenter_datacenter: Darkness
-##vcenter_folder: Templates
+#vsphere_server:
+#vsphere_user: 
+#vsphere_password: 
+
+# VM to remove
 #vm_name:
