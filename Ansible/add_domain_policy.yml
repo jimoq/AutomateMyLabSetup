@@ -1,0 +1,32 @@
+---
+- name: Build inventory
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Create a dynamic inventory
+      add_host:
+        hostname: "{{ item.domain }}"
+        ansible_host: "{{ item.domain }}.{{ item.mds }}"
+        ansible_checkpoint_domain: "{{ item.domain}}"
+        groups: mylab
+      with_items:
+      - { domain: nordics,         mds: mds10.local }
+      - { domain: central-europe,  mds: mds10.local}
+      - { domain: southern-europe, mds: mds10.local }
+      - { domain: northern-europe, mds: mds20.local}
+      - { domain: eastern-europe,  mds: mds20.local}
+
+- name:  Add domains to mds server
+  hosts: 
+    - nordics
+    - central-europe
+    - southern-europe
+    - northern-europe 
+    - eastern-europe
+  connection: httpapi
+  gather_facts: no
+  vars_files: 
+    - variables.yml
+  roles:
+    - role: roles/add_domain_policy

@@ -1,0 +1,42 @@
+---
+# vars file for add_mds_domain role
+# For this role to work you need to have 2 MDS and 2 MDLS configured
+# parameters used to autheticate to management API using anisble module uri
+mgmt_server: 192.168.233.10
+mgmt_user: admin
+mgmt_password: admin
+# List of Check Point Administrators to created
+mgmt_api_admins:
+- { state: present, name: 'Walter', password: '1234' }
+- { state: present, name: 'Saul', password: '1234' }
+- { state: present, name: 'Jesse', password: '1234' }
+- { state: present, name: 'Skyler', password: '1234' }
+
+# This list is used when executing mgmt_api_add_domains_redundant_mds.yml to build a redundant domain with two DMS and one DLS
+mgmt_api_redundant_domains:
+- { state: present, domain: 'nordics', 
+    dms1:   'nordics-dms11', dms_ip1: '192.168.233.11', dms1_location: 'mds10',  dms_type: 'management server', 
+    dms2:   'nordics-dms21', dms_ip2: '192.168.233.21', dms2_location: 'mds20',  dms_type: 'management server', 
+    dls1:   'nordics-dls31', dls_ip1: '192.168.233.31', dls1_location: 'mdls30', dls_type: 'log server' 
+  }
+- { state: present, domain: 'central-europe', 
+    dms1: 'central-europe-dms12', dms_ip1: '192.168.233.12', dms1_location: 'mds10',  dms_type: 'management server', 
+    dms2: 'central-europe-dms22', dms_ip2: '192.168.233.22', dms2_location: 'mds20',  dms_type: 'management server', 
+    dls1: 'central-europe-dls32', dls_ip1: '192.168.233.32', dls1_location: 'mdls30', dls_type: 'log server' 
+  }
+- { state: present, domain: 'southern-europe', 
+    dms1: 'southern-europe-dms13', dms_ip1: '192.168.233.13', dms1_location: 'mds10',  dms_type: 'management server', 
+    dms2: 'southern-europe-dms23', dms_ip2: '192.168.233.23', dms2_location: 'mds20',  dms_type: 'management server', 
+    dls1: 'southern-europe-dls33', dls_ip1: '192.168.233.33', dls1_location: 'mdls30', dls_type: 'log server' 
+  }
+
+# This list is used when executing mgmt_api_add_domains_single_mds.yml to build a domain with one DMS and one DLS.
+mgmt_api_single_domains:
+- { state: present, domain: 'northern-europe', 
+    dms1: 'northern-europe-dms14', dms_ip1: '192.168.233.14', dms1_location: 'mds20',  dms_type: 'management server', 
+    dls1: 'northern-europe-dls34', dls_ip1: '192.168.233.34', dls1_location: 'mdls30', dls_type: 'log server' 
+  }
+- { state: present, domain: 'eastern-europe', 
+    dms1: 'eastern-europe-dms15', dms_ip1: '192.168.233.15', dms1_location: 'mds20',  dms_type: 'management server', 
+    dls1: 'eastern-europe-dls35', dls_ip1: '192.168.233.35', dls1_location: 'mdls30', dls_type: 'log server' 
+  }

@@ -1,0 +1,41 @@
+---
+# set session name
+- name: "Session {{lookup('pipe','date')}} - Add ACME Corp domains"
+  uri:
+     url: "https://{{ mgmt_server }}/web_api/set-session"
+     validate_certs: false
+     method: POST
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body_format: json
+     body: "{
+               \"new-name\":  \"{{lookup('pipe','date')}} - Add ACME Corp domains\", 
+               \"description\": \"Add domains for ACME Corp\" 
+             }"
+
+# Add domains on MDS servers
+- name: "Add domains on single MDS"
+  uri:
+     url: "https://{{ mgmt_server }}/web_api/add-domain"
+     validate_certs: false
+     method: POST
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body_format: json
+     body: "{
+               \"name\":  \"{{item.domain}}\", 
+               \"servers\" : [ {
+                  \"name\" : \"{{item.dms1}}\",
+                  \"ip-address\" : \"{{item.dms_ip1}}\",
+                  \"multi-domain-server\" : \"{{item.dms1_location}}\",
+                  \"active\": true,
+                  \"type\" : \"{{item.dms_type}}\"
+               }, {
+                  \"name\" : \"{{item.dls1}}\",
+                  \"ip-address\" : \"{{item.dls_ip1}}\",
+                  \"multi-domain-server\" : \"{{item.dls1_location}}\",
+                  \"active\" : false,
+                  \"type\" : \"{{item.dls_type}}\"
+                } ]
+            }"
+  loop: "{{mgmt_api_single_domains}}"

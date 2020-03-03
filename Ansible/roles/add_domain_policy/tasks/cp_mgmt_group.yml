@@ -1,0 +1,7 @@
+---
+# Add or delete network group in Check Point management server
+- name: add-group or delete-group
+  cp_mgmt_group:
+    state: "{{item.state}}"
+    name: "{{item.name}}"
+  loop: "{{cp_mgmt_group_tasks}}"

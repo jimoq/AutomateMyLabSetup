@@ -1,0 +1,10 @@
+---
+ - name: Logout
+   uri:
+      url: "https://{{ mgmt_server }}/web_api//publish"
+      validate_certs: false
+      method: POST
+      body_format: json
+      body: "{}"
+      headers : 
+        X-chkp-sid : "{{ sid }}"

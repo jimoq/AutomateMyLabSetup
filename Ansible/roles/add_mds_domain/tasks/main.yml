@@ -1,0 +1,7 @@
+---
+# tasks file for mgmt_api
+- include_tasks: mgmt_api_login.yml
+- include_tasks: mgmt_api_add_domains_redundant_mds.yml
+- include_tasks: mgmt_api_add_domains_single_mds.yml
+- include_tasks: mgmt_api_publish.yml
+- include_tasks: mgmt_api_logout.yml

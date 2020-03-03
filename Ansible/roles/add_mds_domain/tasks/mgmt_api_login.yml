@@ -1,0 +1,12 @@
+---
+- name: Login
+  uri:
+     url: "https://{{ mgmt_server }}/web_api/login"
+     validate_certs: false
+     method: POST
+     body_format: json
+     body: "{ \"user\" : \"{{ mgmt_user }}\", \"password\" : \"{{ mgmt_password }}\" }"
+  register: loginoutput
+
+- set_fact:
+     sid: "{{ loginoutput.json.sid }}"

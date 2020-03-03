@@ -1,0 +1,101 @@
+---
+# vars file for mgmt_api role
+# Settings for the Check Point httpapi plugin that provides methods to connect to Checkpoint devices over a HTTP(S)-based api.
+ansible_httpapi_use_ssl: True
+ansible_httpapi_validate_certs: False
+ansible_network_os: checkpoint
+ansible_checkpoint_domain: nordics
+ansible_user: admin
+ansible_ssh_pass: admin
+
+# List of policy packages to add
+cp_mgmt_package_tasks:
+- { state: present, 
+    name: Orchestration_Demo_Policy, 
+    comments: Created by ansible during Orchestration demo, 
+    color: forest green, 
+    threat_prevention: true, 
+    access: true 
+  }
+
+# List of network groups to add
+cp_mgmt_group_tasks:
+- { state: present, name: ACME_nets}
+- { state: present, name: 'ACME_ext_nets'}
+- { state: present, name: 'ACME_Security_Gateways'}
+# List of networks to add
+cp_mgmt_network_tasks:
+- { state: present, name: 'External', subnet: 10.2.0.0/24, groups: ["ACME_ext_nets"], color: blue}
+- { state: present, name: 'Internal', subnet: 10.2.1.0/24, groups: ["ACME_nets"], color: blue}
+- { state: present, name: 'WebServers', subnet: 10.2.10.0/24, groups: ["ACME_nets"], color: cyan}
+- { state: present, name: 'DBServers', subnet: 10.2.11.0/24, groups: ["ACME_nets"], color: cyan}
+- { state: present, name: 'LoadBalancer1', subnet: 10.2.5.0/24, groups: ["ACME_nets"], color: orange}
+- { state: present, name: 'LoadBalancer2', subnet: 10.2.6.0/24, groups: ["ACME_nets"], color: orange}
+# List of hosts to add
+cp_mgmt_host_tasks:
+- { state: present, name: hst-dmz-webserver, ip: 10.2.0.10, color: red, 
+    nat_auto_rule: true, nat_method: static, nat_ipv4: 172.27.254.210, nat_install_on: All
+  }
+# List of access-sections to add to rulebase (not supported with official ansible module)
+#mgmt_api_add_access_section:
+#- { state: present, name: default drop, layer: Orchestration_Demo_Policy Network, position: top}
+#- { state: present, name: ACMECorp Rules, layer: Orchestration_Demo_Policy Network, position: top}
+
+#List of rules to create on in the policy package
+cp_mgmt_access_rule_tasks:
+- { state: present, name: ACMECorp management access to Security Gateways, 
+    layer: Orchestration_Demo_Policy Network, position: bottom, position_bottom: ACMECorp Rules, 
+    source: External, destination: ACME_Security_Gateways, service: ["ssh", "https"], action: accept, track_type: log 
+  }
+- { state: present, name: ACMECorp external to Any, 
+    layer: Orchestration_Demo_Policy Network, position: bottom, position_bottom: "ACMECorp Rules", 
+    source: External, destination: any, service: ["any"], action: accept, track_type: log 
+  }
+- { state: present, name: ACMECorp internal to Any, 
+    layer: Orchestration_Demo_Policy Network, position: bottom, position_bottom: "ACMECorp Rules", 
+    source: Internal, destination: any, service: ["any"], action: accept, track_type: log 
+  }
+- { state: present, name: ACMECorp WebServer to DB, 
+    layer: Orchestration_Demo_Policy Network, position: bottom, position_bottom: "ACMECorp Rules", 
+    source: WebServers, destination: DBServers, service: ["MySQL"], action: accept, track_type: log 
+  }
+- { state: present, name: ACMECorp WebServer Outbound Access, 
+    layer: Orchestration_Demo_Policy Network, position: bottom, position_bottom: "ACMECorp Rules", 
+    source: WebServers, destination: any, service: ["http", "https", "ntp", "dns"], action: accept, track_type: log 
+  }
+- { state: present, name: Allow ICMP and HTTPS, layer: Orchestration_Demo_Policy Network, 
+    position: bottom, position_bottom: "ACMECorp Rules", 
+    source: any, destination: any, service: ["icmp-requests", "https"], action: accept, track_type: log 
+  }
+- { state: present, name: LoadBalancers, layer: Orchestration_Demo_Policy Network, 
+    position: bottom, position_bottom: "ACMECorp Rules", 
+    source: any, destination: ["LoadBalancer1", "LoadBalancer2", "hst-dmz-webserver"], service: ["http", "https"], action: accept, track_type: log 
+  }
+  # Remove the Cleanup rule that is in the top of the rule base
+- { state: absent, name: Cleanup rule, layer: Orchestration_Demo_Policy Network, 
+    position: bottom, position_bottom: "default drop", source: any, destination: ["any"], service: ["any"], action: drop, track_type: none 
+  }
+  # Add a new Cleanup rule at the bottom of the rule base
+- { state: present, name: Cleanup rule, layer: Orchestration_Demo_Policy Network, position: bottom, position_bottom: "default drop", source: any, destination: ["any"], service: ["any"], action: drop, track_type: log }
+
+# List of gateway objects to add
+cp_mgmt_simple_gateway_tasks:
+- { state: present, name: sg101, sickey: vpn123, gw_version: R80.30, 
+    anti_bot: true, anti_virus: true, appi_ctrl: true, color: blue, firewall: true, ips: true, threat_emulation: false, url_filtering: true, 
+    eth0_ipv4: 192.168.233.101, eth0_ipv4_network_mask: 255.255.255.0, eth0_anti_spoofing: true, eth0_topology: External, 
+    eth1_ipv4: 10.101.1.1,      eth1_ipv4_network_mask: 255.255.255.0, eth1_anti_spoofing: true, eth1_topology: Internal, 
+    eth1_topology_ip_behind_if: network defined by the interface ip and net mask 
+  }
+
+#
+#- name: "add NAT rule for Webserver "
+#  check_point_mgmt:
+#    command: add-nat-rule
+#    parameters:
+#      package: "Orchestration_Demo_Policy"
+#      comments: "Webserver NAT"
+#      position: "top"
+#      original-source: "WebServers"
+#      translated-source: "CHKP-SG-Hide"
+#      method: "hide"
+#    session-data: "{{login_response}}"

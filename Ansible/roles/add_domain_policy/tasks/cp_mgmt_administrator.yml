@@ -1,0 +1,48 @@
+---
+# Add administrators to the Check Point management server
+- name: add-administrator
+  cp_mgmt_administrator:
+    name: "{{item.name}}"
+    password: "{{item.password}}"
+    must_change_password: false
+    multi_domain_profile: "Multi-Domain Super User"
+    state: present
+  loop: "{{mgmt_api_admins}}"
+    
+
+
+
+#- name: "Session {{lookup('pipe','date')}} - Create ACME Corp Admins"
+#  check_point_mgmt:
+#    command: set-session
+#    parameters:
+#      new-name: "{{lookup('pipe','date')}} - Create ACME Corp Admins"
+#      description: "Creating administrators for ACME Corp"
+#    session-data: "{{login_response}}"
+#  delegate_to: localhost
+#
+#- name: "Create MDS administrator"
+#  check_point_mgmt:
+#    command: add-administrator
+#    parameters:
+#      name: "{{item.name}}"
+#      password: "{{item.password}}"
+#      must-change-password: "false"
+#      multi-domain-profile: "Multi-Domain Super User"
+#    session-data: "{{login_response}}"
+#  loop: "{{mgmt_api_admins}}"
+#  when: type == "primary_mds"
+#  delegate_to: localhost
+#
+#- name: "Create Security management administrator"
+#  check_point_mgmt:
+#    command: add-administrator
+#    parameters:
+#      name: "{{item.name}}"
+#      password: "{{item.password}}"
+#      must-change-password: "false"
+#      permissions-profile: "Super User"
+#    session-data: "{{login_response}}"
+#  loop: "{{mgmt_api_admins}}"
+#  when: type != "primary_mds"
+#  delegate_to: localhost
