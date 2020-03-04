@@ -43,40 +43,30 @@ cp_mgmt_host_tasks:
 
 #List of rules to create on in the policy package
 cp_mgmt_access_rule_tasks:
-- { state: present, name: ACMECorp management access to Security Gateways, 
-    layer: Orchestration_Demo_Policy Network, position: bottom, position_bottom: ACMECorp Rules, 
-    source: External, destination: ACME_Security_Gateways, service: ["ssh", "https"], action: accept, track_type: log 
+- { state: present, layer: Orchestration_Demo_Policy Network, name: ACMECorp management access to Security Gateways, 
+    position: 1, source: External, destination: ACME_Security_Gateways, service: ["ssh", "https"], action: accept, track_type: log 
   }
-- { state: present, name: ACMECorp external to Any, 
-    layer: Orchestration_Demo_Policy Network, position: bottom, position_bottom: "ACMECorp Rules", 
-    source: External, destination: any, service: ["any"], action: accept, track_type: log 
+- { state: present,  layer: Orchestration_Demo_Policy Network, name: ACMECorp external to Any, 
+    position: 2, source: External, destination: any, service: ["any"], action: accept, track_type: log 
   }
-- { state: present, name: ACMECorp internal to Any, 
-    layer: Orchestration_Demo_Policy Network, position: bottom, position_bottom: "ACMECorp Rules", 
-    source: Internal, destination: any, service: ["any"], action: accept, track_type: log 
+- { state: present, layer: Orchestration_Demo_Policy Network, name: ACMECorp internal to Any, 
+    position: 3, source: Internal, destination: any, service: ["any"], action: accept, track_type: log 
   }
-- { state: present, name: ACMECorp WebServer to DB, 
-    layer: Orchestration_Demo_Policy Network, position: bottom, position_bottom: "ACMECorp Rules", 
-    source: WebServers, destination: DBServers, service: ["MySQL"], action: accept, track_type: log 
+- { state: present, layer: Orchestration_Demo_Policy Network, name: ACMECorp WebServer to DB, 
+    position: 4, source: WebServers, destination: DBServers, service: ["MySQL"], action: accept, track_type: log 
   }
-- { state: present, name: ACMECorp WebServer Outbound Access, 
-    layer: Orchestration_Demo_Policy Network, position: bottom, position_bottom: "ACMECorp Rules", 
-    source: WebServers, destination: any, service: ["http", "https", "ntp", "dns"], action: accept, track_type: log 
+- { state: present, layer: Orchestration_Demo_Policy Network, name: ACMECorp WebServer Outbound Access, 
+    position: 5, source: WebServers, destination: any, service: ["http", "https", "ntp", "dns"], action: accept, track_type: log 
   }
-- { state: present, name: Allow ICMP and HTTPS, layer: Orchestration_Demo_Policy Network, 
-    position: bottom, position_bottom: "ACMECorp Rules", 
-    source: any, destination: any, service: ["icmp-requests", "https"], action: accept, track_type: log 
+- { state: present, layer: Orchestration_Demo_Policy Network,  name: Allow ICMP and HTTPS,
+    position: 6, source: any, destination: any, service: ["icmp-requests", "https"], action: accept, track_type: log 
   }
-- { state: present, name: LoadBalancers, layer: Orchestration_Demo_Policy Network, 
-    position: bottom, position_bottom: "ACMECorp Rules", 
-    source: any, destination: ["LoadBalancer1", "LoadBalancer2", "hst-dmz-webserver"], service: ["http", "https"], action: accept, track_type: log 
+- { state: present, layer: Orchestration_Demo_Policy Network,  name: LoadBalancers,
+    position: 7,  source: any, destination: ["LoadBalancer1", "LoadBalancer2", "hst-dmz-webserver"], service: ["http", "https"], action: accept, track_type: log 
   }
-  # Remove the Cleanup rule that is in the top of the rule base
-- { state: absent, name: Cleanup rule, layer: Orchestration_Demo_Policy Network, 
-    position: bottom, position_bottom: "default drop", source: any, destination: ["any"], service: ["any"], action: drop, track_type: none 
-  }
-  # Add a new Cleanup rule at the bottom of the rule base
-- { state: present, name: Cleanup rule, layer: Orchestration_Demo_Policy Network, position: bottom, position_bottom: "default drop", source: any, destination: ["any"], service: ["any"], action: drop, track_type: log }
+  # Enable log on the existing cleanup rule
+- { state: present, layer: Orchestration_Demo_Policy Network, name: Cleanup rule, 
+    position: 8, position_bottom: "default drop", source: any, destination: ["any"], service: ["any"], action: drop, track_type: log }
 
 # List of gateway objects to add
 cp_mgmt_simple_gateway_tasks:
