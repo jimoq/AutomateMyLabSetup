@@ -18,7 +18,8 @@
       - { domain: eastern-europe,  mds: mds20.local }
 
 - name:  Add domains to mds server
-     target: domains
+  vars:
+    target: domains
   hosts: "{{ target }}"
   connection: httpapi
   gather_facts: no
