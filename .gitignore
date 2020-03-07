@@ -14,6 +14,7 @@ set_terrform_env_var.sh
 .terraform/
 *.tfstate*
 fingerprints.json
+terraform-provider-checkpoint
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

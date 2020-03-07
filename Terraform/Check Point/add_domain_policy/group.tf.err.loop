@@ -1,0 +1,6 @@
+# Error - using group whith network will create a add and remove loop
+
+resource "checkpoint_management_group" "corporate_lans" {
+  name = "Corporate LANs"
+  members = ["HR LAN", "Sales LAN"]
+}

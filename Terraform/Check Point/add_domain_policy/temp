@@ -1,0 +1,166 @@
+
+
+
+
+echo "create time"
+"%varMgmt_cli%"  add time name "Temp Access" start-now "true" end.date "12-Dec-2015" end.time "21:25" end-never "false" recurrence.pattern "Daily" -s id.txt
+
+
+echo "create application/site"
+
+echo "create communities"
+
+echo "create application group"
+
+
+echo "create service group"
+
+echo "create access roles"
+
+
+rem ################ Create Layers ###########################################
+echo "create layers"
+"%varMgmt_cli%"  add access-layer name "Web Control" applications-and-url-filtering true data-awareness true mobile-access true -s id.txt
+"%varMgmt_cli%"  add access-layer name "Data Center Layer" applications-and-url-filtering true data-awareness true mobile-access true -s id.txt
+"%varMgmt_cli%"  add access-layer name "Guest Exception Layer" applications-and-url-filtering true data-awareness true -s id.txt
+rem ######################################################################################
+
+
+rem ################### Add Rules to "Web Control" Layer #################################
+echo "add rules to 'Web Control Layer"
+"%varMgmt_cli%"  add access-rule layer "Web Control" name "DNS server should have access to" action accept position top source "[\"DNS Server\"]" destination "[\"ExternalZone\"]" service.1 "dns" track log -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Web Control" name "Block abuse/ high risk applications" action drop position bottom source "[\"Corporate LANs\", \"Branch Office LAN\"]" destination "[\"Internet\"]" service.1 "Inappropriate Sites" user-check.interaction "Blocked Message - Access Control" track log -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Web Control" name "HR can access to social network applications" action inform position bottom source "[\"HR\"]" destination "[\"Internet\"]" service.1 "Facebook" service.2 "Twitter" service.3 "LinkedIn" user-check.interaction "Access Approval" track log -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Web Control" name "All employees can access YouTube for work purposes" action ask position bottom source "[\"Corporate LANs\", \"Branch Office LAN\"]" destination "[\"Internet\"]" service.1 "YouTube" service.2 "Vimeo" user-check.interaction "Company Policy" track log -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Web Control" name "Block specific URLs" action drop position bottom destination "[\"Internet\"]" service.1 "Blocked URLs" track log -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Web Control" name "Block specific categories for all employees" action drop position bottom source "[\"Corporate LANs\", \"Branch Office LAN\"]" destination "[\"Internet\"]" service.1 "Social Networking" service.2 "Streaming Media Protocols" service.3 "P2P File Sharing" user-check.interaction "Blocked Message - Access Control" track log -s id.txt
+"%varMgmt_cli%"  delete access-rule rule-number 2 layer "Web Control" -s id.txt
+rem ##################################################################################
+
+
+rem ################### Add Rules to "Data Center Layer" Layer #################################
+echo "add rules to 'Data Center Layer' layer"
+"%varMgmt_cli%"  add access-rule layer "Data Center Layer" name "Mobile Access for Internal FS" action accept position top source "[\"Sales\"]" destination "[\"FTP_Int\"]" vpn "RemoteAccess" service.1 "ftp" data "[\"Document File\", \"Archive File\"]" track "detailed log" -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Data Center Layer" name "Branch office should have VPN access to servers  (ERP on ftp_22)" action accept position bottom source "[\"Branch Office LAN\"]" destination "[\"ERP Server\", \"Exchange\", \"FTP_Int\"]" vpn "Site2Site" service.1 "ftp" service.2 "smtp" service.3 "ftp" data "[\"Document File\", \"Media and Images\"]" track "detailed log" -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Data Center Layer" name "ERP server being accessed on FTP via port 22" action accept position bottom source "[\"Corporate LANs\"]" destination "[\"ERP Server\"]" service.1 "ftp" data "[\"Document File\"]" track "detailed log" -s id.txt 
+"%varMgmt_cli%"  add access-rule layer "Data Center Layer" name "Only Finance department has access to reports" action accept position bottom source "[\"Finance User\"]" destination "[\"ERP Server\"]" service.1 "Report Portal" track "detailed log" -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Data Center Layer" name "Save DNS requests using our DNS" action accept position bottom source "[\"DMZZone\", \"InternalZone\"]" destination "[\"DNS Server\"]" service.1 "dns" track log -s id.txt
+rem #remove default clean up rule
+"%varMgmt_cli%"  delete access-rule rule-number 2 layer "Data Center Layer" -s id.txt
+rem ##################################################################################
+
+
+rem ################### Add Rules to "Guest Exception Layer" Layer #################################
+echo "add rules to 'Guest Exception Layer' layer"
+"%varMgmt_cli%"  add access-rule layer "Guest Exception Layer" name "Guests from Portal" action accept position top destination "[\"Internet\"]" service.1 "http" service.2 "https" track log action-settings.enable-identity-captive-portal true -s id.txt
+rem #remove default clean up rule
+"%varMgmt_cli%"  delete access-rule rule-number 2 layer "Guest Exception Layer" -s id.txt
+rem ##################################################################################
+
+rem ########################### Edit Standard Layer ##################################
+echo "edit Network layer blades"
+"%varMgmt_cli%"  set access-layer name "Network" applications-and-url-filtering true data-awareness true mobile-access true -s id.txt
+rem #####################################################################################
+
+rem ########################## Add Rules To Standard Network Layer #############################
+echo "add rules to 'Network' layer"
+rem #section 'Security Gateways Access'
+"%varMgmt_cli%"  add access-section name "Security Gateways Access" position.bottom Network layer Network -s id.txt
+"%varMgmt_cli%"  add access-rule layer Network name "Administrator Access to Gateways" action accept position.top "Security Gateways Access" source "[\"Admins\"]" destination "[\"Corporate-GW\"]" service.1 "Manage Services" -s id.txt
+rem #"%varMgmt_cli%"  add access-rule layer Network name "Noise rule" action drop position.bottom "Security Gateways Access" source "[\"InternalZone\"]" destination "[\"Corporate-GW\"]" service.1 "NBT" -s id.txt
+"%varMgmt_cli%"  add access-rule layer Network name "Stealth rule" action drop position.bottom "Security Gateways Access" destination "[\"Corporate-GW\"]" -s id.txt
+
+rem #section 'VPN'
+"%varMgmt_cli%"  add access-section name "VPN" position.bottom Network layer Network -s id.txt
+"%varMgmt_cli%"  add access-rule layer Network name "Remote Access of employees to Data Center servers" action accept position.top "VPN" source "[\"Remote Access Users\"]" destination "[\"Data Center LAN\"]" vpn "RemoteAccess" -s id.txt
+"%varMgmt_cli%"  add access-rule layer Network name "VPN between Internal LANs and Branch office LAN" action accept position.bottom "VPN" source "[\"Corporate LANs\", \"Branch Office LAN\"]" destination "[\"Branch Office LAN\", \"Corporate LANs\"]" vpn "Site2Site" -s id.txt
+
+rem #section 'Access To Internet'
+"%varMgmt_cli%"  add access-section name "Access To Internet" position.bottom Network layer Network -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Network" position.top "Access To Internet" name "Access to Internet according to Web control policy" action "Apply Layer" inline-layer "Web Control" source "[\"InternalZone\"]" destination "[\"Internet\"]" -s id.txt
+
+rem #section "DMZ"
+"%varMgmt_cli%"  add access-section name "DMZ" position.bottom Network layer Network -s id.txt
+"%varMgmt_cli%"  add access-rule layer Network name "Access to company's web server" action accept position.top "DMZ" source "[\"ExternalZone\"]" destination "[\"Web Server\"]" service.1 "Web Browser" track "detailed log" -s id.txt
+"%varMgmt_cli%"  add access-rule layer Network name "Allow corporate LANs to DMZ" action accept position.bottom "DMZ" source "[\"Corporate LANs\"]" destination "[\"DMZZone\"]" service.1 "https" service.2 "http" service.3 "ftp" track log -s id.txt
+
+rem #section "Data Center Access"
+"%varMgmt_cli%"  add access-section name "Data Center Access" position.bottom Network layer Network -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Network" position.top "Data Center Access" name "Policy for access to Data Center servers" action "Apply Layer" inline-layer "Data Center Layer" destination "[\"Data Center LAN\"]" -s id.txt
+
+rem #section "Data Center Access" - TP blade
+"%varMgmt_cli%"  set threat-rule rule-number 1 layer "Standard Threat Prevention" new-name "Recommended Protections" -s id.txt
+"%varMgmt_cli%"  add threat-rule layer "Standard Threat Prevention" position "top" name "Data Center Protection" comments "" protected-scope "Data Center LAN" action "Strict" install-on "Policy Targets" -s id.txt
+
+rem #section "Temporary Access Grant"
+"%varMgmt_cli%"  add access-section name "Temporary Access Grant" position.bottom Network layer Network -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Network" position.top "Temporary Access Grant" name "Special policy for temp guest rules using wireless LAN" action "Apply Layer" inline-layer "Guest Exception Layer" source "[\"WirelessZone\"]" -s id.txt
+
+rem #section CleanUp
+"%varMgmt_cli%"  add access-section name "Clean Up" position.bottom Network layer Network -s id.txt
+"%varMgmt_cli%"  add access-rule layer Network name "Clean up" action drop position.bottom "Clean Up" track log -s id.txt
+
+
+rem #remove default clean up rule
+"%varMgmt_cli%"  delete access-rule rule-number 1 layer Network -s id.txt
+
+rem ############################################################################
+
+
+rem ####################### Create Branch_Office_Policy policy Package ###########################
+echo "create Branch_Office_Policy policy package"
+rem #create Branch_Office_Policy policy package
+"%varMgmt_cli%"  add package name "Branch_Office_Policy" access true threat-prevention true installation-targets "BranchOffice"  -s id.txt
+"%varMgmt_cli%"  set package name "Branch_Office_Policy" access-layers.add.1.name "Web Control" access-layers.add.1.position 2 -s id.txt
+
+rem ############################################################################
+
+
+
+rem ################# Add rules to Branch_Office_Policy Network Layer ####################
+echo "add rules to 'Branch_Office_Policy Network' layer"
+rem #section GW access
+"%varMgmt_cli%"  add access-section name "GW Access" position.bottom "Branch_Office_Policy Network" layer "Branch_Office_Policy Network" -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Branch_Office_Policy Network" name "Administrator Access to Gateways" action accept position.top "GW Access" source "[\"Admins\"]" destination "[\"BranchOffice\"]" service.1 "Manage Services" track log -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Branch_Office_Policy Network" name "DHCP Server for the branch Office" action accept position.bottom "GW Access" destination "[\"BranchOffice\"]" service.1 "dhcp-request" track log -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Branch_Office_Policy Network" name "Stealth rule" action drop position.bottom "GW Access" destination "[\"BranchOffice\"]" track log -s id.txt
+
+rem #section VPN
+"%varMgmt_cli%"  add access-section name "VPN" position.bottom "Branch_Office_Policy Network" layer "Branch_Office_Policy Network" -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Branch_Office_Policy Network" name "VPN between Internal LANs and Branch office LAN" action accept position.top "VPN" source "[\"Corporate LANs\", \"Branch Office LAN\"]" destination "[\"Branch Office LAN\", \"Corporate LANs\"]" vpn "Site2Site" track log -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Branch_Office_Policy Network" name "Branch office should have VPN access to servers (ERP on ftp_22)" action accept position.bottom "VPN" source "[\"Branch Office LAN\"]" destination "[\"ERP Server\", \"FTP_Int\"]" service.1 "ftp" service.2 "ftp" vpn "Site2Site" track log -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Branch_Office_Policy Network" name "Branch office should have VPN access to servers" action accept position.bottom "VPN" source "[\"Branch Office LAN\"]" destination "[\"Exchange\", \"DNS Server\"]" vpn "Site2Site" service.1 "http" service.2 "https" service.3 "dns" service.4 "smtp" track log -s id.txt
+
+rem #section Internet Access
+"%varMgmt_cli%"  add access-section name "Internet Access" position.bottom "Branch_Office_Policy Network" layer "Branch_Office_Policy Network" -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Branch_Office_Policy Network" name "Access to Internet according to Web control policy (next layer)" action accept position.top "Internet Access" source "[\"Branch Office LAN\"]" service.1 "Internet Services" track log -s id.txt
+
+rem #section Clean Up
+"%varMgmt_cli%"  add access-section name "Clean Up" position.bottom "Branch_Office_Policy Network" layer "Branch_Office_Policy Network" -s id.txt
+"%varMgmt_cli%"  add access-rule layer "Branch_Office_Policy Network" name "clean up" action drop position.bottom "Clean Up" -s id.txt
+
+rem #remove default cleanup rule
+"%varMgmt_cli%"  delete access-rule rule-number 1 layer "Branch_Office_Policy Network" -s id.txt
+
+rem #####################################################################
+
+
+rem ############# change package names ###########################
+echo "change policy package names"
+"%varMgmt_cli%"  set package name "Standard" new-name "Corporate_Policy" -s id.txt
+"%varMgmt_cli%"  set package name "Corporate_Policy" installation-targets "Corporate-GW" -s id.txt
+rem ###############################################################
+"%varMgmt_cli%"  set session description "Add Corporate_Policy" new-name "Demo add policy package" -s id.txt
+"%varMgmt_cli%"  publish -s id.txt
+
+rem #### create host , add new rule and publish( in favour install statuses object) 
+"%varMgmt_cli%"  add host name "FTP_Ext" ip-address 2.3.2.2 -s id.txt
+"%varMgmt_cli%"  add access-rule layer Network name "Customers to ftp servers" action accept position 8 source "[\"ExternalZone\"]" destination "[\"FTP_Ext\"]" service.1 "ftp" data "[\"Archive File\"]" track "detailed log" -s id.txt
+"%varMgmt_cli%"  set session description "Add ftp rule to Corporate_Policy" new-name "Demo rule policy package" -s id.txt
+"%varMgmt_cli%"  publish -s id.txt
+
+rem #####  add new rule and publish( in favour install statuses object) 
+"%varMgmt_cli%"  add access-rule layer "Guest Exception Layer" name "Temp rule: Board Presentation" action accept position bottom destination "[\"FTP_Int\"]" service.1 "ftp" track log time "Temp Access" -s id.txt
+"%varMgmt_cli%"  set session description "Add ftp guest access" new-name "Demo guest rule" -s id.txt
+"%varMgmt_cli%"  publish -s id.txt
+"%varMgmt_cli%"  logout -s id.txt

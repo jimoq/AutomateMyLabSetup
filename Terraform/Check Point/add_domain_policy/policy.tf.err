@@ -1,0 +1,8 @@
+# Error - Terraform provider does not know about this resouce
+resource "checkpoint_management_package" "Corporate_Policy" {
+  name = "Corporate_Policy"
+  comments = "My corp policy"
+  color = "light green"
+  threat_prevention = false
+  access = true
+}

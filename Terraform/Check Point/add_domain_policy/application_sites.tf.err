@@ -1,0 +1,18 @@
+Error - Terraform is sending the parameters with "_" instead of "-" when chaning somting and the API endpint set-appliaction-site is used."
+resource "checkpoint_management_application_site" "Blocked_URLs" {
+  name = "Blocked URLs"
+  primary_category = "Custom_Application_Site"
+  description = "Sites that is not allowed according to company policy"
+  additional_categories = ["Instant Chat", "Supports Streaming"]
+  url_list = ["www.block*.*", "hack.local*.*"]
+  urls_defined_as_regular_expression = true
+}
+
+resource "checkpoint_management_application_site" "Report_Portal" {
+  name = "Report Portal"
+  primary_category = "Custom_Application_Site"
+  description = "Consumers and Employees portal"
+  additional_categories = ["Instant Chat", "Supports Streaming"]
+  url_list = ["*.portal", "portal.test.com"]
+  urls_defined_as_regular_expression = false
+}

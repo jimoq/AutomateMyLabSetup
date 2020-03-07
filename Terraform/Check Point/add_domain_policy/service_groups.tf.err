@@ -1,0 +1,12 @@
+# error - Terraform will destroy and re-create the group instead of using new-name parameter when chaning name of group
+resource "checkpoint_management_service_group" "Manage_Services" {
+  name = "Manage Services"
+  members = [ "GoToMyPC", "RDP"]
+  color = "red"
+}
+
+resource "checkpoint_management_service_group" "Internet_Services" {
+  name = "Internet Services"
+  members = [ "HTTPS_proxy", "HTTP_proxy", "IMAP-SSL", "POP3S", "http", "https" ]
+  color = "red"
+}
