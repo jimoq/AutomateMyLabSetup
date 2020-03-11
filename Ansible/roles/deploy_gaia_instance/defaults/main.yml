@@ -1,11 +1,12 @@
 ---
-# vars file for deploy_api role
+# vars file for deploy_gaia role
 hostname: "{{ vm_name }}"
-# Set VMware login parameters
-#vsphere_server:
-#vsphere_user: 
-#vsphere_password: 
-#vsphere_datacenter:
+
+# Set VMware parameters and vsphere_credentials
+vsphere_user: "{{ lookup('env','TF_VAR_vsphere_user') }}"
+vsphere_password: "{{ lookup('env','TF_VAR_vsphere_password') }}"
+vsphere_server: "{{ lookup('env','TF_VAR_vsphere_server') }}"
+vsphere_datacenter: "{{ lookup('env','TF_VAR_vsphere_datacenter') }}"
 vcenter_folder: Templates
 #vm_name:
 vm_template: gaia_template

@@ -1,17 +1,17 @@
 ---
 # vars file for config_gaia role
 # Gaia_API login parameters.
-#gaia_server: 127.0.0.1
 gaia_user: admin
 gaia_password: admin
+
 # Set default variables for gaia FTW
 target_masklen: 24
-#target: 192.168.233.89
 sickey: vpn123
 hostname: "{{ vm_name }}"
-# Set VMware login parameters
-# vsphere_server:
-#vsphere_user:
-#vsphere_password: 
-#vsphere_datacenter:
+
+# Set VMware parameters and vsphere_credentials
+vsphere_user: "{{ lookup('env','TF_VAR_vsphere_user') }}"
+vsphere_password: "{{ lookup('env','TF_VAR_vsphere_password') }}"
+vsphere_server: "{{ lookup('env','TF_VAR_vsphere_server') }}"
+vsphere_datacenter: "{{ lookup('env','TF_VAR_vsphere_datacenter') }}"
 #vm_name: sg89

@@ -1,11 +1,9 @@
-- name:  Runt add Gaia Instance and run FTW
+- name:  Add Gaia Instance and run FTW
   hosts: localhost
   connection: local
   gather_facts: no
-  vars_files: 
-    - variables.yml
-    roles:
-    - role: roles/deploy_gaia_instance
-      delegate_to: localhost
-    - role: roles/config_gaia
-      delegate_to: localhost
+  roles:
+  - role: roles/deploy_gaia_instance
+    delegate_to: localhost
+  - role: roles/config_gaia
+    delegate_to: localhost

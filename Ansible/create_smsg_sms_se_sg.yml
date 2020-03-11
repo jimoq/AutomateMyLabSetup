@@ -13,7 +13,7 @@
 #      register: inventory
       with_items:
       - { vm_name: smsg60, target: 192.168.233.60, type: smsg }
-      - { vm_name: sms61, target: 192.168.233.61, type: sms }
+      - { vm_name: sms61, target: 192.168.233.61, type: primary_sms }
       - { vm_name: se62, target: 192.168.233.62, type: ls_se }
       - { vm_name: sg63, target: 192.168.233.63, type: sg }
 

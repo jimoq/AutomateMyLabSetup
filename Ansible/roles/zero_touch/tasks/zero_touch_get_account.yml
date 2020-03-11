@@ -1,0 +1,20 @@
+---
+- name: "show all accounts and get the account id"
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/show-all-accounts"
+     validate_certs: true
+     method: POST
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body_format: json
+     body: ''
+ 
+  register: datasource_all_accounts
+
+- set_fact:
+     account_id: "{{ datasource_all_accounts.json | json_query(jmesquery) }}"
+  vars:
+    jmesquery: '[? "account-name"==`Europe SE`]."account-id"'
+
+- debug:
+    msg="{{ account_id }}"

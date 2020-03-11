@@ -1,0 +1,20 @@
+---
+- name: Wait up to 300 seconds for https connetion on {{ ansible_host }}
+  wait_for:
+    port: 443
+    host: "{{ ansible_host }}"
+  delegate_to: localhost
+
+- name: Check if Gaia API server on {{ ansible_host }} accepts login requests
+  uri:
+     url: "https://{{ ansible_host }}/gaia_api/login"
+     validate_certs: false
+     method: POST
+     body_format: json
+     body: "{ \"user\" : \"testapiauth\", \"password\" : \"testapiauth\" }"
+     status_code: 401
+  register: api_server_response
+  until: api_server_response.json.code  == "err_login_failed_wrong_username_or_password"
+  retries: 20
+  delay: 0
+  delegate_to: localhost

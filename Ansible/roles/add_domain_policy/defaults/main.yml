@@ -1,10 +1,14 @@
 ---
-# vars file for mgmt_api role
+# vars file for add_domain_policy role
+# default values gaia_api
+gaia_server: "{{ ansible_host }}"
+gaia_user: admin
+gaia_password: admin
 # Settings for the Check Point httpapi plugin that provides methods to connect to Checkpoint devices over a HTTP(S)-based api.
 ansible_httpapi_use_ssl: True
 ansible_httpapi_validate_certs: False
 ansible_network_os: checkpoint
-ansible_checkpoint_domain: nordics
+ansible_checkpoint_domain: SMC User
 ansible_user: admin
 ansible_ssh_pass: admin
 

@@ -1,0 +1,5 @@
+---
+- include_tasks: zero_touch_login.yml
+- include_tasks: zero_touch_get_account.yml
+- include_tasks: zero_touch_show_claimed_gaia_gateway.yml
+- include_tasks: zero_touch_logout.yml

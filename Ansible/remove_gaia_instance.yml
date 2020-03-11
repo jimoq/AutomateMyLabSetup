@@ -1,3 +1,4 @@
+# use variable vm_name to remove the virtual machine
 - name: Remove gaia instance from vSphere
   hosts: localhost
   connection: local

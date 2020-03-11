@@ -1,0 +1,15 @@
+---
+- name: Login
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/login"
+     validate_certs: true
+     method: POST
+     body_format: json
+     body: "{ \"user\" : \"{{ api_user }}\", \"password\" : \"{{ api_password }}\" }"
+  register: loginoutput
+
+- set_fact:
+     sid: "{{ loginoutput.json.sid }}"
+
+- debug:
+    msg: "{{ loginoutput.json.sid }}"

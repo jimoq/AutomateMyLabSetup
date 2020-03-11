@@ -27,9 +27,9 @@
 - set_fact:
     return_value: "{{ ftw_accept_taskoutput.json.tasks[0]['task-details'][0]['return-value'] }}"
 
-#- debug:
+- debug:
 #     msg: "{{ ftw_accept_taskoutput | json_query('tasks[].task-details[].return-value') }}"
-#     msg: "{{ ftw_accept_taskoutput.json.tasks[0]['task-details'][0]['return-value'] }}"
+     msg: "{{ ftw_accept_taskoutput.json.tasks[0]['task-details'][0]['return-value'] }}"
 
 - name: "Run First time Wizard"
   uri:

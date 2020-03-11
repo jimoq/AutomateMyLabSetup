@@ -1,9 +1,10 @@
 ---
 # vars file for remove_gaia_instance role
-# Set VMware login parameters
-#vsphere_server:
-#vsphere_user: 
-#vsphere_password: 
+# Set VMware parameters and vsphere_credentials
+vsphere_user: "{{ lookup('env','TF_VAR_vsphere_user') }}"
+vsphere_password: "{{ lookup('env','TF_VAR_vsphere_password') }}"
+vsphere_server: "{{ lookup('env','TF_VAR_vsphere_server') }}"
+vsphere_datacenter: "{{ lookup('env','TF_VAR_vsphere_datacenter') }}"
 
 # VM to remove
 #vm_name:

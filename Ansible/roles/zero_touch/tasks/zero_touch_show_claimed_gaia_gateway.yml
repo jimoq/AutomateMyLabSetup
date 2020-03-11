@@ -1,0 +1,16 @@
+---
+- name: "show all accounts and get the account id"
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/show-gaia-claimed-gateway"
+     validate_certs: true
+     method: POST
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body_format: json
+#     body: "{ \"description\":  \"Check for file wizard_accepted\", \"script\": \"ls /etc/.wizard_accepted\" }"
+     body: '{ "mac" : "00:1C:7F:3A:5A:B9", "account-id" : "6915998" }'
+ 
+  register: datasource_claimed_gaia_gateway
+
+- debug:
+    msg="{{ datasource_claimed_gaia_gateway }}"

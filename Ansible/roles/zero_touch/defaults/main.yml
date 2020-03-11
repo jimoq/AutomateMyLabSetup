@@ -1,0 +1,13 @@
+---
+# vars file for zero_touch role
+# Zero-touch credentials, server and base URL
+zero_touch_user: "{{ lookup('env','TF_VAR_zero_touch_user') }}"
+zero_touch_password: "{{ lookup('env','TF_VAR_zero_touch_password') }}"
+zero_touch_server: zerotouch.checkpoint.com
+zero_touch_api_url: /ZeroTouch/web_api/v2
+
+# Mapping zero_touch var to default var used in the tasks
+api_user: "{{zero_touch_user}}"
+api_password: "{{zero_touch_password}}"
+api_server: "{{zero_touch_server}}"
+api_base_url: "{{zero_touch_api_url}}"

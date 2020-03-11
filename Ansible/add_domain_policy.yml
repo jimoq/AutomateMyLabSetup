@@ -6,16 +6,17 @@
   tasks:
     - name: Create a dynamic inventory
       add_host:
-        hostname: "{{ item.domain }}"
-        ansible_host: "{{ item.domain }}.{{ item.mds }}"
+        hostname: "{{ item.hostname }}"
+        ansible_host: "{{ item.hostname }}.{{ item.mds_sms }}"
         ansible_checkpoint_domain: "{{ item.domain}}"
-        groups: domains
+        groups: "{{item.groups}}"
       with_items:
-      - { domain: nordics,         mds: mds10.local }
-      - { domain: central-europe,  mds: mds10.local }
-      - { domain: southern-europe, mds: mds10.local }
-      - { domain: northern-europe, mds: mds20.local }
-      - { domain: eastern-europe,  mds: mds20.local }
+      - { hostname: dms-nordics,         mds_sms: mds10.local, domain: nordics, groups: domains }
+      - { hostname: dms-central-europe,  mds_sms: mds10.local, domain: central-europe, groups: domains }
+      - { hostname: dms-southern-europe, mds_sms: mds10.local, domain: southern-europe, groups: domains }
+      - { hostname: dms-northern-europe, mds_sms: mds20.local, domain: northern-europe, groups: domains }
+      - { hostname: dms-eastern-europe,  mds_sms: mds20.local, domain: eastern-europe, groups: domains }
+      - { hostname: 192,                 mds_sms: 168.233.61, domain: SMC User, groups: sms61 }
 
 - name:  Add domains to mds server
   vars:
