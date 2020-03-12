@@ -5,7 +5,10 @@
      validate_certs: true
      method: POST
      body_format: json
-     body: "{ \"user\" : \"{{ api_user }}\", \"password\" : \"{{ api_password }}\" }"
+     body: '{ 
+              "user"     : "{{ api_user }}", 
+              "password" : "{{ api_password }}" 
+            }'
   register: loginoutput
 
 - set_fact:

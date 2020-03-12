@@ -12,9 +12,9 @@
   register: datasource_all_accounts
 
 - set_fact:
-     account_id: "{{ datasource_all_accounts.json | json_query(jmesquery) }}"
+     datasource_zt_account_id: "{{ datasource_all_accounts.json | json_query(jmesquery) }}"
   vars:
-    jmesquery: '[? "account-name"==`Europe SE`]."account-id"'
+    jmesquery: '[? "account-name"==`Europe SE`]."account-id"| [0]'
 
 - debug:
-    msg="{{ account_id }}"
+    msg="{{ datasource_zt_account_id }}"

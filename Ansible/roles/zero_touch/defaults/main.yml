@@ -11,3 +11,7 @@ api_user: "{{zero_touch_user}}"
 api_password: "{{zero_touch_password}}"
 api_server: "{{zero_touch_server}}"
 api_base_url: "{{zero_touch_api_url}}"
+
+# Vars used to retrive and set objects in zero-touch
+zt_gateway_mac: 00:1C:7F:3A:5A:B9
+zt_object_name: gw7f3a5ab9
