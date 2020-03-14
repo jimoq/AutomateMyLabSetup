@@ -2,7 +2,7 @@
 - name: "show all accounts and get the account id"
   uri:
      url: "https://{{ api_server }}{{ api_base_url }}/show-all-accounts"
-     validate_certs: true
+     validate_certs: "{{ api_validate_cert }}"
      method: POST
      headers :
        X-chkp-sid : "{{ sid }}"

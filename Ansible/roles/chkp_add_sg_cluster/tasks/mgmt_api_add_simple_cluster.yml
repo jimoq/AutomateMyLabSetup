@@ -1,0 +1,145 @@
+---
+- name: Check for Cluster
+  connection: httpapi
+  checkpoint_object_facts:
+    object_filter: Ansible_Cluster
+  register: datasource_check_cluster
+
+- name: Create Gateway if it does not exist
+  block:
+
+#   - name: Wait up to 300 seconds for SIC port 18211 to Open on Member1
+#      wait_for:
+#        port: 18211
+#        host: "{{ mem1_eth0_ip }}"
+#        delay: 5
+#      connection: local
+#
+#    - name: Wait up to 300 seconds for SIC port 18211 to Open on Member2
+#      wait_for:
+#        port: 18211
+#        host: "{{ mem2_eth0_ip }}"
+#        delay: 5
+#      connection: local
+
+  - name: "Add a two member Cluster"
+    uri:
+       url: "https://{{ api_server }}{{ api_base_url }}/add-simple-cluster"
+       validate_certs: "{{ api_validate_cert }}"
+       method: POST
+       body_format: json
+       headers :
+         X-chkp-sid : "{{ sid }}"
+       body: 
+             '{ 
+               "name" : "{{ cluster_name }}",
+               "color" : "purple",
+               "version" : "{{ cluster_version }}",
+               "ip-address" : "{{ cluster_primary_ip }}",
+               "os-name" : "Gaia",
+               "cluster-mode" : "{{ cluster_mode }}",
+               "firewall" : true,
+               "vpn" : false,
+               "ips" : true,
+               "anti-bot" : true,
+               "anti-virus" : true,
+               "interfaces" : [ {
+                 "name" : "eth0",
+                 "ip-address" : "{{ cluster_eth0_ip }}",
+                 "mask-length" : "{{ cluster_eth0_length }}",
+                 "interface-type" : "{{ cluster_eth0_type }}",
+                 "topology" : "{{ cluster_eth0_topology }}",
+                 "anti-spoofing" : true
+               }, {
+                 "name" : "eth1",
+                 "ip-address" : "{{ cluster_eth1_ip }}",
+                 "mask-length" : "{{ cluster_eth1_length }}",
+                 "interface-type" : "{{ cluster_eth1_type }}",
+                 "topology" : "{{ cluster_eth1_topology }}",
+                 "security-zone" : true,
+                 "security-zone-settings": {
+                         "specific-zone" : "InternalZone"
+                         },
+                 "anti-spoofing" : true,
+                 "topology-settings" : {
+                   "ip-address-behind-this-interface" : "network defined by the interface ip and net mask",
+                   "interface-leads-to-dmz" : false
+                 }
+               }, {
+                 "name" : "eth2",
+                 "interface-type" : "{{ cluster_eth2_type }}",
+                 "topology" : "{{ cluster_eth2_topology }}",
+                 "anti-spoofing" : true,
+                 "topology-settings" : {
+                   "ip-address-behind-this-interface" : "network defined by the interface ip and net mask",
+                   "interface-leads-to-dmz" : false
+                 }
+               } ],
+               "members" : [ {
+                 "name" : "{{ mem1_name }}",
+                 "one-time-password" : "{{ mem1_sic }}",
+                 "ip-address" : "{{ mem1_eth0_ip }}",
+                 "interfaces" : [ {
+                   "name" : "eth0",
+                   "ip-address" : "{{ mem1_eth0_ip }}",
+                   "mask-length" : "{{ mem1_eth0_length }}"
+                 }, {
+                   "name" : "eth1",
+                   "ip-address" : "{{ mem1_eth1_ip }}",
+                   "mask-length" : "{{ mem1_eth1_length }}"
+                 }, {
+                   "name" : "eth2",
+                   "ip-address" : "{{ mem1_eth2_ip }}",
+                   "mask-length" : "{{ mem1_eth2_length }}"
+                 } ]
+               }, {
+                 "name" : "{{ mem2_name }}",
+                 "one-time-password" : "{{ mem2_sic }}",
+                 "ip-address" : "{{ mem2_eth0_ip }}",
+                 "interfaces" : [ {
+                   "name" : "eth0",
+                   "ip-address" : "{{ mem2_eth0_ip }}",
+                   "mask-length" : "{{ mem2_eth0_length }}"
+                 }, {
+                   "name" : "eth1",
+                   "ip-address" : "{{ mem2_eth1_ip }}",
+                   "mask-length" : "{{ mem2_eth1_length }}"
+                 }, {
+                   "name" : "eth2",
+                   "ip-address" : "{{ mem2_eth2_ip }}",
+                   "mask-length" : "{{ mem2_eth2_length }}"
+                 } ]
+               } ]
+             } '
+    register: clustertaskid
+
+  - set_fact:
+       clustertask: "{{ clustertaskid.json['task-id'] }}"
+
+  - name: Waiting for 5 seconds before checking cluster task progress
+    pause:
+      seconds:  5
+
+  - name: Check Cluster Task Progress Status
+    uri:
+       url: "https://{{ api_server }}{{ api_base_url }}/show-task"
+       validate_certs: "{{ api_validate_cert }}"
+       method: POST
+       body_format: json
+       body: 
+             '{ 
+               "task-id" :  "{{clustertask}}" 
+              }'
+       headers:
+         X-chkp-sid : "{{ sid }}"
+    retries: 20
+    delay: 3
+    register: taskoutput
+    until: taskoutput.json.tasks[0]['progress-percentage'] == 100
+    failed_when: 
+      - taskoutput.json.tasks[0]['progress-percentage'] == 100
+      - taskoutput.json.tasks[0]['status'] != "succeeded"
+  when:  datasource_check_cluster.ansible_facts.checkpoint_objects.total == 0
+
+#- debug:
+#    msg="{{taskoutput}}"

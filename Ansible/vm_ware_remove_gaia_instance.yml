@@ -3,7 +3,5 @@
   hosts: localhost
   connection: local
   gather_facts: no
-  vars_files: 
-    - variables.yml
   roles:
-    - role: roles/remove_gaia_instance
+    - role: roles/vm_ware_remove_gaia_instance

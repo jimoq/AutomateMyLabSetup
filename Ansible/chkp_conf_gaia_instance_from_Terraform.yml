@@ -1,0 +1,8 @@
+---
+# Run with extra vars  for example vm_name: mds10, target: 192.168.233.10, type: primary_mds
+- name:  Runt FTW on Gaia Instanc
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  roles:
+    - role: roles/chkp_config_gaia

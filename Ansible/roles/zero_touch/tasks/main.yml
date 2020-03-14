@@ -1,7 +1,0 @@
----
-- include_tasks: zt_login.yml
-- include_tasks: zt_get_account.yml
-- include_tasks: zt_show_gaia_template.yml
-# - include_tasks: zt_show_claimed_gaia_gateway.yml
-- include_tasks: zt_claim-gaia-gateway.yml
-- include_tasks: zt_logout.yml

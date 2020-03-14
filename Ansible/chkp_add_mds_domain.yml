@@ -11,7 +11,6 @@
         vm_name: "{{ item.vm_name }}"
         target: "{{ item.target }}"
         type: "{{ item.type }}"
-#      register: inventory
       with_items:
       - { vm_name: mds10, target: 192.168.233.10, type: primary_mds }
       - { vm_name: mds20, target: 192.168.233.20, type: secondary_mds }
@@ -22,8 +21,6 @@
   hosts: mds10
   connection: local
   gather_facts: no
-  vars_files: 
-    - variables.yml
   roles:
-    - role: roles/add_mds_domain
+    - role: roles/chkp_add_mds_domain
       delegate_to: localhost

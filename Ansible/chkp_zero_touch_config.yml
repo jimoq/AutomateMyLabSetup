@@ -11,11 +11,12 @@
         groups: "{{item.groups}}"
       with_items:
       - { hostname: zero-touch, ansible_host: zerotouch.checkpoint.com, groups: checkpoint }
+  tags: [ "unclaim-gaia-gateway" ]
 
 - name:  Runt add Gaia Instance and run FTW
   hosts: zero-touch
   connection: local
   gather_facts: no
   roles:
-  - role: roles/zero_touch
+  - role: roles/chkp_zero_touch
     delegate_to: localhost

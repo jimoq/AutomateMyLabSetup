@@ -1,0 +1,69 @@
+---
+- name: "Check if GAiA template is defined"
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/show-all-gaia-templates"
+     validate_certs: "{{ api_validate_cert }}"
+     method: POST
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body_format: json
+     body: 
+           '{ 
+              "account-ids" : [ "{{ datasource_zt_account_id }}" ] 
+            }'
+  register: datasource_gaia_templates
+
+- set_fact:
+     datasource_zt_gaia_template_id: "{{ datasource_gaia_templates.json | json_query(jmesquery) }}"
+  vars:
+    jmesquery: '[? "name"==`{{zt_template_name}}`]."template-id"| [0]'
+
+- debug:
+    msg="{{ datasource_zt_gaia_template_id }}"
+  when: datasource_zt_gaia_template_id != ""
+
+- name: "Add GAiA template {{zt_template_name}}"
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/add-gaia-template"
+     validate_certs: "{{ api_validate_cert }}"
+     method: POST
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body_format: json
+     body: 
+           '{ 
+              "account-id" : "{{ datasource_zt_account_id }}",
+              "name": "{{zt_template_name}}",
+              "admin-password": "{{zt_gaia_password}}",
+              "activate-with-url": {{zt_activate_with_url}},
+              "ftw-sic-key": "{{zt_gw_sic}}",
+              "identification-key": "{{zt_id_key}}",
+              "gaia-version-id": {{zt_gaia_version}},
+              "force-reimage": {{zt_force_reimage}},
+              "cluster-member": {{zt_cluster_member}},
+              "under-construction": {{zt_under_construction}},
+              "config-ipv6": {{zt_config_ipv6}},
+              "upload-info": {{zt_upload_info}},
+              "download-info": {{zt_download_info}},
+              "time-zone": "{{zt_ime_zone}}",
+              "comments": "{{zt_comments}}",
+              "user-script": "{{user_script}}",
+              "dns-server1": "{{zt_dns_server1}}",
+              "dns-server2": "{{zt_dns_server2}}",
+              "dns-server3": "{{zt_dns_server3}}",
+              "mgmt-eth-ip-address-ipv4": "{{zt_mgmt_eth_ip_address_ipv4}}",
+              "mgmt-eth-subnet-mask-ipv4": "{{zt_mgmt_eth_subnet_mask_ipv4}}",
+              "default-gateway-ipv4": "{{zt_default_gateway_ipv4}}"
+            }'
+  register: datasource_gaia_new_template
+  when: datasource_zt_gaia_template_id == ""
+
+- set_fact:
+     datasource_zt_gaia_template_id: "{{ datasource_gaia_new_template.json | json_query(jmesquery) }}"
+  vars:
+    jmesquery: '"template-id"'
+  when: datasource_zt_gaia_template_id == ""
+
+- debug:
+    msg="{{ datasource_zt_gaia_template_id }}"
+  when: datasource_zt_gaia_template_id != ""

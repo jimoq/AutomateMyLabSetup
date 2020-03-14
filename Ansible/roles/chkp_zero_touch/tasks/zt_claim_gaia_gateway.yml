@@ -1,0 +1,40 @@
+---
+- name: "Check if the GAiA gateway is alreay claimed"
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/show-gaia-claimed-gateway"
+     validate_certs: "{{ api_validate_cert }}"
+     method: POST
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body_format: json
+     body:
+           '{ 
+              "mac"        : "{{zt_gateway_mac}}", 
+              "account-id" : "{{datasource_zt_account_id}}" 
+            }'
+     status_code: 200, 500
+  register: datasource_show_gaia_claimed_gateway
+
+- debug:
+    msg="{{ datasource_show_gaia_claimed_gateway }}"
+
+- name: "Claim the GAiA gateway and associate it with template"
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/claim-gaia-gateway"
+     validate_certs: "{{ api_validate_cert }}"
+     method: POST
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body_format: json
+     body: 
+            '{ 
+              "mac"         : "{{zt_gateway_mac}}", 
+              "object-name" : "{{zt_object_name}}",
+              "account-id"  : "{{datasource_zt_account_id}}", 
+              "template-id" :  "{{datasource_zt_gaia_template_id}}"
+            }'
+  register: datasource_claimed_gaia_gateway
+  when: datasource_show_gaia_claimed_gateway.json.mac is not defined
+
+- debug:
+    msg="{{ datasource_show_gaia_claimed_gateway.json}}"

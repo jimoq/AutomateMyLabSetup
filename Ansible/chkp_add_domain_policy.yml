@@ -24,7 +24,5 @@
   hosts: "{{ target }}"
   connection: httpapi
   gather_facts: no
-  vars_files: 
-    - variables.yml
   roles:
-    - role: roles/add_domain_policy
+    - role: roles/chkp_add_domain_policy

@@ -3,7 +3,7 @@
   connection: local
   gather_facts: no
   roles:
-  - role: roles/deploy_gaia_instance
+  - role: roles/chkp_deploy_gaia_instance
     delegate_to: localhost
-  - role: roles/config_gaia
+  - role: roles/chkp_config_gaia
     delegate_to: localhost

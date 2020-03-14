@@ -1,0 +1,42 @@
+---
+# vars file for zero_touch role
+# Zero-touch credentials, server and base URL
+zero_touch_user: "{{ lookup('env','TF_VAR_zero_touch_user') }}"
+zero_touch_password: "{{ lookup('env','TF_VAR_zero_touch_password') }}"
+zero_touch_server: "{{ansible_host}}" # The API server is: zerotouch.checkpoint.com
+zero_touch_api_url: /ZeroTouch/web_api/v2
+zt_validate_cert: true
+
+# Mapping zero_touch var to default var used in the tasks
+api_user: "{{zero_touch_user}}"
+api_password: "{{zero_touch_password}}"
+api_server: "{{zero_touch_server}}"
+api_base_url: "{{zero_touch_api_url}}"
+api_validate_cert: "{{zt_validate_cert}}"
+
+# Vars used to retrive and set objects in zero-touch
+zt_gateway_mac: 00:1C:7F:3A:5A:B9
+zt_object_name: gw7f3a5ab9
+
+# Vars for adding template in zero-touch
+zt_template_name: ansible-cluster
+zt_gaia_password: vpn123
+zt_activate_with_url: true
+zt_gw_sic: vpn123
+zt_id_key: id-key-vpn123
+zt_gaia_version: 4
+zt_force_reimage: false
+zt_cluster_member: true
+zt_under_construction: true
+zt_config_ipv6: false
+zt_upload_info: true
+zt_download_info: true
+zt_ime_zone: Europe / Stockholm
+zt_comments: ZT template for unattended Remote Office cluster deployment
+user_script: set static-route 192.0.2.100 nexthop gateway address 192.0.2.155 on\nset static-route 192.0.3.0/24 nexthop blackhole\n
+zt_dns_server1: 8.8.8.8
+zt_dns_server2: 1.1.1.1
+zt_dns_server3: 192.168.233.233
+zt_mgmt_eth_ip_address_ipv4: 192.168.233.101
+zt_mgmt_eth_subnet_mask_ipv4: 255.255.255.0
+zt_default_gateway_ipv4: 192.168.233.254
