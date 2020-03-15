@@ -1,6 +1,4 @@
 ---
 # tasks file for mgmt_api
-- import_tasks: mgmt_api_login.yml
 - import_tasks: mgmt_api_add_simple_cluster.yml
-- import_tasks: mgmt_api_publish.yml
-- import_tasks: mgmt_api_logout.yml
+- import_tasks: trigger_chkp_api_logout.yml

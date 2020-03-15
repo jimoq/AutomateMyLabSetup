@@ -1,0 +1,60 @@
+---
+# handlers file for poblish task
+ - name: API Publish
+   uri:
+      url: "https://{{ api_server }}{{ api_base_url }}/publish"
+      validate_certs: "{{ api_validate_cert }}"
+      method: POST
+      body_format: json
+      body: '{}'
+      headers : 
+        X-chkp-sid : "{{ sid }}"
+   register: taskid
+   listen: "API Publish handlers"
+   changed_when: taskid.status == 200
+
+ - set_fact:
+      task: "{{ taskid.json['task-id'] }}"
+   listen: "API Publish handlers"
+
+ - name: Check API Publish Task Progress 
+   uri:
+      url: "https://{{ api_server }}{{ api_base_url }}/show-task"
+      validate_certs: "{{ api_validate_cert }}"
+      method: POST
+      body_format: json
+      body: 
+            '{ 
+              "task-id" :  "{{task}}" 
+             }'
+      headers:
+        X-chkp-sid : "{{ sid }}"
+   retries: 20
+   delay: 3
+   register: taskoutput
+   until: taskoutput.json.tasks[0]['progress-percentage'] == 100
+   listen: "API Publish handlers"
+
+ - name: Logout
+   uri:
+      url: "https://{{ api_server }}{{ api_base_url }}/logout"
+      validate_certs: "{{ api_validate_cert }}"
+      method: POST
+      body_format: json
+      body: '{}'
+      headers : 
+        X-chkp-sid : "{{ sid }}"
+   listen: "API logout handler"
+   when: api_base_url.find("ZeroTouch") == -1
+
+ - name: Logout from Zero-Touch
+   uri:
+      url: "https://{{ api_server }}{{ api_base_url }}/logout"
+      validate_certs: "{{ api_validate_cert }}"
+      method: POST
+      body_format: json
+      body: ''
+      headers : 
+        X-chkp-sid : "{{ sid }}"
+   listen: "API logout handler"
+   when: api_base_url.find("ZeroTouch") != -1

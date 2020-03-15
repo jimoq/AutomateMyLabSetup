@@ -112,6 +112,8 @@
                } ]
              } '
     register: clustertaskid
+    notify: "API Publish handlers"
+    changed_when: clustertaskid.status == 200
 
   - set_fact:
        clustertask: "{{ clustertaskid.json['task-id'] }}"
@@ -140,6 +142,5 @@
       - taskoutput.json.tasks[0]['progress-percentage'] == 100
       - taskoutput.json.tasks[0]['status'] != "succeeded"
   when:  datasource_check_cluster.ansible_facts.checkpoint_objects.total == 0
-
 #- debug:
 #    msg="{{taskoutput}}"
