@@ -1,4 +1,4 @@
-- name: "Check if the GAiA gateway is alreay claimed"
+- name: "Unclaim GAiA gateway {{zt_gateway_mac}}"
   uri:
      url: "https://{{ api_server }}{{ api_base_url }}/unclaim-gaia-gateway"
      validate_certs: "{{ api_validate_cert }}"

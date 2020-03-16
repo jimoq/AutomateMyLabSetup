@@ -1,8 +1,0 @@
-- name: "Wait for VMware tools to become available on {{ vm_name }}"
-  vmware_guest_tools_wait:
-    hostname: "{{ vsphere_server }}"
-    username: "{{ vsphere_user }}"
-    password: "{{ vsphere_password }}"
-    validate_certs: no
-    name: "{{ vm_name }}"
-#    folder: "/{{datacenter}}/vm"

@@ -110,7 +110,7 @@
                    "mask-length" : "{{ mem2_eth2_length }}"
                  } ]
                } ]
-             } '
+             }'
     register: clustertaskid
     notify: "API Publish handlers"
     changed_when: clustertaskid.status == 200

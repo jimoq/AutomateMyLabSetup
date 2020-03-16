@@ -1,6 +1,4 @@
 ---
-#- import_tasks: zt_login.yml
-#  tags: [ "unclaim-gaia-gateway" ]
 - import_tasks: zt_get_account.yml
   tags: [ "unclaim-gaia-gateway" ]
 - import_tasks: zt_add_gaia_template.yml

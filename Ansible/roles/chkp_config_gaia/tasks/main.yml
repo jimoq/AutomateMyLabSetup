@@ -1,6 +1,2 @@
 ---
-- include_tasks: vmware_guest_tools_wait.yml
-- include_tasks: vmware_guest_info.yml
-- include_tasks: gaia_api_login.yml
-- include_tasks: gaia_api_ftw.yml
-- include_tasks: gaia_api_logout.yml
+- import_tasks: gaia_api_ftw.yml

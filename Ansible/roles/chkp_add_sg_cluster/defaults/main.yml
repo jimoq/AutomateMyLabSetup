@@ -15,7 +15,7 @@ mgmt_server: "{{ansible_host}}" # This should be your Check Point SMS or MDS
 mgmt_api_url: /web_api
 mgmt_validate_cert: false
 
-# Mapping zero_touch var to default var used in the tasks
+# Mapping mgmt_api var to default var used in the tasks
 api_user: "{{mgmt_user}}"
 api_password: "{{mgmt_password}}"
 api_server: "{{mgmt_server}}"

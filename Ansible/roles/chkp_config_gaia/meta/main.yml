@@ -2,6 +2,5 @@
 # The chkp_* roles are dependant of chkp_api_session_mgmt
 dependencies:
   - role: chkp_api_session_mgmt
-    tags: [ "unclaim-gaia-gateway" ]
 #    vars:
 #      some_parameter: xyz

@@ -9,7 +9,7 @@
         groups: mdsm
         vm_name: "{{ item.vm_name }}"
         target: "{{ item.target }}"
-        type: "{{ item.type }}"y
+        type: "{{ item.type }}"
       with_items:
       - { vm_name: mds10, target: 192.168.233.10, type: primary_mds }
       - { vm_name: mds20, target: 192.168.233.20, type: secondary_mds }

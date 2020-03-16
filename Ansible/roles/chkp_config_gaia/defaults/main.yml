@@ -1,8 +1,18 @@
 ---
-# vars file for config_gaia role
-# Gaia_API login parameters.
-gaia_user: admin
-gaia_password: admin
+# vars file for chkp_config_gaia role
+# gaia_api credentials, server and base URL
+gaia_user: "{{ lookup('env','TF_VAR_gaia_api_user') }}"
+gaia_password: "{{ lookup('env','TF_VAR_gaia_api_password') }}"
+gaia_server: "{{datasource_gaia_server}}" # This should be your Check Point SMS or MDS
+gaia_api_url: /gaia_api/v1.3
+gaia_validate_cert: false
+
+# Mapping gaia_api var to default var used in the tasks
+api_user: "{{gaia_user}}"
+api_password: "{{gaia_password}}"
+api_server: "{{gaia_server}}"
+api_base_url: "{{gaia_api_url}}"
+api_validate_cert: "{{gaia_validate_cert}}"
 
 # Set default variables for gaia FTW
 target_masklen: 24
@@ -14,4 +24,7 @@ vsphere_user: "{{ lookup('env','TF_VAR_vsphere_user') }}"
 vsphere_password: "{{ lookup('env','TF_VAR_vsphere_password') }}"
 vsphere_server: "{{ lookup('env','TF_VAR_vsphere_server') }}"
 vsphere_datacenter: "{{ lookup('env','TF_VAR_vsphere_datacenter') }}"
+
+# VMWare Virtual Machine patameters
+datasource_gaia_server: get_guest_ipAddress
 #vm_name: sg89

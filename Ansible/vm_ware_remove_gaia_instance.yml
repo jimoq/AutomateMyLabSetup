@@ -1,4 +1,4 @@
-# use variable vm_name to remove the virtual machine
+# Run with extra vars for example: -e "vm_name=mds10 to remove the virtual machine mds10
 - name: Remove gaia instance from vSphere
   hosts: localhost
   connection: local

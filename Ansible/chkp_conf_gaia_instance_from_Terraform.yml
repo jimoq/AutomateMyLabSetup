@@ -1,8 +1,23 @@
 ---
-# Run with extra vars  for example vm_name: mds10, target: 192.168.233.10, type: primary_mds
-- name:  Runt FTW on Gaia Instanc
+# Run with extra vars for example: -e "vm_name=mds10 target=192.168.233.10 type=primary_mds"
+- name: Build inventory
   hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Create a dynamic inventory
+      add_host:
+        hostname: "{{ vm_name }}"
+        ansible_host: "{{target}}"
+        groups: chkp
+        vm_name: "{{ vm_name }}"
+        target: "{{ target }}"
+        type: "{{ type }}"
+
+- name:  Runt FTW on Gaia instance
+  hosts: "{{ vm_name }}"
   connection: local
   gather_facts: no
   roles:
     - role: roles/chkp_config_gaia
+ #     delegate_to: localhost
