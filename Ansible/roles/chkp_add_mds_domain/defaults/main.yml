@@ -1,6 +1,10 @@
 ---
 # vars file for add_mds_domain role
 # For this role to work you need to have 2 MDS and 2 MDLS configured
+# default values gaia_api
+gaia_server: "{{ ansible_host }}"
+gaia_user: admin
+gaia_password: admin
 # parameters used to autheticate to management API using anisble module uri
 mgmt_server: 192.168.233.10
 mgmt_user: admin

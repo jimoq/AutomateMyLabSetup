@@ -1,14 +1,7 @@
 ---
-# vars file for deploy_gaia role
-hostname: "{{ vm_name }}"
-
+# vars file for vm_deploy_gaia_from_ovf role
 # Set VMware parameters and vsphere_credentials
 vsphere_user: "{{ lookup('env','TF_VAR_vsphere_user') }}"
 vsphere_password: "{{ lookup('env','TF_VAR_vsphere_password') }}"
 vsphere_server: "{{ lookup('env','TF_VAR_vsphere_server') }}"
 vsphere_datacenter: "{{ lookup('env','TF_VAR_vsphere_datacenter') }}"
-vcenter_folder: Templates
-#vm_name:
-vm_template: cloud03_r80dot40
-esxi_hostname: cloud03.local
-#vm_snapshot: R80.40-pre-ftw

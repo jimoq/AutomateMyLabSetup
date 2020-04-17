@@ -1,0 +1,10 @@
+---
+ - name: Logout
+   uri:
+      url: "https://{{ gaia_server }}/gaia_api/logout"
+      validate_certs: false
+      method: POST
+      body_format: json
+      body: "{}"
+      headers : 
+        X-chkp-sid : "{{ sid }}"

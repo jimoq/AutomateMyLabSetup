@@ -1,4 +1,4 @@
-# Run with extra vars for example: -e "vm_name=mds10 to remove the virtual machine mds10
+---
 - name: Build inventory
   hosts: localhost
   connection: local
@@ -7,7 +7,8 @@
     - name: Create a dynamic inventory
       add_host:
         hostname: "{{ item.vm_name }}"
-        groups: mdsm
+        ansible_host: "{{ item.target }}"
+        groups: mylab
         vm_name: "{{ item.vm_name }}"
         target: "{{ item.target }}"
         type: "{{ item.type }}"
@@ -17,11 +18,10 @@
       - { vm_name: mdls30, target: 192.168.233.30, type: mdls }
       - { vm_name: sgvsx40, target: 192.168.233.40, type: sg }
 
-- name: Remove gaia instance from vSphere
-  vars:
-    target: mdsm
-  hosts: "{{ target }}"
+- name:  Add domains to mds server
+  hosts: mds10
   connection: local
   gather_facts: no
   roles:
-    - role: roles/vm_ware_remove_gaia_instance
+    - role: roles/chkp_add_mds_domain
+      delegate_to: localhost

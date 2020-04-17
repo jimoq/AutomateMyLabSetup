@@ -1,0 +1,26 @@
+---
+# Run with extra vars for example: -e "vsphere_vm_name=mds10 target=192.168.233.10 type=primary_mds"
+- name: Build inventory
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Create a dynamic inventory
+      add_host:
+        hostname: "{{ vsphere_vm_name }}"
+        ansible_host: "{{target}}"
+        groups: chkp
+        vsphere_vm_name: "{{ vsphere_vm_name}}"
+        target: "{{ target }}"
+        type: "{{ type }}"
+
+- name:  Add Gaia Instance and run FTW
+  hosts: "{{ vsphere_vm_name }}"
+  connection: local
+  gather_facts: no
+  vars:
+    vsphere_vm_ovf_file: Check_Point_R80.40_Cloudguard_Security_Management_VE/Check_Point_CG_R80.40.ovf
+  roles:
+  - role: roles/vm_deploy_gaia_from_ovf
+    delegate_to: localhost
+#  - role: roles/chkp_config_gaia

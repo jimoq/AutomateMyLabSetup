@@ -1,5 +1,6 @@
 ---
 # Run with extra vars for example: -e "vm_name=mds10 target=192.168.233.10 type=primary_mds"
+# Avaliable Options primary_mds, secondary_mds, mdls, primary_sms, secondary_sms, ls_se, smsg, sg
 - name: Build inventory
   hosts: localhost
   connection: local
@@ -22,4 +23,3 @@
   - role: roles/vm_ware_deploy_gaia_instance
     delegate_to: localhost
   - role: roles/chkp_config_gaia
-#    delegate_to: localhost

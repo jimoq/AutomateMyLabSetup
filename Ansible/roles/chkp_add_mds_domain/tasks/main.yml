@@ -1,7 +1,11 @@
 ---
-# tasks file for mgmt_api
-- include_tasks: mgmt_api_login.yml
-- include_tasks: mgmt_api_add_domains_redundant_mds.yml
-- include_tasks: mgmt_api_add_domains_single_mds.yml
-- include_tasks: mgmt_api_publish.yml
-- include_tasks: mgmt_api_logout.yml
+# tasks file for chkp_mgmt_api
+- import_tasks: gaia_api_check_status.yml
+- import_tasks: gaia_api_login.yml
+- import_tasks: gaia_api_set_mgmt_api.yml
+- import_tasks: gaia_api_logout.yml
+- import_tasks: mgmt_api_login.yml
+- import_tasks: mgmt_api_add_domains_redundant_mds.yml
+- import_tasks: mgmt_api_add_domains_single_mds.yml
+- import_tasks: mgmt_api_publish.yml
+- import_tasks: mgmt_api_logout.yml

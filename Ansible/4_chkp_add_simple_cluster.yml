@@ -19,7 +19,9 @@
       - { hostname: 192,                 mds_sms: 168.233.61, domain: SMC User, groups: sms61 }
 
 - name:  Execute Check Point cluster role
-  hosts: sms61
+  vars:
+    target: domains
+  hosts: "{{ target }}"
   connection: local
   gather_facts: no
   roles:

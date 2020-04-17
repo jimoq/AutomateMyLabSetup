@@ -1,0 +1,2 @@
+---
+- import_tasks: vm_deploy_ovf.yml

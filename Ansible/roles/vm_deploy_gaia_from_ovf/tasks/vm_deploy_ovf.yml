@@ -1,0 +1,16 @@
+---
+# Deploys a new VM named '{{ vmname }}' in specific datacenter/cluster, with network mapping taken from variable and using ova template from an absolute path
+- name: "Create VM {{ vsphere_vm_name }}"
+  vmware_deploy_ovf:
+    hostname: "{{ vsphere_server }}"
+    username: "{{ vsphere_user }}"
+    password: "{{ vsphere_password }}"
+    datacenter: "{{ vsphere_datacenter }}"
+    datastore: "datastore_cloud03"
+    name: "{{ vsphere_vm_name }}"
+ #   networks: "{u'VM Network':u'{{ vsphere_ProvisioningNetworkLabel }}'}"
+    validate_certs: no
+    #ovf: "/vmfs/volumes/Shared-ISO-OVF/OVF/{{vsphere_vm_ovf_file}}"
+    ovf: /mnt/c/Check_Point_R80.40_Cloudguard_Security_Management_VE/Check_Point_CG_R80.40.ovf
+    wait_for_ip_address: false
+    power_on: false
