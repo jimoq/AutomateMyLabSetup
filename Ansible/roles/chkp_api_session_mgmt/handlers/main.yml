@@ -1,5 +1,5 @@
 ---
-# handlers file for poblish task
+# handlers file for publish task
  - name: API Publish
    uri:
       url: "https://{{ api_server }}{{ api_base_url }}/publish"
