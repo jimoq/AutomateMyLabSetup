@@ -1,0 +1,39 @@
+---
+# Login to Check Point Management API for a specific domain
+- name: Login to {{ansible_checkpoint_domain}}
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/login"
+     validate_certs: "{{ api_validate_cert }}"
+     method: POST
+     body_format: json
+     body: 
+           '{ 
+              "user"     : "{{ api_user }}", 
+              "password" : "{{ api_password }}", 
+              "domain"   :  "{{ ansible_checkpoint_domain }}"
+            }'
+  register: loginoutput_domain
+  when: ansible_checkpoint_domain is defined
+
+# Login to Check Point APIs
+- name: Login
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/login"
+     validate_certs: "{{ api_validate_cert }}"
+     method: POST
+     body_format: json
+     body: 
+           '{ 
+              "user"     : "{{ api_user }}", 
+              "password" : "{{ api_password }}"
+            }'
+  register: loginoutput
+  when: ansible_checkpoint_domain is not defined
+
+- set_fact:
+     sid: "{{ loginoutput_domain.json.sid }}"
+  when: ansible_checkpoint_domain is defined
+
+- set_fact:
+     sid: "{{ loginoutput.json.sid }}"
+  when: ansible_checkpoint_domain is not defined

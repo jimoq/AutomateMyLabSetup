@@ -1,0 +1,52 @@
+---
+- name: Wait up to 300 seconds for https connetion on {{ ansible_host }}
+  wait_for:
+    port: 443
+    host: "{{ ansible_host }}"
+  delegate_to: localhost
+  
+- name: "Check if {{ gaia_server }} API server is accepting request"
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/run-script"
+     validate_certs: false
+     method: POST
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body_format: json
+     body: "{ \"description\":  \"Check mgmt api configuration\", \"script\": \"api status\" }"
+  register: api_task
+
+- set_fact:
+     api_taskid: "{{ api_task.json['task-id'] }}"
+
+- name: Check API status Task Progress
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/show-task"
+     validate_certs: false
+     method: POST
+     headers:
+       X-chkp-sid : "{{ sid }}"
+     body_format: json
+     body: "{ \"task-id\" :  \"{{api_taskid}}\" }"
+  retries: 20
+  delay: 3
+  register: datasource_tasks
+  until: (datasource_tasks.json.tasks[0]['progress-percentage'] == 100)
+  failed_when: 
+    - (datasource_tasks.json.tasks[0]['progress-percentage'] == 100)
+    - (datasource_tasks.json.tasks[0]['status'] != "succeeded")
+
+#- debug:
+#    msg: "{{ datasource_tasks }}"
+
+- name: "Set mgmt_api to accept requests from All IP addresses"
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/run-script"
+     validate_certs: false
+     method: POST
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body_format: json
+     body: "{ \"description\":  \"set mgmt_api to listen to all\", \"script\": \"mgmt_cli set api-settings accepted-api-calls-from 'All IP addresses' --domain 'System Data' --format json --root true; api reconf}"
+  register: api_task
+  when: ((datasource_tasks.json.tasks[0]['task-details'][0]['output'] | b64decode).find('Require ip 127.0.0.1') != -1) or ((datasource_tasks.json.tasks[0]['task-details'][0]['output'] | b64decode).find('The API Server Is Not Running') != -1)
