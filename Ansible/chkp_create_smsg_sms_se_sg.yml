@@ -10,11 +10,12 @@
         vm_name: "{{ item.vm_name }}"
         target: "{{ item.target }}"
         type: "{{ item.type }}"
+        nr: "{{ item.nr }}"
       with_items:
-      - { vm_name: smsg60, target: 192.168.233.60, type: smsg }
-      - { vm_name: sms61, target: 192.168.233.61, type: primary_sms }
-      - { vm_name: se62, target: 192.168.233.62, type: ls_se }
-      - { vm_name: sg63, target: 192.168.233.63, type: sg }
+      - { vm_name: smsg60, target: 192.168.233.60, type: smsg, nr: 60  }
+      - { vm_name: sms61, target: 192.168.233.61, type: primary_sms, nr: 61 }
+      - { vm_name: se62, target: 192.168.233.62, type: ls_se, nr: 62 }
+      - { vm_name: sg63, target: 192.168.233.63, type: sg, nr: 63 }
 
 - name: Deploy Standalone SMS and GW
   hosts: 

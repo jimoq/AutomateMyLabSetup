@@ -1,0 +1,31 @@
+---
+# Collect VM ip address when gaia_server is defined as "get_guest_ipAddress" and gaia_api_url is defined
+#- name: "Wait for VMware tools to become available on {{ vm_name }}"
+#  vmware_guest_tools_wait:
+#    hostname: "{{ vsphere_server }}"
+#    username: "{{ vsphere_user }}"
+#    password: "{{ vsphere_password }}"
+#    validate_certs: no
+#    name: "{{ vm_name }}"
+#  when: gaia_server is defined and gaia_server == "get_guest_ipAddress" and gaia_api_url is defined
+
+- name: "Gather some facts from {{ vm_name }} using the vSphere API output schema"
+  vmware_guest_info:
+    hostname: "{{ vsphere_server }}"
+    username: "{{ vsphere_user }}"
+    password: "{{ vsphere_password }}"
+    validate_certs: no
+    datacenter: "{{ vsphere_datacenter }}"
+    name: "{{ vm_name }}"
+    schema: "vsphere"
+    properties: ["guest.ipAddress"]
+  register: vm_facts
+  when: gaia_server is defined and gaia_server == "get_guest_ipAddress" and gaia_api_url is defined
+
+- set_fact:
+     datasource_gaia_server: "{{ vm_facts.instance.guest.ipAddress }}"
+  when: gaia_server is defined and gaia_server == "get_guest_ipAddress" and gaia_api_url is defined
+
+- debug:
+    msg: "{{ gaia_server }}"
+  when: gaia_server is defined

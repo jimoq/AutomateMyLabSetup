@@ -1,3 +1,5 @@
+# ansible-playbook 1_chkp_create_mdsm_farm.yml -e "vm_template=cloud02_r81ea"
+---
 - name: Build inventory
   hosts: localhost
   connection: local
@@ -10,11 +12,12 @@
         vm_name: "{{ item.vm_name }}"
         target: "{{ item.target }}"
         type: "{{ item.type }}"
+        nr: "{{ item.nr }}"
       with_items:
-      - { vm_name: mds10, target: 192.168.233.10, type: primary_mds }
-      - { vm_name: mds20, target: 192.168.233.20, type: secondary_mds }
-      - { vm_name: mdls30, target: 192.168.233.30, type: mdls }
-      - { vm_name: sgvsx40, target: 192.168.233.40, type: sg }
+      - { vm_name: mds10, target: 192.168.233.10, type: primary_mds, nr: 10 }
+      - { vm_name: mds20, target: 192.168.233.20, type: secondary_mds, nr: 20 }
+      - { vm_name: mdls30, target: 192.168.233.30, type: mdls, nr: 30 }
+      - { vm_name: sgvsx40, target: 192.168.233.40, type: sg, nr: 40 }
 
 - name: Deploy Primary Multi-Domain Server
   hosts: mdsm

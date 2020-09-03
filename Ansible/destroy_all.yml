@@ -1,0 +1,28 @@
+- name: Build inventory
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Create a dynamic inventory
+      add_host:
+        hostname: "{{ item.vm_name }}"
+        groups: mylab
+        vm_name: "{{ item.vm_name }}"
+
+      with_items:
+      - { vm_name: smsg60 }
+      - { vm_name: sms61 }
+      - { vm_name: se62 }
+      - { vm_name: sg63 }
+      - { vm_name: mds10 }
+      - { vm_name: mds20 }
+      - { vm_name: mdls30 }
+      - { vm_name: sgvsx40 }
+
+- name: Delete all GAiA Instances
+  hosts: 
+    - mylab
+  connection: local
+  gather_facts: no
+  roles:
+    - role: roles/vm_ware_remove_gaia_instance

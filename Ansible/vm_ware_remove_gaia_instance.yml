@@ -1,4 +1,4 @@
-# Run with extra vars for example: -e "vm_name=mds10 to remove the virtual machine mds10
+# Run with extra vars for example: ansible-playbook vm_ware_remove_gaia_instance.yml -e "vm_name=mds10" to remove the virtual machine mds10
 - name: Build inventory
   hosts: localhost
   connection: local
@@ -6,21 +6,10 @@
   tasks:
     - name: Create a dynamic inventory
       add_host:
-        hostname: "{{ item.vm_name }}"
-        groups: mdsm
-        vm_name: "{{ item.vm_name }}"
-        target: "{{ item.target }}"
-        type: "{{ item.type }}"
-      with_items:
-      - { vm_name: mds10, target: 192.168.233.10, type: primary_mds }
-      - { vm_name: mds20, target: 192.168.233.20, type: secondary_mds }
-      - { vm_name: mdls30, target: 192.168.233.30, type: mdls }
-      - { vm_name: sgvsx40, target: 192.168.233.40, type: sg }
+        hostname: "{{ vm_name }}"
 
 - name: Remove gaia instance from vSphere
-  vars:
-    target: mdsm
-  hosts: "{{ target }}"
+  hosts: "{{ vm_name }}"
   connection: local
   gather_facts: no
   roles:

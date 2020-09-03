@@ -1,0 +1,20 @@
+---
+- name: "Set ip address on interfaces"
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/set-physical-interface"
+     validate_certs: "{{ api_validate_cert }}"
+     method: POST
+     body_format: json
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body: "{{ item.interface }}"
+#  when:
+#    - item.when == type
+#    - return_value != "0"
+  with_items:
+    - { interface: '{ "name": "eth2", "ipv4-address": "{{eth2_ipv4}}", "ipv4-mask-length": 24, "comments": "DMZ interface", "enabled": "true" }' }
+    - { interface: '{ "name": "eth1", "ipv4-address": "{{eth1_ipv4}}", "ipv4-mask-length": 24, "comments": "inside interface", "enabled": "true" }' }
+  #  - { interface: '{ "name": "eth0", "ipv4-address": "{{eth0_ipv4}}", "ipv4-mask-length": 24, "comments": "Outside interface", "enabled": "true" }' }
+
+#- set_fact:
+#     api_server: "{{target}}"

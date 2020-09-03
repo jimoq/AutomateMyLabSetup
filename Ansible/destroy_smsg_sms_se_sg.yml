@@ -1,0 +1,25 @@
+- name: Build inventory
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Create a dynamic inventory
+      add_host:
+        hostname: "{{ item.vm_name }}"
+        groups: mylab
+        vm_name: "{{ item.vm_name }}"
+        target: "{{ item.target }}"
+        type: "{{ item.type }}"
+      with_items:
+      - { vm_name: smsg60, target: 192.168.233.60, type: smsg }
+      - { vm_name: sms61, target: 192.168.233.61, type: primary_sms }
+      - { vm_name: se62, target: 192.168.233.62, type: ls_se }
+      - { vm_name: sg63, target: 192.168.233.63, type: sg }
+
+- name: Delete Standalone SMS and GW
+  hosts: 
+    - mylab
+  connection: local
+  gather_facts: no
+  roles:
+    - role: roles/vm_ware_remove_gaia_instance

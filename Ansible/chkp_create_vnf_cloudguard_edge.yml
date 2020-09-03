@@ -1,6 +1,5 @@
 ---
-# Run with extra vars for example: ansible-playbook vm_ware_add_gaia_instance.yml -e "vm_name=demo69 target=192.168.233.69 type=sg nr=69"
-# Avaliable Options primary_mds, secondary_mds, mdls, primary_sms, secondary_sms, ls_se, smsg, sg
+# Run with extra vars for example: ansible-playbook chkp_create_vnf_cloudguard_edge.yml -e "vm_name=cgedgevnf68 target=192.168.233.68"
 - name: Build inventory
   hosts: localhost
   connection: local
@@ -13,7 +12,8 @@
         groups: chkp
         vm_name: "{{ vm_name }}"
         target: "{{ target }}"
-        type: "{{ type }}"
+        vm_template: cloud02_cg_edge_R80dot20
+        esxi_hostname: cloud02.local
 
 - name:  Add Gaia Instance and run FTW
   hosts: "{{ vm_name }}"
@@ -22,4 +22,3 @@
   roles:
   - role: roles/vm_ware_deploy_gaia_instance
     delegate_to: localhost
-  - role: roles/chkp_config_gaia

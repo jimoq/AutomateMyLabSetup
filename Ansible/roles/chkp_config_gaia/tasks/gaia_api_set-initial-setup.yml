@@ -1,0 +1,76 @@
+---
+- name: "Check if gaia system is configured with First Time Configuration Wizard"
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/set-initial-setup"
+     validate_certs: "{{ api_validate_cert }}"
+     method: POST
+     body_format: json
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body:  
+          '{ 
+            "password":  "vpn123", 
+            "security-management": {
+              "activation-key": "aaaa",
+              "type": "primary" 
+            }
+          }'
+  register: ftw_accept_task
+
+- debug:
+     msg: "{{ ftw_accept_task }}"
+
+- set_fact:
+     ftw_accept_taskid: "{{ ftw_accept_task.json['task-id'] }}"
+
+- name: Check Run-Script Task Status
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/show-task"
+     validate_certs: "{{ api_validate_cert }}"
+     method: POST
+     body_format: json
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body: 
+          '{ 
+            "task-id" :  "{{ftw_accept_taskid}}" 
+          }'
+  register: ftw_accept_taskoutput
+
+#- set_fact:
+#    return_value: "{{ ftw_accept_taskoutput.json.tasks[0]['task-details'][0]['return-value'] }}"
+
+- debug:
+#     msg: "{{ ftw_accept_taskoutput.json.tasks[0]['task-details'][0]['return-value'] }}"
+#     msg: "{{ ftw_accept_taskoutput.json.tasks[0]['task-details'][0] }}"
+     msg: "{{ ftw_accept_taskoutput }}"
+
+#- name: "Run First time Wizard"
+#  uri:
+#     url: "https://{{ api_server }}{{ api_base_url }}/run-script"
+#     validate_certs: "{{ api_validate_cert }}"
+#     method: POST
+#     body_format: json
+#     headers :
+#       X-chkp-sid : "{{ sid }}"
+#     body: "{{ item.ftw }}"
+#  when:
+#    - item.when == type
+#    - return_value != "0"
+#  with_items:
+#    # Primary MDS configuration - when: primary_mds
+#    - { ftw: '{ "description":  "Run FTW", "script": "config_system --config-string ''hostname={{hostname }}&mgmt_admin_radio=gaia_admin&mgmt_gui_clients_radio=any&timezone=''GMT+1''&install_mds_primary=true&install_mds_interface=eth0&download_info=true&ipstat_v6=off&ipstat_v4=manually&iface=eth0&ipaddr_v4={{ target }}&masklen_v4={{ target_masklen }}&ntp_primary_version=4&ntp_primary=se.pool.ntp.org&primary=8.8.8.8&domainname=local&reboot_if_required=true''" }', when: "primary_mds" }
+#    # Secondary MDS configuration - when: secondary_mds
+#    - { ftw: '{ "description":  "Run FTW", "script": "config_system --config-string ''hostname={{hostname }}&mgmt_admin_radio=gaia_admin&mgmt_gui_clients_radio=any&ftw_sic_key={{sickey}}&timezone=''GMT+1''&install_mds_secondary=true&install_mds_interface=eth0&download_info=true&ipstat_v6=off&ipstat_v4=manually&iface=eth0&ipaddr_v4={{ target }}&masklen_v4={{ target_masklen }}&ntp_primary_version=4&ntp_primary=se.pool.ntp.org&primary=8.8.8.8&domainname=local&reboot_if_required=true''" }', when: "secondary_mds" }
+#    # MDLS configuration - when: mdls
+#    - { ftw: '{ "description":  "Run FTW", "script": "config_system --config-string ''hostname={{hostname }}&mgmt_admin_radio=gaia_admin&mgmt_gui_clients_radio=any&ftw_sic_key={{sickey}}&timezone=''GMT+1''&install_mlm=true&install_mds_interface=eth0&download_info=true&ipstat_v6=off&ipstat_v4=manually&iface=eth0&ipaddr_v4={{ target }}&masklen_v4={{ target_masklen }}&ntp_primary_version=4&ntp_primary=se.pool.ntp.org&primary=8.8.8.8&domainname=local&reboot_if_required=true''" }', when: "mdls" }
+#    # Primary SMS configuration - when: primary_sms
+#    - { ftw: '{ "description":  "Run FTW", "script": "config_system --config-string ''hostname={{hostname}}&mgmt_admin_radio=gaia_admin&mgmt_gui_clients_radio=any&timezone=''GMT+1''&install_security_managment=true&install_mgmt_primary=true&download_info=true&ipstat_v6=off&ipstat_v4=manually&iface=eth0&ipaddr_v4={{ target }}&masklen_v4={{ target_masklen }}&ntp_primary_version=4&ntp_primary=se.pool.ntp.org&primary=8.8.8.8&domainname=local&reboot_if_required=true''" }', when: "primary_sms" }
+##    # Secondary SMS configuration - when: secondary_sms
+#    - { ftw: '{ "description":  "Run FTW", "script": "config_system --config-string ''hostname={{hostname}}&mgmt_admin_radio=gaia_admin&mgmt_gui_clients_radio=any&ftw_sic_key={{sickey}}&timezone=''GMT+1''&install_security_managment=true&install_mgmt_secondary=true&download_info=true&ipstat_v6=off&ipstat_v4=manually&iface=eth0&ipaddr_v4={{ target }}&masklen_v4={{ target_masklen }}&ntp_primary_version=4&ntp_primary=se.pool.ntp.org&primary=8.8.8.8&domainname=local&reboot_if_required=true''" }', when: "secondary_sms" }
+#    #  LS and SE configuration - when: ls_se
+#    - { ftw: '{ "description":  "Run FTW", "script": "config_system --config-string ''hostname={{hostname}}&mgmt_admin_radio=gaia_admin&mgmt_gui_clients_radio=any&ftw_sic_key={{sickey}}&timezone=''GMT+1''&install_security_managment=true&download_info=true&ipstat_v6=off&ipstat_v4=manually&iface=eth0&ipaddr_v4={{ target }}&masklen_v4={{ target_masklen }}&ntp_primary_version=4&ntp_primary=se.pool.ntp.org&primary=8.8.8.8&domainname=local&reboot_if_required=true''" }', when: "ls_se" }
+#    #  Primary SMSG (standalone) configuration - when: smsg
+#    - { ftw: '{ "description":  "Run FTW", "script": "config_system --config-string ''hostname={{hostname}}&mgmt_admin_radio=gaia_admin&mgmt_gui_clients_radio=any&timezone=''GMT+1''&install_security_managment=true&install_mgmt_primary=true&install_security_gw=true&gateway_daip=false&install_ppak=true&gateway_cluster_member=false&download_info=true&ipstat_v6=off&ipstat_v4=manually&iface=eth0&ipaddr_v4={{ target }}&masklen_v4={{ target_masklen }}&ntp_primary_version=4&ntp_primary=se.pool.ntp.org&primary=8.8.8.8&domainname=local&reboot_if_required=true''" }', when: "smsg" }
+#    # SG configuration - when: sg
+#    - { ftw: '{ "description":  "Run FTW", "script": "config_system --config-string ''hostname={{hostname}}&ftw_sic_key={{sickey}}&timezone=''GMT+1''&install_security_managment=false&install_mgmt_primary=false&install_security_gw=true&gateway_daip=false&install_ppak=true&gateway_cluster_member=false&download_info=true&ipstat_v6=off&ipstat_v4=manually&iface=eth0&ipaddr_v4={{ target }}&masklen_v4={{ target_masklen }}&ntp_primary_version=4&ntp_primary=se.pool.ntp.org&primary=8.8.8.8&domainname=local&reboot_if_required=true''" }', when: "sg" }
