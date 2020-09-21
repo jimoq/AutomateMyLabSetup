@@ -14,16 +14,6 @@ api_server: "{{gaia_server}}"
 api_base_url: "{{gaia_api_url}}"
 api_validate_cert: "{{gaia_validate_cert}}"
 
-# Set default variables for gaia FTW
-target_masklen: 24
-sickey: vpn123
-hostname: "{{ vm_name }}"
-
-# Set default variable for gaia_set_physical_interface task
-eth0_ipv4: 192.168.233.{{nr}}
-eth1_ipv4: 1.1.1.{{nr}}
-eth2_ipv4: 2.2.2.{{nr}}
-
 # Set VMware parameters and vsphere_credentials
 vsphere_user: "{{ lookup('env','TF_VAR_vsphere_user') }}"
 vsphere_password: "{{ lookup('env','TF_VAR_vsphere_password') }}"
@@ -33,3 +23,43 @@ vsphere_datacenter: "{{ lookup('env','TF_VAR_vsphere_datacenter') }}"
 # VMWare Virtual Machine patameters
 datasource_gaia_server: get_guest_ipAddress
 #vm_name: sg89
+
+# Set defult variables for gaia timezone
+gaia_timezone: Europe / Stockholm
+
+# Set default variables for NTP
+gaia_ntp_version: 4
+gaia_ntp_pri: 91.209.0.20
+gaia_ntp_sec: 162.159.200.123
+
+# Set default variables for DNS
+dns_suffix: local
+dns_primary: 192.168.233.233
+dns_secondary: 8.8.8.8
+
+# Set default variable for gaia_set_physical_interface task
+eth0_ipv4: 192.168.233.{{nr}}
+eth1_ipv4: 1.1.1.{{nr}}
+eth2_ipv4: 2.2.2.{{nr}}
+
+# Set default variables for gaia FTW
+target_masklen: 24
+sickey: vpn123
+hostname: "{{ vm_name }}"
+gaia_ftw_conf_string:
+# Primary MDS configuration - when: primary_mds
+- { ftw: '{ "description":  "FTW Primary MDS", "script": "config_system --config-string ''mgmt_admin_radio=gaia_admin&mgmt_gui_clients_radio=any&install_mds_primary=true&install_mds_interface=eth0&download_info=true&ipstat_v6=off&ipstat_v4=manually&iface=eth0&ipaddr_v4={{ target }}&masklen_v4={{ target_masklen }}&default_gw_v4={{ target_gw }}&reboot_if_required=true''" }', when: "primary_mds" }
+# Secondary MDS configuration - when: secondary_mds
+- { ftw: '{ "description":  "FTW Secondary MDS", "script": "config_system --config-string ''mgmt_admin_radio=gaia_admin&mgmt_gui_clients_radio=any&ftw_sic_key={{sickey}}&install_mds_secondary=true&install_mds_interface=eth0&download_info=true&ipstat_v6=off&ipstat_v4=manually&iface=eth0&ipaddr_v4={{ target }}&masklen_v4={{ target_masklen }}&default_gw_v4={{ target_gw }}&reboot_if_required=true''" }', when: "secondary_mds" }
+# MDLS configuration - when: mdls
+- { ftw: '{ "description":  "FTW MDLS", "script": "config_system --config-string ''mgmt_admin_radio=gaia_admin&mgmt_gui_clients_radio=any&ftw_sic_key={{sickey}}&install_mlm=true&install_mds_interface=eth0&download_info=true&ipstat_v6=off&ipstat_v4=manually&iface=eth0&ipaddr_v4={{ target }}&masklen_v4={{ target_masklen }}&default_gw_v4={{ target_gw }}&reboot_if_required=true''" }', when: "mdls" }
+# Primary SMS configuration - when: primary_sms
+- { ftw: '{ "description":  "FTW Primary SMS", "script": "config_system --config-string ''mgmt_admin_radio=gaia_admin&mgmt_gui_clients_radio=any&install_security_managment=true&install_mgmt_primary=true&download_info=true&ipstat_v6=off&ipstat_v4=manually&iface=eth0&ipaddr_v4={{ target }}&masklen_v4={{ target_masklen }}&default_gw_v4={{ target_gw }}&reboot_if_required=true''" }', when: "primary_sms" }
+ # Secondary SMS configuration - when: secondary_sms
+- { ftw: '{ "description":  "FTW Secondary SMS", "script": "config_system --config-string ''mgmt_admin_radio=gaia_admin&mgmt_gui_clients_radio=any&ftw_sic_key={{sickey}}&install_security_managment=true&install_mgmt_secondary=true&download_info=true&ipstat_v6=off&ipstat_v4=manually&iface=eth0&ipaddr_v4={{ target }}&masklen_v4={{ target_masklen }}&default_gw_v4={{ target_gw }}&reboot_if_required=true''" }', when: "secondary_sms" }
+#  LS and SE configuration - when: ls_se
+- { ftw: '{ "description":  "FTW LS or SE", "script": "config_system --config-string ''mgmt_admin_radio=gaia_admin&mgmt_gui_clients_radio=any&ftw_sic_key={{sickey}}&install_security_managment=true&download_info=true&ipstat_v6=off&ipstat_v4=manually&iface=eth0&ipaddr_v4={{ target }}&masklen_v4={{ target_masklen }}&default_gw_v4={{ target_gw }}&reboot_if_required=true''" }', when: "ls_se" }
+#  Primary SMSG (standalone) configuration - when: smsg
+- { ftw: '{ "description":  "FTW SMSG", "script": "config_system --config-string ''mgmt_admin_radio=gaia_admin&mgmt_gui_clients_radio=any&install_security_managment=true&install_mgmt_primary=true&install_security_gw=true&gateway_daip=false&install_ppak=true&gateway_cluster_member=false&download_info=true&ipstat_v6=off&ipstat_v4=manually&iface=eth0&ipaddr_v4={{ target }}&masklen_v4={{ target_masklen }}&default_gw_v4={{ target_gw }}&reboot_if_required=true''" }', when: "smsg" }
+# SG configuration - when: sg
+- { ftw: '{ "description":  "FTW SG", "script": "config_system --config-string ''ftw_sic_key={{sickey}}&install_security_managment=false&install_mgmt_primary=false&install_security_gw=true&gateway_daip=false&install_ppak=true&gateway_cluster_member=false&download_info=true&ipstat_v6=off&ipstat_v4=manually&iface=eth0&ipaddr_v4={{ target }}&masklen_v4={{ target_masklen }}&default_gw_v4={{ target_gw }}&reboot_if_required=true''" }', when: "sg" }

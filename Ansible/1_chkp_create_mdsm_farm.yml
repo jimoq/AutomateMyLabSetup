@@ -1,4 +1,7 @@
-# ansible-playbook 1_chkp_create_mdsm_farm.yml -e "vm_template=cloud02_r81ea"
+# ansible-playbook 1_chkp_create_mdsm_farm.yml -e "vm_template=cloud03_r81ea"
+# optional extra vars
+## esxi_hostname=cloud03.local, cloud02.local
+## vm_template=cloud03_r81ea, cloud02_r80dot40, cloud03_r80dot40
 ---
 - name: Build inventory
   hosts: localhost
@@ -11,13 +14,15 @@
         groups: mdsm
         vm_name: "{{ item.vm_name }}"
         target: "{{ item.target }}"
+        target_masklen: "{{ item.target_masklen }}"
+        target_gw: "{{ item.target_gw }}"
         type: "{{ item.type }}"
         nr: "{{ item.nr }}"
       with_items:
-      - { vm_name: mds10, target: 192.168.233.10, type: primary_mds, nr: 10 }
-      - { vm_name: mds20, target: 192.168.233.20, type: secondary_mds, nr: 20 }
-      - { vm_name: mdls30, target: 192.168.233.30, type: mdls, nr: 30 }
-      - { vm_name: sgvsx40, target: 192.168.233.40, type: sg, nr: 40 }
+      - { vm_name: mds10, target: 192.168.233.10, target_masklen: 24, target_gw: 192.168.233.254, type: primary_mds, nr: 10 }
+      - { vm_name: mds20, target: 192.168.233.20, target_masklen: 24, target_gw: 192.168.233.254, type: secondary_mds, nr: 20 }
+      - { vm_name: mdls30, target: 192.168.233.30, target_masklen: 24, target_gw: 192.168.233.254, type: mdls, nr: 30 }
+      - { vm_name: sgvsx40, target: 192.168.233.40, target_masklen: 24, target_gw: 192.168.233.254, type: sg, nr: 40 }
 
 - name: Deploy Primary Multi-Domain Server
   hosts: mdsm

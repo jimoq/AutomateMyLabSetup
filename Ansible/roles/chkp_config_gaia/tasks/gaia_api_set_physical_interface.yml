@@ -12,9 +12,12 @@
 #    - item.when == type
 #    - return_value != "0"
   with_items:
-    - { interface: '{ "name": "eth2", "ipv4-address": "{{eth2_ipv4}}", "ipv4-mask-length": 24, "comments": "DMZ interface", "enabled": "true" }' }
+    #- { interface: '{ "name": "eth0", "ipv4-address": "{{eth0_ipv4}}", "ipv4-mask-length": 24, "comments": "Outside interface", "enabled": "true" }' }
     - { interface: '{ "name": "eth1", "ipv4-address": "{{eth1_ipv4}}", "ipv4-mask-length": 24, "comments": "inside interface", "enabled": "true" }' }
-  #  - { interface: '{ "name": "eth0", "ipv4-address": "{{eth0_ipv4}}", "ipv4-mask-length": 24, "comments": "Outside interface", "enabled": "true" }' }
+    - { interface: '{ "name": "eth2", "ipv4-address": "{{eth2_ipv4}}", "ipv4-mask-length": 24, "comments": "DMZ interface", "enabled": "true" }' }
 
 #- set_fact:
-#     api_server: "{{target}}"
+#     gaia_server: "{{target}}"
+
+#- debug:
+#    msg: "{{ gaia_server }}"

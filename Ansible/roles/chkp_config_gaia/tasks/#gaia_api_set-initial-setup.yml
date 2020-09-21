@@ -1,0 +1,53 @@
+# This task is not used because there is no way without using runscript API to verify if
+# FTW has been executed, and there is no way to tell FTW to reboot automatically if required
+# There is no way to set default route with out using run-script
+# I therefore decided to fall back to a more clean methiod using FTW with run-script
+---
+- name: "Configure GAiA with First Time Configuration Wizard"
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/set-initial-setup"
+     validate_certs: "{{ api_validate_cert }}"
+     method: POST
+     body_format: json
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body:  
+          '{ 
+            "security-management": {
+              "activation-key": "vpn123",
+              "type": "primary" 
+            }
+          }'
+  register: ftw_accept_task
+
+#- debug:
+#     msg: "{{ ftw_accept_task }}"
+#
+- set_fact:
+     ftw_accept_taskid: "{{ ftw_accept_task.json['task-id'] }}"
+
+- name: Wait up to 18 minutes for FTW to complete
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/show-task"
+     validate_certs: "{{ api_validate_cert }}"
+     method: POST
+     body_format: json
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body: 
+          '{ 
+            "task-id" :  "{{ ftw_accept_taskid }}" 
+          }'
+  register: ftw_accept_taskoutput
+  until: ftw_accept_taskoutput.json.tasks[0]['status'] != "in progress"
+  delay: 5
+  retries: 216
+  when: ftw_accept_taskid is defined
+
+- debug:
+     msg: "{{ ftw_accept_taskoutput.json.tasks[0]['status'] }}"
+
+#- debug:
+#     msg: "{{ ftw_accept_taskoutput.json.tasks[0]['task-details'][0]['reboot-required'] }}"
+
+
