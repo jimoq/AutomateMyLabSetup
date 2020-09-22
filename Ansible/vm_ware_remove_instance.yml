@@ -1,4 +1,4 @@
-# Run with extra vars for example: ansible-playbook vm_ware_remove_gaia_instance.yml -e "vm_name=mds10" to remove the virtual machine mds10
+# Run with extra vars for example: ansible-playbook vm_ware_remove_instance.yml -e "vm_name=mds10" to remove the virtual machine mds10
 - name: Build inventory
   hosts: localhost
   connection: local
@@ -13,4 +13,4 @@
   connection: local
   gather_facts: no
   roles:
-    - role: roles/vm_ware_remove_gaia_instance
+    - role: roles/vm_ware_remove_instance

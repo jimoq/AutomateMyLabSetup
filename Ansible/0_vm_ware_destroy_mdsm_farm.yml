@@ -24,4 +24,4 @@
   connection: local
   gather_facts: no
   roles:
-    - role: roles/vm_ware_remove_gaia_instance
+    - role: roles/vm_ware_remove_instance
