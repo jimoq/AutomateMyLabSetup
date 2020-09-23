@@ -1,5 +1,16 @@
 ---
 # Default values for varibles in chkp_config_gaia_embedded role
+# Default user and password
+ansible_user: "{{ lookup('env','TF_VAR_gaia_embedded_user') }}"
+ansible_ssh_pass: "{{ lookup('env','TF_var_gaia_embedded_password') }}"
+
+# set variable with dummy value that can be validated by vm_get_guest_ip.yml task
+datasource_gaia_server: get_guest_ipAddress
+gaia_server: "{{ datasource_gaia_server }}"
+
+# The defult hostname
+hostname: "{{ vm_name }}"
+
 # The defult SIC OTP key to use to connect to the management server
 sickey: vpn123
 
