@@ -1,6 +1,11 @@
 ---
-- import_tasks: gaia_api_set_physical_interface.yml
-- import_tasks: gaia_api_ftw.yml
+- import_tasks: gaia_api_set-time-and-date.yml
+- #import_tasks: gaia_api_set_ntp.yml
+- #import_tasks: gaia_api_set_hostname.yml
+- #import_tasks: gaia_api_set_dns.yml
+- #import_tasks: gaia_api_set_physical_interface.yml
+- #import_tasks: gaia_api_ftw.yml
+#- import_tasks: gaia_api_set-initial-setup.yml
 #- import_tasks: vm_get_guest_ip.yml
 #  when: type == "primary_mds" or type == "primary_sms"
 #- import_tasks: gaia_api_set_mgmt_api.yml

@@ -1,0 +1,10 @@
+---
+- name: Set DNS parameters
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/set-dns"
+     validate_certs: "{{ api_validate_cert }}"
+     method: POST
+     body_format: json
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body: { "suffix": "{{ dns_suffix }}", "primary": "{{ dns_primary }}", "secondary": "{{ dns_secondary }}"}

@@ -1,0 +1,31 @@
+---
+# Run with extra vars for example: 
+## ansible-playbook vm_ware_add_cgedge_vnf.yml -e "vm_name=vnf01 target=192.168.233.69 vm_template=cloud02_cgedge_r80dot20 sxi_hostname=cloud02.local"
+## target_masklen=24 target_gw=192.168.233.254 type=primary_sms nr=69"
+# Avaliable Options 
+## esxi_hostname= cloud03.local, cloud02.local
+## vm_template=cloud02_cgedge_r80dot20
+- name: Build inventory
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Create a dynamic inventory
+      add_host:
+        hostname: "{{ vm_name }}"
+        ansible_host: "{{target}}"
+        groups: chkp
+        vm_name: "{{ vm_name }}"
+        target: "{{ target }}"
+        #target_masklen: "{{ target_masklen }}"
+        #target_gw: "{{ target_gw }}"
+        #type: "{{ type }}"
+
+- name:  add cgedge vnf
+  hosts: "{{ vm_name }}"
+  connection: local
+  gather_facts: no
+  roles:
+  - role: roles/vm_ware_deploy_instance
+    delegate_to: localhost
+#  - role: roles/chkp_config_gaia

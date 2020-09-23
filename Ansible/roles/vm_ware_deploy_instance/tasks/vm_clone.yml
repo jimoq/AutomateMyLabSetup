@@ -11,7 +11,7 @@
     template: "{{ vm_template }}"
     name: "{{ vm_name }}"
     esxi_hostname: "{{ esxi_hostname }}"
-    wait_for_ip_address: true
+    wait_for_ip_address: false
 #    linked_clone: yes
 #    snapshot_src: "{{ vm_snapshot }}"
   delegate_to: localhost
