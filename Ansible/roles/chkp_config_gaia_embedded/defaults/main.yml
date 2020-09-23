@@ -1,0 +1,7 @@
+---
+# Default values for varibles in chkp_config_gaia_embedded role
+# The defult SIC OTP key to use to connect to the management server
+sickey: vpn123
+
+# the defult MGMT IP that the gaia Embedded should connect to
+sec_mgmt_addr: 192.168.233.71

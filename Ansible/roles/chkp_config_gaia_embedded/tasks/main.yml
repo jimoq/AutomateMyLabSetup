@@ -1,0 +1,29 @@
+---
+# setting the SMB GW and cloudGuard edge to connect to central management
+# All the defults for the varibles are set in ../defaults/main.yml
+
+set hostname vnf02
+set ntp active on
+set timezone GMT+01:00(Amsterdam/Berlin/Bern/Rome/Stockholm/Vienna)
+
+
+
+- name: set security management mode to centrally managed 
+  raw: set security-management mode centrally-managed
+
+- name: Setting SIC OTP key to use to connect to the management server
+  raw: set sic_init password {{ sickey }}
+  register: sic_init_password_response
+
+- name: Connect to management server {{ sec_mgmt_addr }} with OTP SIC key and use external IP for management communication
+  raw: set security-management local-override-mgmt-addr true mgmt-address {{ sec_mgmt_addr }} send-logs-to by-policy
+
+connect security-management mgmt-addr 192.168.233.61 use-one-time-password true local-override-mgmt-addr true send-logs-to by-policy
+
+
+
+
+- name: Fetch security policy from management server {{ sec_mgmt_addr }}
+  raw: fetch policy mgmt-ipv4-address {{ sec_mgmt_addr }}
+
+  
