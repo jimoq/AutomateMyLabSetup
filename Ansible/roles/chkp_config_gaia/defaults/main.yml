@@ -3,6 +3,7 @@
 # gaia_api credentials, server and base URL
 gaia_user: "{{ lookup('env','TF_VAR_gaia_api_user') }}"
 gaia_password: "{{ lookup('env','TF_VAR_gaia_api_password') }}"
+datasource_gaia_server: get_guest_ipAddress
 gaia_server: "{{datasource_gaia_server}}" # This should be your Check Point SMS or MDS
 gaia_api_url: /gaia_api
 gaia_validate_cert: false
@@ -21,7 +22,6 @@ vsphere_server: "{{ lookup('env','TF_VAR_vsphere_server') }}"
 vsphere_datacenter: "{{ lookup('env','TF_VAR_vsphere_datacenter') }}"
 
 # VMWare Virtual Machine patameters
-datasource_gaia_server: get_guest_ipAddress
 #vm_name: sg89
 
 # Set defult variables for gaia timezone
