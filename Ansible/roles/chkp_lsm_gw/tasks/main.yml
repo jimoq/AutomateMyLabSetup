@@ -1,0 +1,5 @@
+---
+- name: loop block of tasks 
+  include_tasks: mgmt_api_lsmcli_gw.yml
+  loop: "{{  cp_mgmt_lsm_gateway  }}"
+  #when:  (check_lsm_gw_result.json.tasks[0]['task-details'][0]['output'] | b64decode).find('{{item.name}}.') == -1

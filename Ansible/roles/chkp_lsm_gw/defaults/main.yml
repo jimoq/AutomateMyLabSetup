@@ -1,0 +1,34 @@
+---
+# Default vars for chkp_add_lsm_gw role
+# Credentials for cp_mgmt* modules and Settings for the Check Point httpapi plugin that provides methods to connect to Checkpoint devices over a HTTP(S)-based api.
+ansible_httpapi_use_ssl: True
+ansible_httpapi_validate_certs: False
+ansible_network_os: check_point.mgmt.checkpoint
+ansible_checkpoint_domain: SMC User
+ansible_user: "{{ lookup('env','TF_VAR_mgmt_api_user') }}"
+ansible_password: "{{ lookup('env','TF_VAR_mgmt_api_password') }}"
+
+# mgmt_api credentials, server and base URL
+mgmt_user: "{{ lookup('env','TF_VAR_mgmt_api_user') }}"
+mgmt_password: "{{ lookup('env','TF_VAR_mgmt_api_password') }}"
+mgmt_server: "{{ansible_host}}" # This should be your Check Point SMS or MDS
+mgmt_server_name: sms61 # The management object name
+mgmt_api_url: /web_api
+mgmt_validate_cert: false
+
+# Mapping mgmt_api var to default var used in the tasks
+api_user: "{{mgmt_user}}"
+api_password: "{{mgmt_password}}"
+api_server: "{{mgmt_server}}"
+api_base_url: "{{mgmt_api_url}}"
+api_validate_cert: "{{mgmt_validate_cert}}"
+
+# List of gateway objects to add
+cp_mgmt_lsm_gateway:
+- { state: present, hw: 1570/1590, name: sg101, lsm_profile: 1500, sickey: vpn123, gw_version: R80.30, co_name: CentralSGW }
+
+#    anti_bot: true, anti_virus: true, appi_ctrl: true, color: blue, firewall: true, ips: true, threat_emulation: false, url_filtering: true, 
+#    eth0_ipv4: 192.168.233.101, eth0_ipv4_network_mask: 255.255.255.0, eth0_anti_spoofing: true, eth0_topology: External, 
+#    eth1_ipv4: 10.101.1.1,      eth1_ipv4_network_mask: 255.255.255.0, eth1_anti_spoofing: true, eth1_topology: Internal, 
+#    eth1_topology_ip_behind_if: network defined by the interface ip and net mask 
+#  }

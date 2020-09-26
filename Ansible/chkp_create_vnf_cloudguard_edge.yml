@@ -17,8 +17,10 @@
 
 - name:  Add Gaia Instance and run FTW
   hosts: "{{ vm_name }}"
-  connection: local
   gather_facts: no
   roles:
-  - role: roles/vm_ware_deploy_gaia_instance
-    delegate_to: localhost
+  #- role: roles/vm_ware_deploy_gaia_instance
+  #  connection: local
+  #  delegate_to: localhost
+  - role: roles/chkp_lsm_gw
+    connection: httpapi

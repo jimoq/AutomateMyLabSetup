@@ -1,1 +1,68 @@
 ---
+- name: Check if LSM gateways exists
+  check_point.mgmt.cp_mgmt_run_script:
+    script: LSMcli {{ mgmt_server }} {{ mgmt_user }} {{ mgmt_password }} Show -N={{ item.name }}  -F=n
+    script_name: Check if LSM gateways {{ item.name }} exists
+    wait_for_task: true
+    targets:
+    - "{{ mgmt_server_name }}"
+  #loop: "{{  cp_mgmt_lsm_gateway  }}"
+  register: check_lsm_gw_result
+
+- debug:
+    msg: "{{ check_lsm_gw_result }}"
+
+#- set_fact:
+#     script_task_id: "{{ api_task.json['task-id'] }}"
+
+#- name: Verify the output of the verify if gateway exists
+#  checkpoint_task_facts:
+#    task_id: "{{ script_task_id }}"
+#  register: check_lsm_gw_result
+
+#- name: Add LSM Small Office Gateway if it does not exist
+#  block:
+
+- name: Add LSM Small Office Gateway 
+  check_point.mgmt.cp_mgmt_run_script:
+    script: LSMcli {{ mgmt_server }} {{ mgmt_user }} {{ mgmt_password }} AddROBO {{ item.hw }} {{ item.name }} {{ item.lsm_profile }} -CA=internal_ca
+    script_name: Add LSM gateway {{ item.name }}
+    targets:
+    - "{{ mgmt_server_name }}"
+  #loop: "{{  cp_mgmt_lsm_gateway  }}"
+  when:  (check_lsm_gw_result.json.tasks[0]['task-details'][0]['output'] | b64decode).find('{{item.name}}.') == -1
+
+- name: Add LSM Small Office Gateway 
+  check_point.mgmt.cp_mgmt_run_script:
+    script: LSMcli {{ mgmt_server }} {{ mgmt_user }} {{ mgmt_password }} AddROBO {{ item.hw }} {{ item.name }} {{ item.lsm_profile }} -CA=internal_ca
+    script_name: Add LSM gateway {{ item.name }}
+    targets:
+    - "{{ mgmt_server_name }}"
+  #loop: "{{  cp_mgmt_lsm_gateway  }}"
+  when:  (check_lsm_gw_result.json.tasks[0]['task-details'][0]['output'] | b64decode).find('{{item.name}}.') == -1
+
+- name: Set VPN domain on LSM gateway 
+  check_point.mgmt.cp_mgmt_run_script:
+    script: LSMcli {{ mgmt_server }} {{ mgmt_user }} {{ mgmt_password }} ModifyROBOTopology VPN1 {{ item.name }} -VPNDomain=external_ip_only
+    script_name: Set VPN domain on LSM gateway {{ item.name }}
+    targets:
+    - "{{ mgmt_server_name }}"
+  #loop: "{{  cp_mgmt_lsm_gateway  }}"
+  when:  (check_lsm_gw_result.json.tasks[0]['task-details'][0]['output'] | b64decode).find('{{item.name}}.') == -1
+
+- name: Set OTP SIC key on LSM gateway 
+  check_point.mgmt.cp_mgmt_run_script:
+    script: LSMcli {{ mgmt_server }} {{ mgmt_user }} {{ mgmt_password }} ResetSic {{ item.name }} {{ sickey }}
+    script_name: Set OTP SIC key on LSM gateway {{ item.name }}
+    targets:
+    - "{{ mgmt_server_name }}"
+  #loop: "{{  cp_mgmt_lsm_gateway  }}"
+  when:  (check_lsm_gw_result.json.tasks[0]['task-details'][0]['output'] | b64decode).find('{{item.name}}.') == -1
+
+- name: Update LSM CO gateway with new information 
+  check_point.mgmt.cp_mgmt_run_script:
+    script: LSMcli {{ mgmt_server }} {{ mgmt_user }} {{ mgmt_password }} UpdateCO {{ co_name }}
+    script_name: Update LSM CO gateway with information about {{ item.name }} 
+    targets:
+    - "{{ mgmt_server_name }}"
+  when:  (check_lsm_gw_result.json.tasks[0]['task-details'][0]['output'] | b64decode).find('{{item.name}}.') == -1
