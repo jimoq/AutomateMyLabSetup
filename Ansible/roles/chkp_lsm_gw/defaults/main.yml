@@ -25,7 +25,7 @@ api_validate_cert: "{{mgmt_validate_cert}}"
 
 # List of gateway objects to add
 cp_mgmt_lsm_gateway:
-- { state: present, hw: 1570/1590, name: sg101, lsm_profile: 1500, sickey: vpn123, gw_version: R80.30, co_name: CentralSGW }
+- { state: present, hw: 1570/1590, name: sg101, lsm_profile: sg1500profile, sickey: vpn123, gw_version: R80.30, co_name: aws_sg03 }
 
 #    anti_bot: true, anti_virus: true, appi_ctrl: true, color: blue, firewall: true, ips: true, threat_emulation: false, url_filtering: true, 
 #    eth0_ipv4: 192.168.233.101, eth0_ipv4_network_mask: 255.255.255.0, eth0_anti_spoofing: true, eth0_topology: External, 
