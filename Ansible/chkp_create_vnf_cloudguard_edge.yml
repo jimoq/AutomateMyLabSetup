@@ -8,23 +8,21 @@
     - name: Create a dynamic inventory
       add_host:
         hostname: "{{ vm_name }}"
-        #ansible_host: "{{target}}"
+        ansible_host: 192.168.233.61
         groups: chkp
         vm_name: "{{ vm_name }}"
-        #target: "{{ target }}"
         vm_template: cloud02_cgedge_r80dot20
         esxi_hostname: cloud02.local
-        sec_mgmt_addr: 192.168.233.61
         mgmt_server_name: sms61
 
 - name:  Add and config CG edge
   hosts: "{{ vm_name }}"
   gather_facts: no
   roles:
-  - role: roles/vm_ware_deploy_instance
-    connection: httpapi
-  - role: roles/chkp_lsm_gw
-    connection: httpapi
+  #- role: roles/vm_ware_deploy_instance
+  #  connection: httpapi
+  #- role: roles/chkp_lsm_gw
+  #  connection: httpapi
   - role: roles/chkp_config_gaia_embedded
     connection: ssh
     ansible_user: api_user # Needed on for my ansible install on Dell . Fix ME!! bug!!

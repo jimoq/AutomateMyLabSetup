@@ -3,7 +3,7 @@
 # Default user and password
 ansible_user: "{{ lookup('env','TF_VAR_gaia_embedded_user') }}"
 ansible_ssh_pass: "{{ lookup('env','TF_var_gaia_embedded_password') }}"
-ansible_host: "{{ sec_mgmt_addr }}"
+#ansible_host: "{{ sec_mgmt_addr }}"
 
 # Set VMware parameters and vsphere_credentials
 vsphere_user: "{{ lookup('env','TF_VAR_vsphere_user') }}"
@@ -11,7 +11,6 @@ vsphere_password: "{{ lookup('env','TF_VAR_vsphere_password') }}"
 vsphere_server: "{{ lookup('env','TF_VAR_vsphere_server') }}"
 vsphere_datacenter: "{{ lookup('env','TF_VAR_vsphere_datacenter') }}"
 vcenter_folder: Templates
-
 
 # set variable with dummy value that can be validated by vm_get_guest_ip.yml task
 datasource_gaia_server: get_guest_ipAddress
@@ -23,5 +22,5 @@ hostname: "{{ vm_name }}"
 # The defult SIC OTP key to use to connect to the management server
 sickey: vpn123
 
-# the defult MGMT IP that the gaia Embedded should connect to
-sec_mgmt_addr: 192.168.233.71
+# The defult MGMT IP that the gaia Embedded should connect to
+sec_mgmt_addr: "{{ ansible_host }}"

@@ -1,4 +1,7 @@
 ---
+- debug:
+    msg: "{{ ansible_host }}"
+
 # Collect VM ip address when gaia_server is defined as "get_guest_ipAddress"
 - name: "Wait for VMware tools to become available on {{ vm_name }}"
   vmware_guest_tools_wait:

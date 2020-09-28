@@ -1,7 +1,7 @@
 ---
 - name: List LSM gateway {{ item.name }}
   check_point.mgmt.cp_mgmt_run_script:
-    script: LSMcli {{ mgmt_server }} {{ mgmt_user }} {{ mgmt_password }} Show -N={{ item.name }}  -F=n
+    script: LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} Show -N={{ item.name }}  -F=n
     script_name: Check if LSM gateways {{ item.name }} exists
     wait_for_task: true
     targets:
@@ -21,7 +21,7 @@
 
 - name: Add LSM Small Office Gateway {{ item.name }}
   check_point.mgmt.cp_mgmt_run_script:
-    script: LSMcli {{ mgmt_server }} {{ mgmt_user }} {{ mgmt_password }} AddROBO {{ item.hw }} {{ item.name }} {{ item.lsm_profile }} -CA=internal_ca
+    script: LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} AddROBO {{ item.hw }} {{ item.name }} {{ item.lsm_profile }} -CA=internal_ca
     script_name: Add LSM gateway {{ item.name }}
     targets:
     - "{{ mgmt_server_name }}"
@@ -29,7 +29,7 @@
  
 - name: Set VPN domain on LSM gateway {{ item.name }}
   check_point.mgmt.cp_mgmt_run_script:
-    script: LSMcli {{ mgmt_server }} {{ mgmt_user }} {{ mgmt_password }} ModifyROBOTopology VPN1 {{ item.name }} -VPNDomain=external_ip_only
+    script: LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} ModifyROBOTopology VPN1 {{ item.name }} -VPNDomain=external_ip_only
     script_name: Set VPN domain on LSM gateway {{ item.name }}
     targets:
     - "{{ mgmt_server_name }}"
@@ -37,7 +37,7 @@
  
 - name: Set OTP SIC key on LSM gateway {{ item.name }}
   check_point.mgmt.cp_mgmt_run_script:
-    script: LSMcli {{ mgmt_server }} {{ mgmt_user }} {{ mgmt_password }} ResetSic {{ item.name }} {{ item.sickey }}
+    script: LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} ResetSic {{ item.name }} {{ item.sickey }}
     script_name: Set OTP SIC key on LSM gateway {{ item.name }}
     targets:
     - "{{ mgmt_server_name }}"
@@ -46,7 +46,7 @@
 
 - name: Update LSM CO gateway with new information about LSM gateway {{ item.name }}
   check_point.mgmt.cp_mgmt_run_script:
-    script: LSMcli {{ mgmt_server }} {{ mgmt_user }} {{ mgmt_password }} UpdateCO {{ item.co_name }}
+    script: LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} UpdateCO {{ item.co_name }}
     script_name: Update LSM CO gateway with information about {{ item.name }} 
     targets:
     - "{{ mgmt_server_name }}"
