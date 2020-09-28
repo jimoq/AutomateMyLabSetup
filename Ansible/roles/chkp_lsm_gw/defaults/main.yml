@@ -7,11 +7,12 @@ ansible_network_os: check_point.mgmt.checkpoint
 ansible_checkpoint_domain: SMC User
 ansible_user: "{{ lookup('env','TF_VAR_mgmt_api_user') }}"
 ansible_password: "{{ lookup('env','TF_VAR_mgmt_api_password') }}"
+ansible_host: "{{ sec_mgmt_addr }}"
 
 # mgmt_api credentials, server and base URL
 mgmt_user: "{{ lookup('env','TF_VAR_mgmt_api_user') }}"
 mgmt_password: "{{ lookup('env','TF_VAR_mgmt_api_password') }}"
-mgmt_server: "{{ansible_host}}" # This should be your Check Point SMS or MDS
+mgmt_server: "{{ sec_mgmt_addr }}" # This should be your Check Point SMS or MDS
 mgmt_server_name: sms61 # The management object name
 mgmt_api_url: /web_api
 mgmt_validate_cert: false
@@ -25,7 +26,7 @@ api_validate_cert: "{{mgmt_validate_cert}}"
 
 # List of gateway objects to add
 cp_mgmt_lsm_gateway:
-- { state: present, hw: 1570/1590, name: sg101, lsm_profile: sg1500profile, sickey: vpn123, gw_version: R80.30, co_name: aws_sg03 }
+- { state: present, hw: 1570/1590, name: "{{ vm_name }}", lsm_profile: sg1500profile, sickey: vpn123, gw_version: R80.30, co_name: aws_sg03 }
 
 #    anti_bot: true, anti_virus: true, appi_ctrl: true, color: blue, firewall: true, ips: true, threat_emulation: false, url_filtering: true, 
 #    eth0_ipv4: 192.168.233.101, eth0_ipv4_network_mask: 255.255.255.0, eth0_anti_spoofing: true, eth0_topology: External, 

@@ -8,14 +8,12 @@
     - name: Create a dynamic inventory
       add_host:
         hostname: "{{ vm_name }}"
-        #ansible_host: "{{target}}"
+        ansible_host: "{{target}}"
         groups: chkp
         vm_name: "{{ vm_name }}"
-        #target: "{{ target }}"
+        target: "{{ target }}"
         vm_template: cloud02_cgedge_r80dot20
         esxi_hostname: cloud02.local
-        sec_mgmt_addr: 192.168.233.61
-        mgmt_server_name: sms61
 
 - name:  Add and config CG edge
   hosts: "{{ vm_name }}"

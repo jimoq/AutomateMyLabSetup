@@ -3,6 +3,15 @@
 # Default user and password
 ansible_user: "{{ lookup('env','TF_VAR_gaia_embedded_user') }}"
 ansible_ssh_pass: "{{ lookup('env','TF_var_gaia_embedded_password') }}"
+ansible_host: "{{ sec_mgmt_addr }}"
+
+# Set VMware parameters and vsphere_credentials
+vsphere_user: "{{ lookup('env','TF_VAR_vsphere_user') }}"
+vsphere_password: "{{ lookup('env','TF_VAR_vsphere_password') }}"
+vsphere_server: "{{ lookup('env','TF_VAR_vsphere_server') }}"
+vsphere_datacenter: "{{ lookup('env','TF_VAR_vsphere_datacenter') }}"
+vcenter_folder: Templates
+
 
 # set variable with dummy value that can be validated by vm_get_guest_ip.yml task
 datasource_gaia_server: get_guest_ipAddress

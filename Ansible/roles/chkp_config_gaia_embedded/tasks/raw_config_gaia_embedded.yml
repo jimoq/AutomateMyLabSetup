@@ -29,7 +29,7 @@
     msg: "{{ set_mgmt_srv_response }}"
 
 - name: Connect to management {{ sec_mgmt_addr }}
-  raw: connect security-management mgmt-addr 192.168.233.61 use-one-time-password true local-override-mgmt-addr true send-logs-to by-policy
+  raw: connect security-management mgmt-addr {{ sec_mgmt_addr }} use-one-time-password true local-override-mgmt-addr true send-logs-to by-policy
   register: connect_mgmt_srv_response
 
 - debug:
@@ -38,6 +38,13 @@
 - name: Fetch security policy from management server {{ sec_mgmt_addr }}
   raw: fetch policy mgmt-ipv4-address {{ sec_mgmt_addr }}
   register: fetch_policy_response
+  ignore_errors: yes
   
+- name: Fetch security policy second time from management server {{ sec_mgmt_addr }}
+  raw: fetch policy mgmt-ipv4-address {{ sec_mgmt_addr }}
+  register: fetch_policy_response
+  ignore_errors: yes
+
+
 - debug:
     msg: "{{ fetch_policy_response }}"

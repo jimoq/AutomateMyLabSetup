@@ -1,4 +1,5 @@
 # Main ftask file for chkp_config_gaia_embedded role
 - import_tasks: vm_get_guest_ip.yml
+  delegate_to: localhost
 - import_tasks: raw_config_gaia_embedded.yml
   delegate_to: "{{ gaia_server }}"
