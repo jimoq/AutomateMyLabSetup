@@ -25,4 +25,7 @@
   hosts: chkp
   gather_facts: no
   roles:
-    - role: roles/vm_ware_remove_instance
+  - role: roles/vm_ware_remove_instance
+  - role: roles/chkp_lsm_gw
+    connection: httpapi
+    state: absent

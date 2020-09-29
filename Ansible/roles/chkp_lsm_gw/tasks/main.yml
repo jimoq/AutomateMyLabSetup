@@ -2,3 +2,9 @@
 - name: loop block of tasks 
   include_tasks: mgmt_api_lsmcli_gw.yml
   loop: "{{  cp_mgmt_lsm_gateway  }}"
+  when: state == "present"
+
+- name: loop block of tasks 
+  include_tasks: mgmt_api_lsmcli_remove_gw.yml
+  when: state == "absent"
+  loop: "{{  cp_mgmt_lsm_gateway  }}"

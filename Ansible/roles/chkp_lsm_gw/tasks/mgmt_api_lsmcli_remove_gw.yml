@@ -1,6 +1,5 @@
 ---
 # Removes an existing LSM robo gateway from SmartProvissioning.
----
 - name: List LSM gateway {{ item.name }}
   check_point.mgmt.cp_mgmt_run_script:
     script: LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} Show -N={{ item.name }}  -F=b
@@ -18,14 +17,18 @@
     task_id: "{{ check_lsm_gw_task['run-script'].tasks[0]['task-id'] }}"
   register: check_lsm_gw_result
 
-- debug:
-    msg: "{{ check_lsm_gw_result['ansible_facts']['checkpoint_tasks']['tasks'][0]['task-details'][0]['statusDescription'] }}"
+- name: Storing the gateway ID
+  set_fact:
+    lsm_gw_id: "{{ check_lsm_gw_result['ansible_facts']['checkpoint_tasks']['tasks'][0]['task-details'][0]['statusDescription'] | regex_search('([0-9].[0-9].[0-9].[0-9].)') }}"
 
-#- name: remove LSM gateway {{ item.name }}
-#  check_point.mgmt.cp_mgmt_run_script:
-#    script: LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} Remove {{ item.name }} {{ item.id }}
-#    script_name: Set OTP SIC key on LSM gateway {{ item.name }}
-#    targets:
-#    - "{{ mgmt_server_name }}"
-#  ignore_errors: yes
-#  when:  check_lsm_gw_result['ansible_facts']['checkpoint_tasks']['tasks'][0]['task-details'][0]['statusDescription'] == "Name , ===="
+#- debug:
+#    msg: "{{ check_lsm_gw_result['ansible_facts']['checkpoint_tasks']['tasks'][0]['task-details'][0]['statusDescription'] | regex_search('([0-9].[0-9].[0-9].[0-9].)') }}"
+
+- name: Remove LSM gateway {{ item.name }}
+  check_point.mgmt.cp_mgmt_run_script:
+    script: LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} Remove {{ item.name }} {{ lsm_gw_id }}
+    script_name: Remove LSM gateway {{ item.name }}
+    targets:
+    - "{{ mgmt_server_name }}"
+  ignore_errors: yes
+  when:  lsm_gw_id != ""
