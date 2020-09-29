@@ -1,0 +1,28 @@
+---
+# Run with extra vars for example: ansible-playbook chkp_create_vnf_cloudguard_edge.yml -e "vm_name=cgedgevnf68 target=192.168.233.68"
+- name: Build inventory
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Create a dynamic inventory
+      add_host:
+        hostname: "{{ item.hostname }}"
+        ansible_host: "{{ item.ansible_host }}"
+        groups: chkp
+        vm_name: "{{ item.hostname }}"
+        #vm_template: cloud02_cgedge_r80dot20
+        #esxi_hostname: cloud02.local
+        mgmt_server_name: sms61
+      with_items:
+      - { hostname: vnf01, ansible_host: 192.168.233.61, groups: domains }
+      - { hostname: vnf02, ansible_host: 192.168.233.61, groups: domains }
+      - { hostname: vnf03, ansible_host: 192.168.233.61, groups: domains }
+      - { hostname: vnf04, ansible_host: 192.168.233.61, groups: domains }
+      - { hostname: vnf05, ansible_host: 192.168.233.61, groups: domains }
+
+- name:  Remove CG Edge instances and configuration
+  hosts: chkp
+  gather_facts: no
+  roles:
+    - role: roles/vm_ware_remove_instance

@@ -1,0 +1,31 @@
+---
+# Removes an existing LSM robo gateway from SmartProvissioning.
+---
+- name: List LSM gateway {{ item.name }}
+  check_point.mgmt.cp_mgmt_run_script:
+    script: LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} Show -N={{ item.name }}  -F=b
+    script_name: Check if LSM gateways {{ item.name }} exists
+    wait_for_task: true
+    targets:
+    - "{{ mgmt_server_name }}"
+  register: check_lsm_gw_task
+
+#- debug:
+#    msg: "{{ check_lsm_gw_task['run-script'].tasks[0]['task-id'] }}"
+
+- name: Check the List LSM gateway task to se if {{ item.name }} exists
+  checkpoint_task_facts:
+    task_id: "{{ check_lsm_gw_task['run-script'].tasks[0]['task-id'] }}"
+  register: check_lsm_gw_result
+
+- debug:
+    msg: "{{ check_lsm_gw_result['ansible_facts']['checkpoint_tasks']['tasks'][0]['task-details'][0]['statusDescription'] }}"
+
+#- name: remove LSM gateway {{ item.name }}
+#  check_point.mgmt.cp_mgmt_run_script:
+#    script: LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} Remove {{ item.name }} {{ item.id }}
+#    script_name: Set OTP SIC key on LSM gateway {{ item.name }}
+#    targets:
+#    - "{{ mgmt_server_name }}"
+#  ignore_errors: yes
+#  when:  check_lsm_gw_result['ansible_facts']['checkpoint_tasks']['tasks'][0]['task-details'][0]['statusDescription'] == "Name , ===="

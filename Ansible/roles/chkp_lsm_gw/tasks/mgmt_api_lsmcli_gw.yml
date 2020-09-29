@@ -21,12 +21,21 @@
 
 - name: Add LSM Small Office Gateway {{ item.name }}
   check_point.mgmt.cp_mgmt_run_script:
-    script: LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} AddROBO {{ item.hw }} {{ item.name }} {{ item.lsm_profile }} -CA=internal_ca
+    script: LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} AddROBO {{ item.hw }} {{ item.name }} {{ item.lsm_profile }}
     script_name: Add LSM gateway {{ item.name }}
     targets:
     - "{{ mgmt_server_name }}"
   when:  check_lsm_gw_result['ansible_facts']['checkpoint_tasks']['tasks'][0]['task-details'][0]['statusDescription'] == "Name , ===="
- 
+
+- name: Set VPN certificate on Small Office Gateway {{ item.name }}
+  check_point.mgmt.cp_mgmt_run_script:
+    script: LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} ResetIke {{ item.name }} -CA=internal_ca
+    script_name: Set VPN certificate on LSM gateway {{ item.name }}
+    targets:
+    - "{{ mgmt_server_name }}"
+  ignore_errors: yes
+  when:  check_lsm_gw_result['ansible_facts']['checkpoint_tasks']['tasks'][0]['task-details'][0]['statusDescription'] == "Name , ===="
+
 - name: Set VPN domain on LSM gateway {{ item.name }}
   check_point.mgmt.cp_mgmt_run_script:
     script: LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} ModifyROBOTopology VPN1 {{ item.name }} -VPNDomain=external_ip_only
