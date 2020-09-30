@@ -2,49 +2,69 @@
 # setting the SMB GW and cloudGuard edge to connect to central management
 # All the defults for the varibles are set in ../defaults/main.yml
 
+- name: Check if {{ hostname }} is already configured
+  raw: fw sic_test
+  register: sic_test_result
+
+- debug:
+    msg: "{{ sic_test_result.stdout }}"
+
 - name: Set hostname to {{ hostname }} 
   raw: set hostname {{ hostname }}
+  when: sic_test_result.stdout.find('SIC was not initialized') != -1
 
 - name: Activate defult NTP configuration
   raw: set ntp active on
+  when: sic_test_result.stdout.find('SIC was not initialized') != -1
 
 - name: Set timezone to GMT+1 (Stockholm)
   raw: set timezone GMT+01:00(Amsterdam/Berlin/Bern/Rome/Stockholm/Vienna)
+  when: sic_test_result.stdout.find('SIC was not initialized') != -1
 
 - name: set security management mode to centrally managed 
   raw: set security-management mode centrally-managed
+  when: sic_test_result.stdout.find('SIC was not initialized') != -1
 
 - name: Setting SIC OTP key to use to connect to the management server
   raw: set sic_init password {{ sickey }}
   register: sic_init_password_response
+  when: sic_test_result.stdout.find('SIC was not initialized') != -1
 
-- debug:
-    msg: "{{ sic_init_password_response }}"
+#- debug:
+#    msg: "{{ sic_init_password_response }}"
+#  when: sic_test_result.stdout.find('SIC was not initialized') != -1
 
 - name: Set management server {{ sec_mgmt_addr }} and use external IP for management communication
   raw: set security-management local-override-mgmt-addr true mgmt-address {{ sec_mgmt_addr }} send-logs-to by-policy
   register: set_mgmt_srv_response
+  when: sic_test_result.stdout.find('SIC was not initialized') != -1
 
-- debug:
-    msg: "{{ set_mgmt_srv_response }}"
+#- debug:
+#    msg: "{{ set_mgmt_srv_response }}"
+#  when: sic_test_result.stdout.find('SIC was not initialized') != -1
 
 - name: Connect to management {{ sec_mgmt_addr }}
   raw: connect security-management mgmt-addr {{ sec_mgmt_addr }} use-one-time-password true local-override-mgmt-addr true send-logs-to by-policy
   register: connect_mgmt_srv_response
+  when: sic_test_result.stdout.find('SIC was not initialized') != -1
 
-- debug:
-    msg: "{{ connect_mgmt_srv_response }}"
+#- debug:
+#    msg: "{{ connect_mgmt_srv_response }}"
+#  when: sic_test_result.stdout.find('SIC was not initialized') != -1
 
 - name: Fetch security policy from management server {{ sec_mgmt_addr }}
   raw: fetch policy mgmt-ipv4-address {{ sec_mgmt_addr }}
   register: fetch_policy_response
   ignore_errors: yes
+  no_log: true
+  when: sic_test_result.stdout.find('SIC was not initialized') != -1
   
 - name: Fetch security policy second time from management server {{ sec_mgmt_addr }}
   raw: fetch policy mgmt-ipv4-address {{ sec_mgmt_addr }}
   register: fetch_policy_response
   ignore_errors: yes
+  when: sic_test_result.stdout.find('SIC was not initialized') != -1
 
-
-- debug:
-    msg: "{{ fetch_policy_response }}"
+#- debug:
+#    msg: "{{ fetch_policy_response }}"
+#  when: sic_test_result.stdout.find('SIC was not initialized') == -1

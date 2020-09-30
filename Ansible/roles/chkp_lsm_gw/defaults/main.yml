@@ -14,3 +14,17 @@ mgmt_server_name: sms62
 # List of gateway objects to add
 cp_mgmt_lsm_gateway:
 - { state: present, hw: 1570/1590, name: "{{ vm_name }}", lsm_profile: sg1500profile, sickey: vpn123, gw_version: R80.30, co_name: aws_sg03 }
+
+
+### TEST ###
+## Default vars for LSMcli command
+#state: present
+#hw: 1570/1590
+#lsm_profile: sg1500profile
+#sickey: vpn123
+#co_name: aws_sg03
+#
+## List of gateway objects to add
+#cp_mgmt_lsm_gateway:
+#- { ignore_errors: "no", script: "LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} Show -N={{ vm_name }}  -F=n" }
+#- { ignore_errors: "no", script: "LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} AddROBO {{ hw }} {{ vm_name }} {{ lsm_profile }}" }
