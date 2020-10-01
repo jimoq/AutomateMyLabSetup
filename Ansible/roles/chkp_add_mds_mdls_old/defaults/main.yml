@@ -3,10 +3,10 @@
 # Credentials for cp_mgmt* modules and Settings for the Check Point httpapi plugin that provides methods to connect to Checkpoint devices over a HTTP(S)-based api.
 ansible_httpapi_use_ssl: True
 ansible_httpapi_validate_certs: False
-ansible_network_os: check_point.mgmt.checkpoint
+ansible_network_os: checkpoint
 ansible_checkpoint_domain: System Data
-#ansible_user: MDS admin user
-#ansible_ssh_pass: MDS admin password
+ansible_user: admin
+ansible_ssh_pass: admin
 
 # mgmt_api credentials, server and base URL
 mgmt_user: "{{ lookup('env','TF_VAR_mgmt_api_user') }}"
@@ -22,7 +22,3 @@ api_server: "{{mgmt_server}}"
 api_base_url: "{{mgmt_api_url}}"
 api_validate_cert: "{{mgmt_validate_cert}}"
 
-mds_mdls:
-# List of MDS and MDLS servers to configure
-- { name: mds20, version: R81, ip_addr: 192.168.233.20, sic_key: vpn123, server_type: multi-domain server, color: blue, os: gaia, hardware: Smart-1, ip_pool_first: 192.168.233.21, ip_pool_last: 192.168.233.29 }
-- { name: mdls30, version: R81, ip_addr: 192.168.233.30, sic_key: vpn123, server_type: multi-domain log server, color: blue, os: gaia, hardware: Smart-1, ip_pool_first: 192.168.233.31, ip_pool_last: 192.168.233.39 }

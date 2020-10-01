@@ -12,6 +12,8 @@
         vm_name: "{{ item.vm_name }}"
         target: "{{ item.target }}"
         type: "{{ item.type }}"
+        ansible_user: "{{ lookup('env','TF_VAR_mgmt_api_user') }}"
+        ansible_ssh_pass: "{{ lookup('env','TF_VAR_mgmt_api_password') }}"
       with_items:
       - { vm_name: mds10, target: 192.168.233.10, type: primary_mds }
       - { vm_name: mds20, target: 192.168.233.20, type: secondary_mds }
@@ -24,3 +26,5 @@
   gather_facts: no
   roles:
   - role: roles/chkp_add_mds_mdls
+    #connection: httpapi
+    state: present

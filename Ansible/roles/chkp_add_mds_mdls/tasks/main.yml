@@ -1,4 +1,9 @@
 ---
 # tasks file for chkp_add_mds_mdls
-- import_tasks: mgmt_api_add_mds_mdls.yml
+- name: Create MDS & MDLS if it does not exist
+  include_tasks: mgmt_api_add-mds.yml
+  loop: "{{  mds_mdls }}"
+  when: state == "present"
+
+#- import_tasks: mgmt_api_add_mds_mdls.yml
 - import_tasks: trigger_chkp_api_logout.yml

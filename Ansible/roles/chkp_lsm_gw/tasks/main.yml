@@ -1,10 +1,10 @@
 ---
-- name: loop block of tasks 
+- name: Create LSM gateways if they does not exists
   include_tasks: mgmt_api_lsmcli_gw.yml
   loop: "{{  cp_mgmt_lsm_gateway  }}"
   when: state == "present"
 
-- name: loop block of tasks 
+- name: Delete LSM gateways if they exists
   include_tasks: mgmt_api_lsmcli_remove_gw.yml
   loop: "{{  cp_mgmt_lsm_gateway  }}"
   when: state == "absent"

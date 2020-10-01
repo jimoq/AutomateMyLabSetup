@@ -1,0 +1,4 @@
+---
+# tasks file for chkp_add_mds_mdls
+- import_tasks: mgmt_api_add_mds_mdls.yml
+- import_tasks: trigger_chkp_api_logout.yml

@@ -1,0 +1,37 @@
+---
+- name: Check for Secondary MDS OR MDLS objects
+  connection: httpapi
+  checkpoint_object_facts:
+    object_filter: mds20 OR mdls30
+  register: datasource_MDS_MDLS
+
+
+- name: Add "{{ item.server_type }}" object "{{ item.name }} "
+  uri:
+     url: "https://{{ api_server }}{{ api_base_url }}/add-mds"
+     validate_certs: "{{ api_validate_cert }}"
+     method: POST
+     body_format: json
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body: 
+           '{ 
+             
+             "name" : "{{ item.name }}",
+             "ip-address" : "{{ item.ip_addr }}",
+             "server-type" : "{{ item.server_type }}",
+             "os" : "{{ item.os }}",
+             "hardware" : "{{ item.hardware }}",
+             "ip-pool-first" : "{{ item.ip_pool_first }}",
+             "ip-pool-last" : "{{ item.ip_pool_last }}",
+             "one-time-password" : "{{ item.sic_key }}",
+             "version" : "{{ item.version }}",
+             "color" : "{{ item.color }}"
+           }'
+  register: datasource_mds
+  notify: "API Publish handlers"
+  changed_when: datasource_mds.status == 200
+  when:  datasource_MDS_MDLS.ansible_facts.checkpoint_objects.total == 0
+  
+#- debug:
+#    msg="{{taskoutput}}"
