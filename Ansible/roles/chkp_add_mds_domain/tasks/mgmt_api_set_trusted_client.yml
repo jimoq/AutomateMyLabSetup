@@ -1,0 +1,29 @@
+---
+- name: Check if trusted host is already set to any for all domains
+  uri:
+     url: "https://{{ mgmt_server }}/web_api/show-trusted-client"
+     validate_certs: false
+     method: POST
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body_format: json
+     body: '{
+               "name" : "AnyHost"
+             }'
+  register: show_trusted_client_result
+
+- name: Set trusted host to Any host for all domains
+  uri:
+     url: "https://{{ mgmt_server }}/web_api/set-trusted-client"
+     validate_certs: false
+     method: POST
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body_format: json
+     body: '{
+               "name" : "AnyHost",
+               "domains-assignment" : {
+               "add" : "All Domains"
+               }
+             }'
+  when: show_trusted_client_result['json']['domains-assignment'][0]['name'] != "All Domains"

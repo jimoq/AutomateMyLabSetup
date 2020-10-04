@@ -1,7 +1,7 @@
 ---
 # Task to add, set or deletea gateway object in Check Point management server
 - name: Add, set or delete simple-gateway
-  cp_mgmt_simple_gateway:
+  check_point.mgmt.cp_mgmt_simple_gateway:
     state: "{{item.state}}"
     name: "{{item.name}}"
     anti_bot: "{{item.anti_bot}}"

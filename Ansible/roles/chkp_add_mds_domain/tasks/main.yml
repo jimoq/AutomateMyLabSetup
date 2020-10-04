@@ -5,7 +5,10 @@
 - import_tasks: gaia_api_set_mgmt_api.yml
 - import_tasks: gaia_api_logout.yml
 - import_tasks: mgmt_api_login.yml
-- import_tasks: mgmt_api_add_domains_redundant_mds.yml
-- import_tasks: mgmt_api_add_domains_single_mds.yml
+- import_tasks: mgmt_api_set_trusted_client.yml
+- include_tasks: mgmt_api_add_domains_redundant_mds.yml
+  loop: "{{mgmt_api_redundant_domains}}"
+- include_tasks: mgmt_api_add_domains_single_mds.yml
+  loop: "{{mgmt_api_single_domains}}"
 - import_tasks: mgmt_api_publish.yml
 - import_tasks: mgmt_api_logout.yml

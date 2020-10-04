@@ -5,8 +5,8 @@ ansible_httpapi_use_ssl: True
 ansible_httpapi_validate_certs: False
 ansible_network_os: checkpoint
 ansible_checkpoint_domain: SMC User
-ansible_user: admin
-ansible_ssh_pass: admin
+ansible_user: "{{ lookup('env','TF_VAR_mgmt_api_user') }}"
+ansible_ssh_pass: "{{ lookup('env','TF_VAR_mgmt_api_password') }}"
 
 # mgmt_api credentials, server and base URL
 mgmt_user: "{{ lookup('env','TF_VAR_mgmt_api_user') }}"

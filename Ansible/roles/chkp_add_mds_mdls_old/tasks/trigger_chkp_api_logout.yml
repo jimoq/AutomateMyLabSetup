@@ -1,5 +1,0 @@
----
- - name: Trigger API Logout handlers
-   command: /bin/true
-   delegate_to: localhost
-   notify: "API logout handler"

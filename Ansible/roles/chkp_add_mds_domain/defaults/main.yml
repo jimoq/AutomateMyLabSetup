@@ -3,12 +3,12 @@
 # For this role to work you need to have 2 MDS and 2 MDLS configured
 # default values gaia_api
 gaia_server: "{{ ansible_host }}"
-gaia_user: admin
-gaia_password: admin
+gaia_user: "{{ lookup('env','TF_VAR_gaia_api_user') }}"
+gaia_password: "{{ lookup('env','TF_VAR_gaia_api_password') }}"
 # parameters used to autheticate to management API using anisble module uri
 mgmt_server: 192.168.233.10
-mgmt_user: admin
-mgmt_password: admin
+mgmt_user: "{{ lookup('env','TF_VAR_mgmt_api_user') }}"
+mgmt_password: "{{ lookup('env','TF_VAR_mgmt_api_password') }}"
 # List of Check Point Administrators to created
 mgmt_api_admins:
 - { state: present, name: 'Walter', password: '1234' }

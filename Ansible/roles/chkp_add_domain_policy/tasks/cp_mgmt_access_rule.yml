@@ -1,7 +1,7 @@
 ---
 # Add access policy rules in Check Point management server
 - name: add-access-rule or delete-access-rule tasks
-  cp_mgmt_access_rule:
+  check_point.mgmt.cp_mgmt_access_rule:
     state: "{{item.state}}"
     layer: "{{item.layer}}"
     name: "{{item.name}}"

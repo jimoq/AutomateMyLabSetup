@@ -2,15 +2,15 @@
 # vars file for add_domain_policy role
 # default values gaia_api
 gaia_server: "{{ ansible_host }}"
-gaia_user: admin
-gaia_password: admin
+gaia_user: "{{ lookup('env','TF_VAR_gaia_api_user') }}"
+gaia_password: "{{ lookup('env','TF_VAR_gaia_api_password') }}"
 # Credentials for cp_mgmt* modules and Settings for the Check Point httpapi plugin that provides methods to connect to Checkpoint devices over a HTTP(S)-based api.
 ansible_httpapi_use_ssl: True
 ansible_httpapi_validate_certs: False
-ansible_network_os: checkpoint
+ansible_network_os: check_point.mgmt.checkpoint
 ansible_checkpoint_domain: SMC User
-ansible_user: admin
-ansible_ssh_pass: admin
+ansible_user: "{{ lookup('env','TF_VAR_mgmt_api_user') }}"
+ansible_ssh_pass: "{{ lookup('env','TF_VAR_mgmt_api_password') }}"
 
 # List of policy packages to add
 cp_mgmt_package_tasks:

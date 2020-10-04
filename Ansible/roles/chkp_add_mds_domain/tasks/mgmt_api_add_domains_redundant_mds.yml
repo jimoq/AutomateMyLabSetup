@@ -1,17 +1,17 @@
 ---
-# set session name 
-- name: "Session {{lookup('pipe','date')}} - Add redundant ACME Corp domains"
+- name: Check if domain {{ item.domain }} exists
   uri:
-     url: "https://{{ mgmt_server }}/web_api/set-session"
+     url: "https://{{ mgmt_server }}/web_api/show-domain"
      validate_certs: false
      method: POST
      headers :
        X-chkp-sid : "{{ sid }}"
      body_format: json
-     body: "{
-               \"new-name\":  \"{{lookup('pipe','date')}} - Add redundant ACME Corp domains\", 
-               \"description\": \"Add redundant domains for ACME Corp\" 
-             }"
+     body: '{
+               "name" : "{{item.domain}}"
+             }'
+  ignore_errors: yes
+  register: show_domain_result
 
 # Add redundant domains on two MDS servers
 - name: "Add reduntand domains on two MDS"
@@ -22,26 +22,26 @@
      headers :
        X-chkp-sid : "{{ sid }}"
      body_format: json
-     body: "{
-               \"name\":  \"{{item.domain}}\", 
-               \"servers\" : [ {
-                  \"name\" : \"{{item.dms1}}\",
-                  \"ip-address\" : \"{{item.dms_ip1}}\",
-                  \"multi-domain-server\" : \"{{item.dms1_location}}\",
-                  \"active\": true,
-                  \"type\" : \"{{item.dms_type}}\"
+     body: '{
+               "name":  "{{item.domain}}", 
+               "servers" : [ {
+                  "name" : "{{item.dms1}}",
+                  "ip-address" : "{{item.dms_ip1}}",
+                  "multi-domain-server" : "{{item.dms1_location}}",
+                  "active": true,
+                  "type" : "{{item.dms_type}}"
                }, {
-                  \"name\" : \"{{item.dms2}}\",
-                  \"ip-address\" : \"{{item.dms_ip2}}\",
-                  \"multi-domain-server\" : \"{{item.dms2_location}}\",
-                  \"active\": false,
-                  \"type\" : \"{{item.dms_type}}\"
+                  "name" : "{{item.dms2}}",
+                  "ip-address" : "{{item.dms_ip2}}",
+                  "multi-domain-server" : "{{item.dms2_location}}",
+                  "active": false,
+                  "type" : "{{item.dms_type}}"
                }, {
-                  \"name\" : \"{{item.dls1}}\",
-                  \"ip-address\" : \"{{item.dls_ip1}}\",
-                  \"multi-domain-server\" : \"{{item.dls1_location}}\",
-                  \"active\" : false,
-                  \"type\" : \"{{item.dls_type}}\"
+                  "name" : "{{item.dls1}}",
+                  "ip-address" : "{{item.dls_ip1}}",
+                  "multi-domain-server" : "{{item.dls1_location}}",
+                  "active" : false,
+                  "type" : "{{item.dls_type}}"
                 } ]
-            }"
-  loop: "{{mgmt_api_redundant_domains}}"
+            }'
+  when: show_domain_result['json']['name'] is not defined
