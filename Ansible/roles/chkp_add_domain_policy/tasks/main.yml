@@ -1,11 +1,11 @@
 ---
 #- include_tasks: gaia_api_check_status.yml
 #  when: ansible_checkpoint_domain != "System Data"
-#- include_tasks: gaia_api_login.yml
+- include_tasks: gaia_api_login.yml
 #  when: ansible_checkpoint_domain != "System Data"
-#- include_tasks: gaia_api_set_mgmt_api.yml
+- include_tasks: gaia_api_set_mgmt_api.yml
 #  when: ansible_checkpoint_domain != "System Data"
-#- include_tasks: gaia_api_logout.yml
+- include_tasks: gaia_api_logout.yml
 #  when: ansible_checkpoint_domain != "System Data"
 - include_tasks: cp_mgmt_package.yml
   when: ansible_checkpoint_domain != "System Data"

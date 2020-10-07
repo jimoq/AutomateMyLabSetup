@@ -1,0 +1,20 @@
+---
+- name: Wait up to 15 minutes for CPM connetion on {{ ansible_host }}
+  wait_for:
+    port: 19009
+    host: "{{ ansible_host }}"
+    timeout: 900
+  delegate_to: localhost
+
+- name: Wait up to 5 minutes for API server to come up on {{ ansible_host }}
+  uri:
+    url: https://{{ ansible_host }}/web_api/
+    status_code: [200, 401, 403]
+    validate_certs: false
+  register: result
+  until: result.status == 403 or result.status == 401
+  retries: 300
+  delay: 1
+
+#- debug:
+#    msg: "{{ result }}"

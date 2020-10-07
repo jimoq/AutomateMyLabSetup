@@ -1,0 +1,48 @@
+---
+- name: Pause for 1 minute to let API server spin up.
+  pause:
+    minutes: 1
+
+- name: Check if {{ ansible_host  }} API server is accepting request
+  uri:
+     url: https://{{ api_server }}{{ api_base_url }}/run-script
+     validate_certs: false
+     method: POST
+     body_format: json
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body: '{ 
+             "description": "Check mgmt api configuration",
+             "script": "api status" 
+            }'
+  register: api_task
+
+- set_fact:
+     api_taskid: "{{ api_task.json['task-id'] }}"
+
+
+- name: Check API status Task Progress
+  uri:
+     url: https://{{ api_server }}{{ api_base_url }}/show-task
+     validate_certs: false
+     method: POST
+     body_format: json
+     headers:
+       X-chkp-sid : "{{ sid }}"
+     body: '{ "task-id" : "{{api_taskid}}" }'
+  retries: 20
+  delay: 3
+  register: datasource_tasks
+  until: (datasource_tasks.json.tasks[0]['progress-percentage'] == 100)
+  failed_when: 
+    - (datasource_tasks.json.tasks[0]['progress-percentage'] == 100)
+    - (datasource_tasks.json.tasks[0]['status'] != "succeeded")
+
+- set_fact:
+     api_readiness_test_result: "{{ datasource_tasks.json.tasks[0]['task-details'][0]['output'] | b64decode }}"
+
+- debug:
+    msg: "{{ api_readiness_test_result }}"
+
+#- debug:
+#    msg: "{{ datasource_tasks.json.tasks[0]['task-details'][0]['output'] | b64decode }}"

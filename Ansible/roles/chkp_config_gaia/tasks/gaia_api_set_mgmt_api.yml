@@ -1,7 +1,13 @@
 ---
-- name: "Check if {{ gaia_server }} API server is accepting request"
+- name: Wait up to 300 seconds for https connetion on {{ ansible_host }}
+  wait_for:
+    port: 443
+    host: "{{ ansible_host }}"
+  delegate_to: localhost
+
+- name: "Check if {{ ansible_host  }} API server is accepting request"
   uri:
-     url: "https://{{ gaia_server }}/gaia_api/v1.3/run-script"
+     url: "https://{{ ansible_host  }}/gaia_api/v1.3/run-script"
      validate_certs: false
      method: POST
      headers :
@@ -16,7 +22,7 @@
 
 - name: Check API status Task Progress
   uri:
-     url: "https://{{ gaia_server }}/gaia_api/show-task"
+     url: "https://{{ ansible_host  }}/gaia_api/show-task"
      validate_certs: false
      method: POST
      headers:
@@ -31,9 +37,12 @@
     - (datasource_tasks.json.tasks[0]['progress-percentage'] == 100)
     - (datasource_tasks.json.tasks[0]['status'] != "succeeded")
 
+#- debug:
+#    msg: "{{ datasource_tasks.json.tasks[0]['task-details'][0]['output'] | b64decode }}"
+
 - name: "Set mgmt_api to accept requests from All IP addresses"
   uri:
-     url: "https://{{ gaia_server }}/gaia_api/v1.3/run-script"
+     url: "https://{{ ansible_host  }}/gaia_api/v1.3/run-script"
      validate_certs: false
      method: POST
      headers :
@@ -45,7 +54,7 @@
 
 - name: Check API Settings Task Progress
   uri:
-     url: "https://{{ gaia_server }}/gaia_api/show-task"
+     url: "https://{{ ansible_host  }}/gaia_api/show-task"
      validate_certs: false
      method: POST
      body_format: json
@@ -59,6 +68,3 @@
   failed_when: 
     - (datasource_tasks.json.tasks[0]['progress-percentage'] == 100)
     - (datasource_tasks.json.tasks[0]['status'] != "succeeded")
-
-- debug:
-    msg: "{{ datasource_tasks.json.tasks[0]['task-details'][0]['output'] | b64decode }}"

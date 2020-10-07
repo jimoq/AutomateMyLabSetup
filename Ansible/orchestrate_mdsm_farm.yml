@@ -1,0 +1,95 @@
+# ansible-playbook 1_chkp_create_mdsm_farm.yml -e "vm_template=cloud03_r81ea"
+# optional extra vars
+## esxi_hostname= cloud03.local, cloud02.local
+## vm_template= cloud03_r81ea, cloud02_r80dot40, cloud03_r80dot40
+---
+- name: Build inventory
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Create a dynamic inventory
+      add_host:
+        hostname: "{{ item.vm_name }}"
+        ansible_host: "{{ item.target }}"
+        groups: mdsm
+        vm_name: "{{ item.vm_name }}"
+        target: "{{ item.target }}"
+        target_masklen: "{{ item.target_masklen }}"
+        target_gw: "{{ item.target_gw }}"
+        type: "{{ item.type }}"
+        nr: "{{ item.nr }}"
+        ansible_user: "{{ lookup('env','TF_VAR_mgmt_api_user') }}"
+        ansible_ssh_pass: "{{ lookup('env','TF_VAR_mgmt_api_password') }}"
+      with_items:
+      - { vm_name: mds10, target: 192.168.233.10, target_masklen: 24, target_gw: 192.168.233.254, type: primary_mds, nr: 10 }
+      - { vm_name: mds20, target: 192.168.233.20, target_masklen: 24, target_gw: 192.168.233.254, type: secondary_mds, nr: 20 }
+      - { vm_name: mdls30, target: 192.168.233.30, target_masklen: 24, target_gw: 192.168.233.254, type: mdls, nr: 30 }
+      #- { vm_name: sgvsx40, target: 192.168.233.40, target_masklen: 24, target_gw: 192.168.233.254, type: sg, nr: 40 }
+
+- name: Deploy Gaia as Multi-Domain Servers
+  hosts: mdsm
+  connection: local
+  gather_facts: no
+  roles:
+    - role: roles/vm_ware_deploy_instance
+      delegate_to: localhost
+    - role: roles/chkp_config_gaia
+
+- name: Configure management API on Primary MDS to accept connections from any host
+  hosts: mds10
+  connection: local
+  gather_facts: no
+  roles:
+    - role: roles/chkp_check_mgmt_api
+
+- name:  Establish SIC with Secondary MDS and MDLS
+  hosts: mds10
+  connection: local
+  gather_facts: no
+  roles:
+  - role: roles/chkp_add_mds_mdls
+    state: present
+
+- name: Configure management API on Secondary MDS to accept connections from any host
+  hosts: mds20
+  connection: local
+  gather_facts: no
+  roles:
+    - role: roles/chkp_check_mgmt_api
+
+- name:  Add domains to MDSM farm
+  hosts: mds10
+  connection: local
+  gather_facts: no
+  roles:
+    - role: roles/chkp_add_mds_domain
+      delegate_to: localhost
+
+#- name: Build inventory for domains
+#  hosts: localhost
+#  connection: local
+#  gather_facts: no
+#  tasks:
+#    - name: Create a dynamic inventory
+#      add_host:
+#        hostname: "{{ item.hostname }}"
+#        ansible_host: "{{ item.hostname }}.{{ item.mds_sms }}"
+#        ansible_checkpoint_domain: "{{ item.domain}}"
+#        groups: "{{item.groups}}"
+#      with_items:
+#      - { hostname: dms-nordics,         mds_sms: mds10.local, domain: nordics, groups: domains }
+#      - { hostname: dms-central-europe,  mds_sms: mds10.local, domain: central-europe, groups: domains }
+#      - { hostname: dms-southern-europe, mds_sms: mds10.local, domain: southern-europe, groups: domains }
+#      - { hostname: dms-northern-europe, mds_sms: mds20.local, domain: northern-europe, groups: domains }
+#      - { hostname: dms-eastern-europe,  mds_sms: mds20.local, domain: eastern-europe, groups: domains }
+#      - { hostname: 192,                 mds_sms: 168.233.61, domain: SMC User, groups: sms61 }
+#
+#- name:  Add security policy to domains
+#  vars:
+#    target: domains
+#  hosts: "{{ target }}"
+#  connection: httpapi
+#  gather_facts: no
+#  roles:
+#    - role: roles/chkp_add_domain_policy

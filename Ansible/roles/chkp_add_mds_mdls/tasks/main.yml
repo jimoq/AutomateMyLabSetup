@@ -5,5 +5,4 @@
   loop: "{{  mds_mdls }}"
   when: state == "present"
 
-#- import_tasks: mgmt_api_add_mds_mdls.yml
 - import_tasks: trigger_chkp_api_logout.yml

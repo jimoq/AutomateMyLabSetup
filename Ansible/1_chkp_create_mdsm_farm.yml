@@ -11,6 +11,7 @@
     - name: Create a dynamic inventory
       add_host:
         hostname: "{{ item.vm_name }}"
+        ansible_host: "{{ item.target }}"
         groups: mdsm
         vm_name: "{{ item.vm_name }}"
         target: "{{ item.target }}"
@@ -32,4 +33,3 @@
     - role: roles/vm_ware_deploy_instance
       delegate_to: localhost
     - role: roles/chkp_config_gaia
-      delegate_to: localhost

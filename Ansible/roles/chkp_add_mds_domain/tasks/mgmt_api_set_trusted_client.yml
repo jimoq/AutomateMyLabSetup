@@ -12,6 +12,8 @@
              }'
   register: show_trusted_client_result
 
+- debug:
+    msg: "{{ show_trusted_client_result['json'] }}"
 - name: Set trusted host to Any host for all domains
   uri:
      url: "https://{{ mgmt_server }}/web_api/set-trusted-client"
@@ -26,4 +28,5 @@
                "add" : "All Domains"
                }
              }'
-  when: show_trusted_client_result['json']['domains-assignment'][0]['name'] != "All Domains"
+#  when: show_trusted_client_result['json']['domains-assignment'][0]['name'] != "All Domains" 
+  when: show_trusted_client_result['json']['domains-assignment'][0]['name'] is not defined

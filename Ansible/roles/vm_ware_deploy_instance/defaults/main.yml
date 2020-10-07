@@ -9,6 +9,6 @@ vsphere_server: "{{ lookup('env','TF_VAR_vsphere_server') }}"
 vsphere_datacenter: "{{ lookup('env','TF_VAR_vsphere_datacenter') }}"
 vcenter_folder: Templates
 #vm_name:
-vm_template: cloud03_r80dot40
+#vm_template: cloud03_r80dot40
 esxi_hostname: cloud03.local
 #vm_snapshot: R80.40-pre-ftw

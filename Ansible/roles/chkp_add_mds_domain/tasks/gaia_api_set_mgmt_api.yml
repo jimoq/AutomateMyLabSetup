@@ -41,7 +41,7 @@
      body_format: json
      body: "{ \"description\":  \"set mgmt_api to listen to all\", \"script\": \"mgmt_cli set api-settings accepted-api-calls-from 'All IP addresses' --domain 'System Data' --format json --root true; api restart\" }"
   register: api_task
-  when: ((datasource_tasks.json.tasks[0]['task-details'][0]['output'] | b64decode).find('Require ip 127.0.0.1') != -1) or ((datasource_tasks.json.tasks[0]['task-details'][0]['output'] | b64decode).find('The API Server Is Not Running') != -1)
+  when: ((datasource_tasks.json.tasks[0]['task-details'][0]['output'] | b64decode).find('Require local') != -1) or ((datasource_tasks.json.tasks[0]['task-details'][0]['output'] | b64decode).find('Require ip 127.0.0.1') != -1) or ((datasource_tasks.json.tasks[0]['task-details'][0]['output'] | b64decode).find('The API Server Is Not Running') != -1)
 
 - name: Check API Settings Task Progress
   uri:
@@ -59,3 +59,6 @@
   failed_when: 
     - (datasource_tasks.json.tasks[0]['progress-percentage'] == 100)
     - (datasource_tasks.json.tasks[0]['status'] != "succeeded")
+
+- debug:
+    msg: "{{ datasource_tasks.json.tasks[0]['task-details'][0]['output'] | b64decode }}"

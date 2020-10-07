@@ -1,0 +1,23 @@
+---
+- import_tasks: gaia_api_verify_cpm_status.yml
+
+- name: Check anagement API readiness test
+  import_tasks: gaia_api_check_mgmt_api_readiness.yml
+- name: Check anagement API readiness test
+  when: '"SUCCESSFUL." not in api_readiness_test_result'
+  import_tasks: gaia_api_check_mgmt_api_readiness.yml
+- name: Check anagement API readiness test
+  import_tasks: gaia_api_check_mgmt_api_readiness.yml
+  when: '"SUCCESSFUL." not in api_readiness_test_result'
+- name: Check anagement API readiness test
+  import_tasks: gaia_api_check_mgmt_api_readiness.yml
+  when: '"SUCCESSFUL." not in api_readiness_test_result'
+
+- debug:
+    msg: "{{ api_readiness_test_result }}"
+  when: '"SUCCESSFUL." in api_readiness_test_result'
+
+- import_tasks: gaia_api_set_mgmt_api.yml
+  when: 
+    - '"SUCCESSFUL." in api_readiness_test_result'
+    - '"Require all granted" not in api_readiness_test_result'

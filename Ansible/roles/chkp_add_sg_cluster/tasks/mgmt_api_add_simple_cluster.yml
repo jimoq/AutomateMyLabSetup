@@ -1,7 +1,7 @@
 ---
 - name: Check for Cluster
   connection: httpapi
-  checkpoint_object_facts:
+  check_point.mgmt.checkpoint_object_facts:
     object_filter: Ansible_Cluster
   register: datasource_check_cluster
 
