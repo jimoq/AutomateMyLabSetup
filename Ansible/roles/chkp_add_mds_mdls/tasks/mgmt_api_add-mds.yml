@@ -1,17 +1,17 @@
 ---
-- name: Wait up to 15 minutes for CPM connetion on {{ item.name }}
-  wait_for:
-    port: 19009
-    host: "{{ item.ip_addr }}"
-    timeout: 900
-  delegate_to: localhost
-
 - name: Check for Secondary MDS OR MDLS objects
   connection: httpapi
   checkpoint_object_facts:
     object_filter: "{{ item.name }}"
   register: datasource_MDS_MDLS
 
+- name: Wait up to 15 minutes for SIC service tbe ready to recive certificate {{ item.name }}
+  wait_for:
+    port: 18221
+    host: "{{ item.ip_addr }}"
+    timeout: 900
+  delegate_to: localhost
+  when:  datasource_MDS_MDLS.ansible_facts.checkpoint_objects.total == 0
 
 - name: Add {{ item.server_type }} object {{ item.name }}
   uri:
@@ -74,5 +74,26 @@
   until: taskoutput.json.tasks[0]['progress-percentage'] == 100
   when:  datasource_MDS_MDLS.ansible_facts.checkpoint_objects.total == 0
 
-#- debug:
-#    msg="{{taskoutput}}"
+- debug:
+    msg="{{datasource_mds}}"
+
+- name: Wait up to 15 minutes for {{ item.name }} to complete its database sync
+  wait_for:
+    port: 18210
+    host: "{{ item.ip_addr }}"
+    timeout: 900
+  delegate_to: localhost
+  when:  
+    - datasource_MDS_MDLS.ansible_facts.checkpoint_objects.total == 0
+    - '"mds" in item.name' 
+
+- name: Wait up to 15 minutes for {{ item.name }} to complete its database sync
+  wait_for:
+    port: 19009
+    host: "{{ item.ip_addr }}"
+    delay: 120
+    timeout: 900
+  delegate_to: localhost
+  when:  
+    - datasource_MDS_MDLS.ansible_facts.checkpoint_objects.total == 0
+    - '"mdls" in item.name' 

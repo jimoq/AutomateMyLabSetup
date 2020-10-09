@@ -42,7 +42,6 @@
   gather_facts: no
   roles:
     - role: roles/chkp_check_mgmt_api
-
 - name:  Establish SIC with Secondary MDS and MDLS
   hosts: mds10
   connection: local
