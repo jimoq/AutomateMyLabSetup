@@ -91,4 +91,4 @@
 #  connection: httpapi
 #  gather_facts: no
 #  roles:
-#    - role: roles/chkp_add_domain_policy
+#    - role: roles/chkp_domain_policy

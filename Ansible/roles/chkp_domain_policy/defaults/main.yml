@@ -1,9 +1,5 @@
 ---
 # vars file for add_domain_policy role
-# default values gaia_api
-gaia_server: "{{ ansible_host }}"
-gaia_user: "{{ lookup('env','TF_VAR_gaia_api_user') }}"
-gaia_password: "{{ lookup('env','TF_VAR_gaia_api_password') }}"
 # Credentials for cp_mgmt* modules and Settings for the Check Point httpapi plugin that provides methods to connect to Checkpoint devices over a HTTP(S)-based api.
 ansible_httpapi_use_ssl: True
 ansible_httpapi_validate_certs: False
@@ -12,7 +8,15 @@ ansible_checkpoint_domain: SMC User
 ansible_user: "{{ lookup('env','TF_VAR_mgmt_api_user') }}"
 ansible_ssh_pass: "{{ lookup('env','TF_VAR_mgmt_api_password') }}"
 
-# List of policy packages to add
+# List of gateway objects to add
+cp_mgmt_simple_gateway_vars:
+- { state: present, name: vsphere_sg01, comments: Test environment in VM Ware vSphere, groups: [], anti_bot: true, anti_virus: true, appi_ctrl: true, color: sea green, firewall: true, ips: true, sickey: vpn123, threat_emulation: false, url_filtering: true, gw_version: R81, eth0_color: red, eth0_comments: Leads to Internet ,eth0_ipv4: 192.168.233.101, eth0_ipv4_network_mask: 255.255.255.0 ,eth0_anti_spoofing: true, eth0_topology: External, eth0_security_zone: true, eth0_specific_zone: ExternalZone, eth1_color: sea green, eth1_comments: Leads to Web Frontend, eth1_ipv4: 10.101.1.1, eth1_ipv4_network_mask: 255.255.255.0, eth1_anti_spoofing: true, eth1_topology: Internal, eth1_topology_ip_behind_if: network defined by the interface ip and net mask, eth1_security_zone: true, eth1_specific_zone: InternalZone, eth2_color: blue, eth2_comments: Leads to Application Backend, eth2_ipv4: 10.101.2.1, eth2_ipv4_network_mask: 255.255.255.0, eth2_anti_spoofing: true, eth2_topology: Internal, eth2_topology_ip_behind_if: network defined by the interface ip and net mask, eth2_security_zone: true, eth2_specific_zone: DMZZone }
+
+# List of gateways to install the policy to
+policy_targets: ["vsphere_sg01"]
+
+#Policy packages to add
+policy_name: Orchestration_Demo_Policy
 cp_mgmt_package_tasks:
 - { state: present, 
     name: Orchestration_Demo_Policy, 
@@ -27,6 +31,7 @@ cp_mgmt_group_tasks:
 - { state: present, name: ACME_nets}
 - { state: present, name: 'ACME_ext_nets'}
 - { state: present, name: 'ACME_Security_Gateways'}
+
 # List of networks to add
 cp_mgmt_network_tasks:
 - { state: present, name: 'External', subnet: 10.2.0.0/24, groups: ["ACME_ext_nets"], color: blue}
@@ -35,11 +40,10 @@ cp_mgmt_network_tasks:
 - { state: present, name: 'DBServers', subnet: 10.2.11.0/24, groups: ["ACME_nets"], color: cyan}
 - { state: present, name: 'LoadBalancer1', subnet: 10.2.5.0/24, groups: ["ACME_nets"], color: orange}
 - { state: present, name: 'LoadBalancer2', subnet: 10.2.6.0/24, groups: ["ACME_nets"], color: orange}
+
 # List of hosts to add
 cp_mgmt_host_tasks:
-- { state: present, name: hst-dmz-webserver, ip: 10.2.0.10, color: red, 
-    nat_auto_rule: true, nat_method: static, nat_ipv4: 172.27.254.210, nat_install_on: All
-  }
+- { state: present, name: hst-dmz-webserver, ip: 10.2.0.10, color: red, nat_auto_rule: true, nat_method: static, nat_ipv4: 172.27.254.210, nat_install_on: All }
 # List of access-sections to add to rulebase (not supported with official ansible module)
 #mgmt_api_add_access_section:
 #- { state: present, name: default drop, layer: Orchestration_Demo_Policy Network, position: top}
@@ -47,39 +51,33 @@ cp_mgmt_host_tasks:
 
 #List of rules to create on in the policy package
 cp_mgmt_access_rule_tasks:
+#- { state: present, layer: Orchestration_Demo_Policy Network, name: ACMECorp management access to Security Gateways, 
+#    position: 1, source: External, destination: ACME_Security_Gateways, service: ["ssh", "https"], action: Accept, track_type: log 
+#  }
 - { state: present, layer: Orchestration_Demo_Policy Network, name: ACMECorp management access to Security Gateways, 
-    position: 1, source: External, destination: ACME_Security_Gateways, service: ["ssh", "https"], action: accept, track_type: log 
+    position: 1, source: External, destination: any, service: ["ssh", "https"], action: Accept, track_type: log
   }
 - { state: present,  layer: Orchestration_Demo_Policy Network, name: ACMECorp external to Any, 
-    position: 2, source: External, destination: any, service: ["any"], action: accept, track_type: log 
+    position: 2, source: External, destination: any, service: ["any"], action: Accept, track_type: log 
   }
 - { state: present, layer: Orchestration_Demo_Policy Network, name: ACMECorp internal to Any, 
-    position: 3, source: Internal, destination: any, service: ["any"], action: accept, track_type: log 
+    position: 3, source: Internal, destination: any, service: ["any"], action: Accept, track_type: log 
   }
 - { state: present, layer: Orchestration_Demo_Policy Network, name: ACMECorp WebServer to DB, 
-    position: 4, source: WebServers, destination: DBServers, service: ["MySQL"], action: accept, track_type: log 
+    position: 4, source: WebServers, destination: DBServers, service: ["MySQL"], action: Accept, track_type: log 
   }
 - { state: present, layer: Orchestration_Demo_Policy Network, name: ACMECorp WebServer Outbound Access, 
-    position: 5, source: WebServers, destination: any, service: ["http", "https", "ntp", "dns"], action: accept, track_type: log 
+    position: 5, source: WebServers, destination: any, service: ["http", "https", "ntp", "dns"], action: Accept, track_type: log 
   }
 - { state: present, layer: Orchestration_Demo_Policy Network,  name: Allow ICMP and HTTPS,
-    position: 6, source: any, destination: any, service: ["icmp-requests", "https"], action: accept, track_type: log 
+    position: 6, source: any, destination: any, service: ["icmp-requests", "https"], action: Accept, track_type: log 
   }
 - { state: present, layer: Orchestration_Demo_Policy Network,  name: LoadBalancers,
-    position: 7,  source: any, destination: ["LoadBalancer1", "LoadBalancer2", "hst-dmz-webserver"], service: ["http", "https"], action: accept, track_type: log 
+    position: 7,  source: any, destination: ["LoadBalancer1", "LoadBalancer2", "hst-dmz-webserver"], service: ["http", "https"], action: Accept, track_type: log 
   }
   # Enable log on the existing cleanup rule
 - { state: present, layer: Orchestration_Demo_Policy Network, name: Cleanup rule, 
-    position: 8, position_bottom: "default drop", source: any, destination: ["any"], service: ["any"], action: drop, track_type: log }
-
-# List of gateway objects to add
-cp_mgmt_simple_gateway_tasks:
-- { state: present, name: sg101, sickey: vpn123, gw_version: R80.30, 
-    anti_bot: true, anti_virus: true, appi_ctrl: true, color: blue, firewall: true, ips: true, threat_emulation: false, url_filtering: true, 
-    eth0_ipv4: 192.168.233.101, eth0_ipv4_network_mask: 255.255.255.0, eth0_anti_spoofing: true, eth0_topology: External, 
-    eth1_ipv4: 10.101.1.1,      eth1_ipv4_network_mask: 255.255.255.0, eth1_anti_spoofing: true, eth1_topology: Internal, 
-    eth1_topology_ip_behind_if: network defined by the interface ip and net mask 
-  }
+    position: 8, position_bottom: "default drop", source: any, destination: ["any"], service: ["any"], action: Drop, track_type: log }
 
 #
 #- name: "add NAT rule for Webserver "

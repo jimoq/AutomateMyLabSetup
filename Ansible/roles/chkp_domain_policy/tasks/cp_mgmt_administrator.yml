@@ -8,6 +8,7 @@
     multi_domain_profile: "Multi-Domain Super User"
     state: present
   loop: "{{mgmt_api_admins}}"
+  notify: Publish handler
     
 
 

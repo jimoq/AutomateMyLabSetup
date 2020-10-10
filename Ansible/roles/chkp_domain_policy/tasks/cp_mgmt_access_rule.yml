@@ -13,3 +13,4 @@
     track:
       type: "{{item.track_type}}"
   loop: "{{cp_mgmt_access_rule_tasks}}"
+  notify: Publish and install handler

@@ -5,3 +5,4 @@
     state: "{{item.state}}"
     name: "{{item.name}}"
   loop: "{{cp_mgmt_group_tasks}}"
+  notify: Publish handler

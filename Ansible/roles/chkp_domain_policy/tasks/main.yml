@@ -1,12 +1,4 @@
 ---
-#- include_tasks: gaia_api_check_status.yml
-#  when: ansible_checkpoint_domain != "System Data"
-- include_tasks: gaia_api_login.yml
-#  when: ansible_checkpoint_domain != "System Data"
-- include_tasks: gaia_api_set_mgmt_api.yml
-#  when: ansible_checkpoint_domain != "System Data"
-- include_tasks: gaia_api_logout.yml
-#  when: ansible_checkpoint_domain != "System Data"
 - include_tasks: cp_mgmt_package.yml
   when: ansible_checkpoint_domain != "System Data"
 - include_tasks: cp_mgmt_group.yml
@@ -17,4 +9,5 @@
   when: ansible_checkpoint_domain != "System Data"
 - include_tasks: cp_mgmt_access_rule.yml
   when: ansible_checkpoint_domain != "System Data"
-- include_tasks: cp_mgmt_publish.yml
+- include_tasks: cp_mgmt_simple_gateway.yml
+  when: ansible_checkpoint_domain == "nordics"
