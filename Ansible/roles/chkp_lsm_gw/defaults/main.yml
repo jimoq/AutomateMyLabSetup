@@ -13,7 +13,7 @@ mgmt_server_name: sms62
 
 # List of gateway objects to add
 cp_mgmt_lsm_gateway:
-- { state: present, hw: 1570/1590, name: "{{ vm_name }}", lsm_profile: sg1500profile, sickey: vpn123, gw_version: R80.30, co_name: aws_sg03 }
+- { state: present, hw: 1570/1590, name: "{{ vm_name }}", lsm_profile: sg1500profile, sickey: vpn123, gw_version: R80.30, co_name: sg40 }
 
 
 ### TEST ###

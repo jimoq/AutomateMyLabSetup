@@ -1,5 +1,11 @@
 ---
-# Run with extra vars for example: ansible-playbook chkp_create_vnf_cloudguard_edge.yml -e "vm_name=cgedgevnf68 target=192.168.233.68"
+## Run with extra vars for example: 
+# ansible-playbook 7_chkp_create_vnf_cloudguard_edge.yml -e "dms_ip=192.168.233.11 mgmt_server_name=nordics-dms11 ansible_checkpoint_domain=nordics"
+##Required vars
+# dms_ip=[DMS / SMS IP]
+# mgmt_server_name=[DMS / SMS objectname]
+## Optional var
+# ansible_checkpoint_domain=[domain name]
 - name: Build inventory
   hosts: localhost
   connection: local
@@ -8,18 +14,17 @@
     - name: Create a dynamic inventory
       add_host:
         hostname: "{{ item.hostname }}"
-        ansible_host: "{{ item.ansible_host }}"
+        ansible_host: "{{ dms_ip }}"
         groups: chkp
         vm_name: "{{ item.hostname }}"
         vm_template: cloud02_cgedge_r80dot20
         esxi_hostname: cloud02.local
-        mgmt_server_name: sms61
       with_items:
-      - { hostname: vnf01, ansible_host: 192.168.233.61, groups: domains }
-      - { hostname: vnf02, ansible_host: 192.168.233.61, groups: domains }
-      - { hostname: vnf03, ansible_host: 192.168.233.61, groups: domains }
-      - { hostname: vnf04, ansible_host: 192.168.233.61, groups: domains }
-      - { hostname: vnf05, ansible_host: 192.168.233.61, groups: domains }
+      - { hostname: vnf01, groups: domains }
+      - { hostname: vnf02, groups: domains }
+      - { hostname: vnf03, groups: domains }
+      - { hostname: vnf04, groups: domains }
+      - { hostname: vnf05, groups: domains }
 
 - name:  Add and config CG edge
   hosts: chkp

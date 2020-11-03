@@ -1,0 +1,14 @@
+---
+- name: show-simple-gateways
+  check_point.mgmt.cp_mgmt_simple_gateway_facts:
+    name: "{{ item.name }} "
+  register: data_cp_mgmt_simple_gateway
+
+- debug:
+    msg: "{{ data_cp_mgmt_simple_gateway }}"
+  when: item.name in data_cp_mgmt_simple_gateway
+  with_items: "{{data_cp_mgmt_simple_gateway}}"
+
+#- debug:
+#    msg: "{{ data_cp_mgmt_simple_gateway }}"
+#  when: policy_targets in data_cp_mgmt_simple_gateway['ansible_facts']['simple-gateways']['objects'][1]['name']

@@ -1,4 +1,7 @@
 ---
+- debug:
+    msg: "{{ ansible_checkpoint_domain }}"
+
 - name: List LSM gateway {{ item.name }}
   check_point.mgmt.cp_mgmt_run_script:
     script: LSMcli {{ ansible_host }} {{ ansible_user }} {{ ansible_password }} Show -N={{ item.name }}  -F=n
@@ -12,7 +15,7 @@
 #    msg: "{{ check_lsm_gw_task['run-script'].tasks[0]['task-id'] }}"
 
 - name: Check the List LSM gateway task to se if {{ item.name }} exists
-  checkpoint_task_facts:
+  check_point.mgmt.checkpoint_task_facts:
     task_id: "{{ check_lsm_gw_task['run-script'].tasks[0]['task-id'] }}"
   register: check_lsm_gw_result
 
