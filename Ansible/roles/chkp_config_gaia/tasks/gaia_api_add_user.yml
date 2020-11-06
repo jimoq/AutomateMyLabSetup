@@ -9,12 +9,10 @@
      body_format: json
      headers :
        X-chkp-sid : "{{ sid }}"
-     body: "{{ item.user }}"
-  loop: "{{ gaia_show_user }}"
+     #body: "{{ item.user }}"
+     body: "{{ gaia_show_user }}"
+  #loop: "{{ gaia_show_user }}"
   register: show_user_output
-
-- debug:
-    msg: "{{ show_user_output.json.name }}"
 
 - name: Add Gaia admin user
   uri:
@@ -26,3 +24,4 @@
        X-chkp-sid : "{{ sid }}"
      body: "{{ item.user }}"
   loop: "{{ gaia_add_user }}"
+  when: show_user_output['json']['name'] != gaia_user_check

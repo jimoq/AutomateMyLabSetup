@@ -33,10 +33,10 @@ gaia_ntp_pri: 91.209.0.20
 gaia_ntp_sec: 162.159.200.123
 
 # Add Gaia admin users
-gaia_show_user: 
-- { user: '{ "name": "jimo" }' }
+gaia_user_check: jimo
+gaia_show_user: { "name": "{{ gaia_user_check }}" }
 gaia_add_user:
-- { user: '{ "name": "jimo", "real-name": "JimOqvist", "homedir": "/home/jimo", "shell": "bash", "password-hash": "$1$uDFgA1$C8VWucZudD7nibkutJLGW1", "roles": "adminRole", "uid": "0" }' }
+- { user: '{ "name": "{{ gaia_user_check }}", "real-name": "JimOqvist", "homedir": "/home/jimo", "shell": "bash", "password-hash": "$1$uDFgA1$C8VWucZudD7nibkutJLGW1", "roles": "adminRole", "uid": "0" }' }
 
 # Set default variables for DNS
 dns_suffix: local
