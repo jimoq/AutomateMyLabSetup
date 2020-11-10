@@ -1,0 +1,28 @@
+- name: Build inventory
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Create a dynamic inventory
+      add_host:
+        hostname: "{{ item.vm_name }}"
+        groups: mylab
+        vm_name: "{{ item.vm_name }}"
+        target: "{{ item.target }}"
+        type: "{{ item.type }}"
+        nr: "{{ item.nr }}"
+      with_items:
+      - { vm_name: sms-pri70, target: 192.168.233.60, type: primary_sms, nr: 70  }
+      - { vm_name: sms-sec71, target: 192.168.233.61, type: secondary_sms, nr: 71 }
+
+- name: Deploy Standalone SMS and GW
+  hosts: 
+    - mylab
+  connection: local
+  gather_facts: no
+  roles:
+    - role: ../roles/vm_ware_deploy_instance
+      delegate_to: localhost
+      vm_template: cloud03_r81_t392
+    - role: ../roles/chkp_config_gaia
+      delegate_to: localhost
