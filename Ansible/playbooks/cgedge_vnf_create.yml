@@ -1,5 +1,8 @@
 ---
 # Run with extra vars for example: ansible-playbook chkp_create_vnf_cloudguard_edge.yml -e "vm_name=cgedgevnf68 target=192.168.233.68"
+# Avaliable Options 
+## esxi_hostname= cloud03.local, cloud02.local
+## vm_template=cloud02_cgedge_r80dot20
 - name: Build inventory
   hosts: localhost
   connection: local

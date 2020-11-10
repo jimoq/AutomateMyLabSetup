@@ -1,6 +1,6 @@
 ---
 # Run with extra vars for example: 
-## ansible-playbook vm_ware_add_gaia_instance.yml -e "vm_name=sms69 target=192.168.233.69 target_masklen=24 target_gw=192.168.233.254 type=primary_sms nr=69 vm_template=cloud03_r81_t392"
+## ansible-playbook vm_ware_create_gaia_instance.yml -e "vm_name=sms69 target=192.168.233.69 target_masklen=24 target_gw=192.168.233.254 type=primary_sms nr=69 vm_template=cloud03_r81_t392"
 # Avaliable Options 
 ## type= primary_mds, secondary_mds, mdls, primary_sms, secondary_sms, ls_se, smsg, sg
 ## esxi_hostname= cloud03.local, cloud02.local
@@ -27,6 +27,6 @@
   connection: local
   gather_facts: no
   roles:
-  - role: roles/vm_ware_deploy_instance
+  - role: ../roles/vm_ware_deploy_instance
     delegate_to: localhost
-  - role: roles/chkp_config_gaia
+  - role: ../roles/chkp_config_gaia

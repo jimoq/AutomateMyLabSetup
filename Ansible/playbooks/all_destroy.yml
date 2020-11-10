@@ -10,8 +10,8 @@
         vm_name: "{{ item.vm_name }}"
 
       with_items:
-      - { vm_name: smsg60 }
-      - { vm_name: sms61 }
+      - { vm_name: sms-pri60 }
+      - { vm_name: sms-sec61 }
       - { vm_name: se62 }
       - { vm_name: sg63 }
       - { vm_name: mds10 }
@@ -25,4 +25,4 @@
   connection: local
   gather_facts: no
   roles:
-    - role: roles/vm_ware_remove_gaia_instance
+    - role: ../roles/vm_ware_remove_instance
