@@ -32,6 +32,12 @@ gaia_ntp_version: 4
 gaia_ntp_pri: 91.209.0.20
 gaia_ntp_sec: 162.159.200.123
 
+# Add Gaia admin users
+gaia_user_check: jimo
+gaia_show_user: { "name": "{{ gaia_user_check }}" }
+gaia_add_user:
+- { user: '{ "name": "{{ gaia_user_check }}", "real-name": "JimOqvist", "homedir": "/home/jimo", "shell": "bash", "password-hash": "$1$uDFgA1$C8VWucZudD7nibkutJLGW1", "roles": "adminRole", "uid": "0" }' }
+
 # Set default variables for DNS
 dns_suffix: local
 dns_primary: 192.168.233.233
@@ -41,6 +47,11 @@ dns_secondary: 8.8.8.8
 eth0_ipv4: 192.168.233.{{nr}}
 eth1_ipv4: 1.1.1.{{nr}}
 eth2_ipv4: 2.2.2.{{nr}}
+gaia_interface:
+#- { interface: '{ "name": "eth0", "ipv4-address": "{{eth0_ipv4}}", "ipv4-mask-length": 24, "comments": "Outside interface", "enabled": "true" }' }
+- { interface: '{ "name": "eth1", "ipv4-address": "{{eth1_ipv4}}", "ipv4-mask-length": 24, "comments": "inside interface", "enabled": "true" }' }
+- { interface: '{ "name": "eth2", "ipv4-address": "{{eth2_ipv4}}", "ipv4-mask-length": 24, "comments": "DMZ interface", "enabled": "true" }' }
+
 
 # Set default variables for gaia FTW
 target_masklen: 24
