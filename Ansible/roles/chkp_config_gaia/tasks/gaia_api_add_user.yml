@@ -11,6 +11,7 @@
        X-chkp-sid : "{{ sid }}"
      #body: "{{ item.user }}"
      body: "{{ gaia_show_user }}"
+     status_code: [200, 400]
   #loop: "{{ gaia_show_user }}"
   register: show_user_output
 

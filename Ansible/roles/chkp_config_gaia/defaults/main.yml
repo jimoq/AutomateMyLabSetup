@@ -55,6 +55,7 @@ gaia_interface:
 
 # Set default variables for gaia FTW
 target_masklen: 24
+target_gw: 192.168.233.254
 sickey: vpn123
 hostname: "{{ vm_name }}"
 gaia_ftw_conf_string:

@@ -12,8 +12,8 @@
         type: "{{ item.type }}"
         nr: "{{ item.nr }}"
       with_items:
-      - { vm_name: sms-pri70, target: 192.168.233.60, type: primary_sms, nr: 70  }
-      - { vm_name: sms-sec71, target: 192.168.233.61, type: secondary_sms, nr: 71 }
+      - { vm_name: sms-pri70, target: 192.168.233.70, type: primary_sms, nr: 70  }
+      - { vm_name: sms-sec71, target: 192.168.233.71, type: secondary_sms, nr: 71 }
 
 - name: Deploy Standalone SMS and GW
   hosts: 
