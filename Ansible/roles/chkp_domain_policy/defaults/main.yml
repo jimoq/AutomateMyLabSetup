@@ -58,29 +58,29 @@ cp_mgmt_access_rule_tasks:
 #    position: 1, source: External, destination: ACME_Security_Gateways, service: ["ssh", "https"], action: Accept, track_type: log 
 #  }
 - { state: present, layer: Orchestration_Demo_Policy Network, name: ACMECorp management access to Security Gateways, 
-    position: 1, source: External, destination: any, service: ["ssh", "https"], action: Accept, track_type: log
+    position: 1, source: External, destination: Any, service: ["ssh", "https"], action: Accept, track_type: log
   }
 - { state: present,  layer: Orchestration_Demo_Policy Network, name: ACMECorp external to Any, 
-    position: 2, source: External, destination: any, service: ["any"], action: Accept, track_type: log 
+    position: 2, source: External, destination: Any, service: ["Any"], action: Accept, track_type: log 
   }
 - { state: present, layer: Orchestration_Demo_Policy Network, name: ACMECorp internal to Any, 
-    position: 3, source: Internal, destination: any, service: ["any"], action: Accept, track_type: log 
+    position: 3, source: Internal, destination: Any, service: ["Any"], action: Accept, track_type: log 
   }
 - { state: present, layer: Orchestration_Demo_Policy Network, name: ACMECorp WebServer to DB, 
     position: 4, source: WebServers, destination: DBServers, service: ["MySQL"], action: Accept, track_type: log 
   }
 - { state: present, layer: Orchestration_Demo_Policy Network, name: ACMECorp WebServer Outbound Access, 
-    position: 5, source: WebServers, destination: any, service: ["http", "https", "ntp", "dns"], action: Accept, track_type: log 
+    position: 5, source: WebServers, destination: Any, service: ["http", "https", "ntp", "dns"], action: Accept, track_type: log 
   }
 - { state: present, layer: Orchestration_Demo_Policy Network,  name: Allow ICMP and HTTPS,
-    position: 6, source: any, destination: any, service: ["icmp-requests", "https"], action: Accept, track_type: log 
+    position: 6, source: Any, destination: Any, service: ["icmp-requests", "https"], action: Accept, track_type: log 
   }
 - { state: present, layer: Orchestration_Demo_Policy Network,  name: LoadBalancers,
-    position: 7,  source: any, destination: ["LoadBalancer1", "LoadBalancer2", "hst-dmz-webserver"], service: ["http", "https"], action: Accept, track_type: log 
+    position: 7,  source: Any, destination: ["LoadBalancer1", "LoadBalancer2", "hst-dmz-webserver"], service: ["http", "https"], action: Accept, track_type: log 
   }
   # Enable log on the existing cleanup rule
 - { state: present, layer: Orchestration_Demo_Policy Network, name: Cleanup rule, 
-    position: 8, position_bottom: "default drop", source: any, destination: ["any"], service: ["any"], action: Drop, track_type: log }
+    position: 8, position_bottom: "default drop", source: Any, destination: ["Any"], service: ["Any"], action: Drop, track_type: log }
 
 #
 #- name: "add NAT rule for Webserver "

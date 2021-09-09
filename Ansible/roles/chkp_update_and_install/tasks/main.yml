@@ -1,0 +1,5 @@
+# Main tasks file for mho_upload_andinstall_jhf
+---
+- include_tasks: ssh_check_status.yml
+- include_tasks: upload_and_install_jhf.yml
+  loop: "{{  cpuse_packages  }}"

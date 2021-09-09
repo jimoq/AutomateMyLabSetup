@@ -1,0 +1,32 @@
+---
+- name: Import {{ item.file  }} to CPUSE on {{ ansible_hostname }} 
+  command: clish -c 'installer import ftp {{ lookup('env','FTP_SRV') }} path {{ item.jhf_file  }}.tgz username {{ lookup('env','FTP_UID') }} password {{ lookup('env','FTP_PWD') }}'
+  register: jhf_import_result
+
+- name: Show the result of CPUSE import on {{ ansible_hostname }}
+  debug: 
+    msg: "{{ jhf_import_result.stdout_lines }}"
+
+- name: Wait for CPUSE JHF import process to complete on {{ ansible_hostname }}
+  command: clish -c 'show installer package {{ item.jhf_file  }}'
+  register: job_result
+  until: job_result is regex("Status:\s*Available for Install")
+  retries: 100
+  delay: 5
+
+- name: install {{ item.jhf_file  }} on {{ ansible_hostname }} (set and forget)
+  shell: clish -c 'installer install {{ item.jhf_file  }}' <<< $'y\ny'
+  register: installer_install_async
+  async: 1800
+  poll: 0
+
+- name: Wait for CPUSE JHF install process to complete on {{ ansible_hostname }}
+  command: clish -c 'show installer package {{ item.jhf_file  }}'
+  register: show_installer_result
+  until: show_installer_result is regex("Status:\s*Installed")
+  retries: 100
+  delay: 5
+
+- name: Show result of CPUSE install on {{ ansible_hostname }}
+  debug:
+    msg: "{{ show_installer_result.stdout_lines }}"

@@ -10,5 +10,7 @@
   loop: "{{mgmt_api_redundant_domains}}"
 - include_tasks: mgmt_api_add_domains_single_mds.yml
   loop: "{{mgmt_api_single_domains}}"
+- import_tasks: mgmt_api_check_domain_readiness.yml
+  when: show_domain_result['json']['name'] is not defined
 - import_tasks: mgmt_api_publish.yml
 - import_tasks: mgmt_api_logout.yml

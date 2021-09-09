@@ -1,0 +1,21 @@
+---
+- name: Check if domain eastern-europe exists
+  uri:
+     url: "https://{{ mgmt_server }}/web_api/show-domain"
+     validate_certs: false
+     method: POST
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body_format: json
+     body: '{
+               "name" : "eastern-europe"
+             }'
+  ignore_errors: yes
+  register: show_domain_result
+  retries: 200
+  delay: 3
+  until: (show_domain_result['json']['name'] is defined)
+
+#- name: Pause for 10 minutes to let MDS server calm down up.
+#  pause:
+#    minutes: 10

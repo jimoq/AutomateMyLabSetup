@@ -1,0 +1,13 @@
+---
+- name: Wait 10 seconds and then from localhost poll every 5 seconds for 5 minutes to check if port 22 on {{ ansible_hostname }} with ip {{ ansible_host }} is active and contain "OpenSSH"
+  wait_for:
+    port: 22
+    host: "{{ ansible_host }}"
+    search_regex: OpenSSH
+    timeout: 600
+    delay: 10
+    sleep: 5
+  #delegate_to: "{{ pi_jumphost }}"
+  #vars:
+  #  ansible_user: "{{ lookup('env','PI_USERNAME') }}"
+  #  ansible_ssh_pass: "{{ lookup('env','PI_PASSWORD') }}"

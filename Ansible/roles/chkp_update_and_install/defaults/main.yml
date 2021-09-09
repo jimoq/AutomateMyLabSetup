@@ -1,0 +1,4 @@
+# Default values for variables in role mho_upload_and_install_jhf
+---
+cpuse_packages:
+- { jhf_file: "Check_Point_R81_10_JUMBO_HF_Bundle_T9_sk175186_FULL" }

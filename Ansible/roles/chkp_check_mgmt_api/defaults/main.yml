@@ -1,5 +1,12 @@
 ---
 # vars file for chkp_config_gaia role
+# mgmt_api credentials, server and base URL
+mgmt_user: "{{ lookup('env','TF_VAR_mgmt_api_user') }}"
+mgmt_password: "{{ lookup('env','TF_VAR_mgmt_api_password') }}"
+mgmt_server: "{{ansible_host}}" # This should be your Check Point SMS or MDS
+mgmt_api_url: /web_api
+mgmt_validate_cert: false
+
 # gaia_api credentials, server and base URL
 gaia_user: "{{ lookup('env','TF_VAR_gaia_api_user') }}"
 gaia_password: "{{ lookup('env','TF_VAR_gaia_api_password') }}"

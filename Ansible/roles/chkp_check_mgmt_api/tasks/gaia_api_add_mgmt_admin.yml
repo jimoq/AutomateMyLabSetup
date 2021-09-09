@@ -1,0 +1,53 @@
+---
+- name: Add MDS administrator api_admin
+  uri:
+     url: https://{{ api_server }}{{ api_base_url }}/run-script
+     validate_certs: false
+     method: POST
+     body_format: json
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body: '{ 
+             "description": "Add management administrator api_admin", 
+             "script": "mgmt_cli add administrator name ''{{mgmt_user}}'' password ''{{mgmt_password}}'' must-change-password ''false'' multi-domain-profile ''Multi-Domain Super User'' --domain ''System Data'' --format json --root true" 
+            }'
+  register: api_task
+  when: type == "primary_mds"
+
+- name: Add MDS administrator api_admin
+  uri:
+     url: https://{{ api_server }}{{ api_base_url }}/run-script
+     validate_certs: false
+     method: POST
+     body_format: json
+     headers :
+       X-chkp-sid : "{{ sid }}"
+     body: '{ 
+             "description": "Add management administrator api_admin", 
+             "script": "mgmt_cli add administrator name ''{{mgmt_user}}'' password ''{{mgmt_password}}'' must-change-password ''false'' permissions-profile ''Super User'' --domain ''System Data'' --format json --root true" 
+            }'
+  register: api_task
+  when: type != "primary_mds"
+
+#- set_fact:
+#     api_taskid: "{{ api_task.json['task-id'] }}"
+#
+#- name: Check API Settings Task Progress
+#  uri:
+#     url: https://{{ api_server }}{{ api_base_url }}/show-task
+#     validate_certs: false
+#     method: POST
+#     body_format: json
+#     headers:
+#       X-chkp-sid : "{{ sid }}"
+#     body: '{ "task-id": "{{api_taskid}}" }'
+#  retries: 20
+#  delay: 3
+#  register: datasource_tasks
+#  until: (datasource_tasks.json.tasks[0]['progress-percentage'] == 100)
+#  failed_when: 
+#    - (datasource_tasks.json.tasks[0]['progress-percentage'] == 100)
+#    - (datasource_tasks.json.tasks[0]['status'] != "succeeded")
+#
+#- debug:
+#    msg: "{{ datasource_tasks.json.tasks[0]['task-details'][0]['output'] | b64decode }}"
