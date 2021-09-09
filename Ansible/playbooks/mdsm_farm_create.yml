@@ -1,4 +1,4 @@
-# ansible-playbook orchestrate_mdsm_farm.yml -e "vm_template=cloud03_r81dot10"
+# ansible-playbook mdsm_farm_create.yml -e "vm_template=cloud03_r81dot10"
 # optional extra vars
 ## esxi_hostname= cloud03.local, cloud02.local
 ## vm_template= cloud03_r81dot10, cloud03_r81ea, cloud02_r80dot40, cloud03_r80dot40
@@ -32,22 +32,22 @@
   connection: local
   gather_facts: no
   roles:
-    - role: roles/vm_ware_deploy_instance
+    - role: ../roles/vm_ware_deploy_instance
       delegate_to: localhost
-    - role: roles/chkp_config_gaia
+    - role: ../roles/chkp_config_gaia
 
 - name: Configure management API on Primary MDS to accept connections from any host
   hosts: mds10
   connection: local
   gather_facts: no
   roles:
-    - role: roles/chkp_check_mgmt_api
+    - role: ../roles/chkp_check_mgmt_api
 - name:  Establish SIC with Secondary MDS and MDLS
   hosts: mds10
   connection: local
   gather_facts: no
   roles:
-  - role: roles/chkp_add_mds_mdls
+  - role: ../roles/chkp_add_mds_mdls
     state: present
 
 - name: Configure management API on Secondary MDS to accept connections from any host
@@ -55,14 +55,14 @@
   connection: local
   gather_facts: no
   roles:
-    - role: roles/chkp_check_mgmt_api
+    - role: ../roles/chkp_check_mgmt_api
 
 - name:  Add domains to MDSM farm
   hosts: mds10
   connection: local
   gather_facts: no
   roles:
-    - role: roles/chkp_add_mds_domain
+    - role: ../roles/chkp_add_mds_domain
       delegate_to: localhost
 
 - name: Build inventory for domains
@@ -92,7 +92,7 @@
   gather_facts: no
   ignore_errors: yes # needed because of bug "Ambiguous parameters"
   roles:
-    - role: roles/chkp_domain_policy
+    - role: ../roles/chkp_domain_policy
       message: "first run of role"
 
 
@@ -104,5 +104,5 @@
   gather_facts: no
   ignore_errors: yes # needed because of bug "Ambiguous parameters"
   roles:
-    - role: roles/chkp_domain_policy # need to run role two times due to bug on first run with error message: {u'message': u'Invalid parameter for [subnet-mask/mask-length4]. Ambiguous parameters contain mask definition for IPv4 subnet', u'code': u'generic_err_invalid_parameter'} Unpublished changes were discarded"}
+    - role: ../roles/chkp_domain_policy # need to run role two times due to bug on first run with error message: {u'message': u'Invalid parameter for [subnet-mask/mask-length4]. Ambiguous parameters contain mask definition for IPv4 subnet', u'code': u'generic_err_invalid_parameter'} Unpublished changes were discarded"}
       message: "second run of role"
