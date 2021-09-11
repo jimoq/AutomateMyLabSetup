@@ -1,0 +1,4 @@
+---
+- include_tasks: cp_mgmt_simple_gateway.yml
+  when: ansible_checkpoint_domain == "nordics"
+##- include_tasks: cp_mgmt_simple_gateway_facts.yml

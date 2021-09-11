@@ -23,33 +23,33 @@ api_base_url: "{{mgmt_api_url}}"
 api_validate_cert: "{{mgmt_validate_cert}}"
 
 # Check Point Cluster vars
-cluster_name : "Ansible_Cluster"
-cluster_primary_ip: "10.2.0.193"
+cluster_name : "cl50"
+cluster_primary_ip: "192.168.233.50"
 cluster_mode : "cluster-xl-ha"
-cluster_version : "R80.30"
-cluster_eth0_ip : "10.2.0.193"
+cluster_version : "R81.10"
+cluster_eth0_ip : "192.168.233.50"
 cluster_eth0_length : 24
 cluster_eth0_topology : "EXTERNAL"
 cluster_eth0_type : "cluster"
-cluster_eth1_ip : "192.168.101.1"
+cluster_eth1_ip : "10.50.1.50"
 cluster_eth1_length : 24
 cluster_eth1_topology : "INTERNAL"
 cluster_eth1_type : "cluster"
 cluster_eth2_topology : "INTERNAL"
 cluster_eth2_type : "sync"
-mem1_name : "member1"
+mem1_name : "sg51"
 mem1_sic : "vpn123"
-mem1_eth0_ip : "10.2.0.194"
+mem1_eth0_ip : "192.168.233.51"
 mem1_eth0_length : 24
-mem1_eth1_ip : "192.168.101.2"
+mem1_eth1_ip : "10.50.1.51"
 mem1_eth1_length : 24
-mem1_eth2_ip : "192.168.102.2"
+mem1_eth2_ip : "10.2.2.51"
 mem1_eth2_length : 24
-mem2_name : "member2"
+mem2_name : "sg52"
 mem2_sic : "vpn123"
-mem2_eth0_ip : "10.2.0.195"
+mem2_eth0_ip : "192.168.233.52"
 mem2_eth0_length : 24
-mem2_eth1_ip : "192.168.101.3"
+mem2_eth1_ip : "10.50.1.52"
 mem2_eth1_length : 24
-mem2_eth2_ip : "192.168.102.3"
+mem2_eth2_ip : "10.2.2.52"
 mem2_eth2_length : 24

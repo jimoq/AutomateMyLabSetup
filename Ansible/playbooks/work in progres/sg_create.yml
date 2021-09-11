@@ -1,0 +1,39 @@
+# ansible-playbook sg_create.yml -e "vm_template=cloud03_r81dot10"
+# optional extra vars
+## esxi_hostname= cloud03.local, cloud02.local
+## vm_template= cloud03_r81dot10, cloud03_r81_t392, cloud02_r80dot40, cloud03_r80dot40
+## mytarget= a_machine_in_the inventory
+---
+- name: Build inventory
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Create a dynamic inventory
+      add_host:
+        hostname: "{{ item.vm_name }}"
+        groups: gw
+        vm_name: "{{ item.vm_name }}"
+        target: "{{ item.target }}"
+        type: "{{ item.type }}"
+        nr: "{{ item.nr }}"
+      with_items:
+      - { vm_name: vsx41, target: 192.168.233.41, type: sg, nr: 41 }
+      - { vm_name: vsx42, target: 192.168.233.42, type: sg, nr: 41 }
+      - { vm_name: sg51, target: 192.168.233.51, type: cl, nr: 51 }
+      - { vm_name: sg52, target: 192.168.233.52, type: cl, nr: 51 }
+      - { vm_name: sg53, target: 192.168.233.53, type: sg, nr: 53 }
+      - { vm_name: sg54, target: 192.168.233.54, type: sg, nr: 54 }
+
+
+- name: Deploy Security Gateway
+  vars:
+    mytarget: gw
+  hosts: "{{ mytarget }}"
+  connection: local
+  gather_facts: no
+  roles:
+    - role: ../../roles/vm_ware_deploy_instance
+      delegate_to: localhost
+    - role: ../../roles/chkp_config_gaia
+      delegate_to: localhost

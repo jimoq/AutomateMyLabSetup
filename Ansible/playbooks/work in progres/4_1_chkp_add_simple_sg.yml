@@ -1,5 +1,5 @@
 ---
-- name: Build inventory
+- name: Build inventory for domains
   hosts: localhost
   connection: local
   gather_facts: no
@@ -18,11 +18,11 @@
       - { hostname: dms-eastern-europe,  mds_sms: mds20.local, domain: eastern-europe, groups: domains }
       - { hostname: 192,                 mds_sms: 168.233.61, domain: SMC User, groups: sms61 }
 
-- name:  Execute Check Point cluster role
+- name:  Add security policy to domains
   vars:
     target: domains
   hosts: "{{ target }}"
-  connection: local
+  connection: httpapi
   gather_facts: no
   roles:
-  - role: ../../roles/chkp_add_sg_cluster
+    - role: ../../roles/chkp_add_sg

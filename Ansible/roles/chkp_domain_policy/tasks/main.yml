@@ -9,6 +9,3 @@
   when: ansible_checkpoint_domain != "System Data"
 - include_tasks: cp_mgmt_access_rule.yml
   when: ansible_checkpoint_domain != "System Data"
-#- include_tasks: cp_mgmt_simple_gateway.yml
-#  when: ansible_checkpoint_domain == "nordics"
-##- include_tasks: cp_mgmt_simple_gateway_facts.yml

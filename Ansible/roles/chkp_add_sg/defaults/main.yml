@@ -1,0 +1,21 @@
+---
+# vars file for add_domain_policy role
+# Credentials for cp_mgmt* modules and Settings for the Check Point httpapi plugin that provides methods to connect to Checkpoint devices over a HTTP(S)-based api.
+ansible_httpapi_use_ssl: True
+ansible_httpapi_validate_certs: False
+ansible_network_os: check_point.mgmt.checkpoint
+ansible_checkpoint_domain: SMC User
+ansible_user: "{{ lookup('env','TF_VAR_mgmt_api_user') }}"
+ansible_ssh_pass: "{{ lookup('env','TF_VAR_mgmt_api_password') }}"
+
+# List of gateway objects to add
+cp_mgmt_simple_gateway_vars:
+- { state: present, name: sg53, comments: Private VPC vNet, groups: [], anti_bot: true, anti_virus: true, appi_ctrl: true, color: sea green, firewall: true, ips: true, sickey: vpn123, threat_emulation: false, url_filtering: true, gw_version: R81.10, eth0_color: red, eth0_comments: Leads to Internet ,eth0_ipv4: 192.168.233.53, eth0_ipv4_network_mask: 255.255.255.0 ,eth0_anti_spoofing: true, eth0_topology: External, eth0_security_zone: true, eth0_specific_zone: ExternalZone, eth1_color: sea green, eth1_comments: Leads to Web Frontend, eth1_ipv4: 10.53.1.1, eth1_ipv4_network_mask: 255.255.255.0, eth1_anti_spoofing: true, eth1_topology: Internal, eth1_topology_ip_behind_if: network defined by the interface ip and net mask, eth1_security_zone: true, eth1_specific_zone: InternalZone, eth2_color: blue, eth2_comments: Leads to Application Backend, eth2_ipv4: 10.53.2.1, eth2_ipv4_network_mask: 255.255.255.0, eth2_anti_spoofing: true, eth2_topology: Internal, eth2_topology_ip_behind_if: network defined by the interface ip and net mask, eth2_security_zone: true, eth2_specific_zone: DMZZone }
+- { state: present, name: sg54, comments: publoc VPC vNet, groups: [], anti_bot: true, anti_virus: true, appi_ctrl: true, color: red, firewall: true, ips: true, sickey: vpn123, threat_emulation: false, url_filtering: true, gw_version: R81.10, eth0_color: red, eth0_comments: Leads to Internet ,eth0_ipv4: 192.168.233.54, eth0_ipv4_network_mask: 255.255.255.0 ,eth0_anti_spoofing: true, eth0_topology: External, eth0_security_zone: true, eth0_specific_zone: ExternalZone, eth1_color: sea green, eth1_comments: Leads to Web Frontend, eth1_ipv4: 10.54.1.1, eth1_ipv4_network_mask: 255.255.255.0, eth1_anti_spoofing: true, eth1_topology: Internal, eth1_topology_ip_behind_if: network defined by the interface ip and net mask, eth1_security_zone: true, eth1_specific_zone: InternalZone, eth2_color: blue, eth2_comments: Leads to Application Backend, eth2_ipv4: 10.54.2.1, eth2_ipv4_network_mask: 255.255.255.0, eth2_anti_spoofing: true, eth2_topology: Internal, eth2_topology_ip_behind_if: network defined by the interface ip and net mask, eth2_security_zone: true, eth2_specific_zone: DMZZone }
+
+# List of gateways to install the policy to
+policy_targets: ["sg53","sg54"]
+#policy_targets: sg53
+
+#Policy packages to add
+policy_name: Orchestration_Demo_Policy
