@@ -1,0 +1,37 @@
+---
+# Tasks for role inventory
+- name: Create a dynamic inventory to deploy vm instances and configure them with Gaia
+  add_host:
+    hostname: "{{ item.hostname }}"
+    ansible_host: "{{ item.ansible_host }}"
+    groups: "{{item.groups}}"
+    vm_name: "{{ item.hostname }}"
+    target: "{{ item.ansible_host }}"
+    type: "{{ item.type }}"
+    nr: "{{ item.nr }}"
+    ansible_user: "{{ lookup('env','TF_VAR_mgmt_api_user') }}"
+    ansible_ssh_pass: "{{ lookup('env','TF_VAR_mgmt_api_password') }}"
+  with_items:
+  - { hostname: mds10,  ansible_host: 192.168.233.10, groups: mdsm, type: primary_mds, nr: 10 }
+  - { hostname: mds20,  ansible_host: 192.168.233.20, groups: mdsm, type: secondary_mds, nr: 20 }
+  - { hostname: mdls30, ansible_host: 192.168.233.30, groups: mdsm, type: mdls, nr: 30 }
+  - { hostname: vsx41,  ansible_host: 192.168.233.41, groups: sg, type: cl, nr: 41 }
+  - { hostname: vsx42,  ansible_host: 192.168.233.42, groups: sg, type: cl, nr: 42 }
+  - { hostname: sg51,   ansible_host: 192.168.233.51, groups: sg, type: cl, nr: 51 }
+  - { hostname: sg52,   ansible_host: 192.168.233.52, groups: sg, type: cl, nr: 52 }
+  - { hostname: sg53,   ansible_host: 192.168.233.53, groups: sg, type: sg, nr: 53 }
+  - { hostname: sg54,   ansible_host: 192.168.233.54, groups: sg, type: sg, nr: 54 }
+  
+- name: Create a dynamic inventory with domains for Check Point management API
+  add_host:
+    hostname: "{{ item.hostname }}"
+    ansible_host: "{{ item.hostname }}.{{ item.mds_sms }}"
+    ansible_checkpoint_domain: "{{ item.domain}}"
+    groups: "{{item.groups}}"
+  with_items:
+  - { hostname: dms-nordics,         mds_sms: mds10.local, domain: nordics, groups: domains }
+  - { hostname: dms-central-europe,  mds_sms: mds10.local, domain: central-europe, groups: domains }
+  - { hostname: dms-southern-europe, mds_sms: mds10.local, domain: southern-europe, groups: domains }
+  - { hostname: dms-northern-europe, mds_sms: mds20.local, domain: northern-europe, groups: domains }
+  - { hostname: dms-eastern-europe,  mds_sms: mds20.local, domain: eastern-europe, groups: domains }
+  - { hostname: 192,                 mds_sms: 168.233.61, domain: SMC User, groups: sms61 }

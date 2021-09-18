@@ -7,28 +7,13 @@
   hosts: localhost
   connection: local
   gather_facts: no
-  tasks:
-    - name: Create a dynamic inventory
-      add_host:
-        hostname: "{{ item.vm_name }}"
-        ansible_host: "{{ item.target }}"
-        groups: mdsm
-        vm_name: "{{ item.vm_name }}"
-        target: "{{ item.target }}"
-        #target_masklen: "{{ item.target_masklen }}"
-        #target_gw: "{{ item.target_gw }}"
-        type: "{{ item.type }}"
-        nr: "{{ item.nr }}"
-        ansible_user: "{{ lookup('env','TF_VAR_mgmt_api_user') }}"
-        ansible_ssh_pass: "{{ lookup('env','TF_VAR_mgmt_api_password') }}"
-      with_items:
-      - { vm_name: mds10, target: 192.168.233.10, target_masklen: 24, target_gw: 192.168.233.254, type: primary_mds, nr: 10 }
-      - { vm_name: mds20, target: 192.168.233.20, target_masklen: 24, target_gw: 192.168.233.254, type: secondary_mds, nr: 20 }
-      - { vm_name: mdls30, target: 192.168.233.30, target_masklen: 24, target_gw: 192.168.233.254, type: mdls, nr: 30 }
-      #- { vm_name: sgvsx40, target: 192.168.233.40, target_masklen: 24, target_gw: 192.168.233.254, type: sg, nr: 40 }
+  roles:
+    - role: ../roles/inventory
 
 - name: Deploy Gaia as Multi-Domain Servers
-  hosts: mdsm
+  hosts: 
+  - mdsm
+  - sg
   connection: local
   gather_facts: no
   roles:
@@ -65,29 +50,8 @@
     - role: ../roles/chkp_add_mds_domain
       delegate_to: localhost
 
-- name: Build inventory for domains
-  hosts: localhost
-  connection: local
-  gather_facts: no
-  tasks:
-    - name: Create a dynamic inventory
-      add_host:
-        hostname: "{{ item.hostname }}"
-        ansible_host: "{{ item.hostname }}.{{ item.mds_sms }}"
-        ansible_checkpoint_domain: "{{ item.domain}}"
-        groups: "{{item.groups}}"
-      with_items:
-      - { hostname: dms-nordics,         mds_sms: mds10.local, domain: nordics, groups: domains }
-      - { hostname: dms-central-europe,  mds_sms: mds10.local, domain: central-europe, groups: domains }
-      - { hostname: dms-southern-europe, mds_sms: mds10.local, domain: southern-europe, groups: domains }
-      - { hostname: dms-northern-europe, mds_sms: mds20.local, domain: northern-europe, groups: domains }
-      - { hostname: dms-eastern-europe,  mds_sms: mds20.local, domain: eastern-europe, groups: domains }
-      - { hostname: 192,                 mds_sms: 168.233.61, domain: SMC User, groups: sms61 }
-
 - name:  Add security policy to domains
-  vars:
-    target: domains
-  hosts: "{{ target }}"
+  hosts: domains
   connection: httpapi
   gather_facts: no
   ignore_errors: yes # needed because of bug "Ambiguous parameters"
@@ -95,14 +59,25 @@
     - role: ../roles/chkp_domain_policy
       message: "first run of role"
 
-
 - name:  Add security policy to domains second run
-  vars:
-    target: domains
-  hosts: "{{ target }}"
+  hosts: domains
   connection: httpapi
   gather_facts: no
   ignore_errors: yes # needed because of bug "Ambiguous parameters"
   roles:
     - role: ../roles/chkp_domain_policy # need to run role two times due to bug on first run with error message: {u'message': u'Invalid parameter for [subnet-mask/mask-length4]. Ambiguous parameters contain mask definition for IPv4 subnet', u'code': u'generic_err_invalid_parameter'} Unpublished changes were discarded"}
       message: "second run of role"
+
+- name:  Add gateways to domain dms-nordics
+  hosts: dms-nordics
+  connection: httpapi
+  gather_facts: no
+  roles:
+    - role: ../roles/chkp_add_sg
+
+- name:  Add Check Point cluster to domain dms-nordics using RESTful mgmt API
+  hosts: dms-nordics
+  connection: local
+  gather_facts: no
+  roles:
+  - role: ../roles/chkp_add_sg_cluster

@@ -2,25 +2,11 @@
 - name: Check for Cluster
   connection: httpapi
   check_point.mgmt.checkpoint_object_facts:
-    object_filter: Ansible_Cluster
+    object_filter: "{{ cluster_name }}"
   register: datasource_check_cluster
 
 - name: Create Gateway if it does not exist
   block:
-
-#   - name: Wait up to 300 seconds for SIC port 18211 to Open on Member1
-#      wait_for:
-#        port: 18211
-#        host: "{{ mem1_eth0_ip }}"
-#        delay: 5
-#      connection: local
-#
-#    - name: Wait up to 300 seconds for SIC port 18211 to Open on Member2
-#      wait_for:
-#        port: 18211
-#        host: "{{ mem2_eth0_ip }}"
-#        delay: 5
-#      connection: local
 
   - name: "Add a two member Cluster"
     uri:

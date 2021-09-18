@@ -12,7 +12,7 @@
     - name: Create a dynamic inventory
       add_host:
         hostname: "{{ item.vm_name }}"
-        groups: gw
+        groups: sg
         vm_name: "{{ item.vm_name }}"
         target: "{{ item.target }}"
         type: "{{ item.type }}"
@@ -28,7 +28,7 @@
 
 - name: Deploy Security Gateway
   vars:
-    mytarget: gw
+    mytarget: sg
   hosts: "{{ mytarget }}"
   connection: local
   gather_facts: no
