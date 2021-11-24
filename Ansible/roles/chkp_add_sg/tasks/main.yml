@@ -1,4 +1,4 @@
 ---
 - include_tasks: cp_mgmt_simple_gateway.yml
-  when: ansible_checkpoint_domain == "nordics"
+  when: ansible_checkpoint_domain == "nordics" or ansible_checkpoint_domain == "SMC User"
 ##- include_tasks: cp_mgmt_simple_gateway_facts.yml

@@ -25,6 +25,6 @@
   roles:
     - role: ../roles/vm_ware_deploy_instance
       delegate_to: localhost
-      vm_template: cloud03_r81_t392
+      vm_template: cloud03_r81dot10
     - role: ../roles/chkp_config_gaia
       delegate_to: localhost

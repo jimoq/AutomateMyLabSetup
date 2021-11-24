@@ -12,7 +12,7 @@
         type: "{{ item.type }}"
       with_items:
       - { vm_name: sms-pri60, target: 192.168.233.60, type: primary_sms }
-      - { vm_name: sms-sec61,, target: 192.168.233.61, type: secondary_sms }
+      - { vm_name: sms-sec61, target: 192.168.233.61, type: secondary_sms }
       - { vm_name: se62, target: 192.168.233.62, type: ls_se }
       - { vm_name: sg63, target: 192.168.233.63, type: sg }
 

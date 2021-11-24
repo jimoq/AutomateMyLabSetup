@@ -1,5 +1,5 @@
 ---
-# Run with extra vars for example: ansible-playbook chkp_create_vnf_cloudguard_edge.yml -e "vm_name=cgedgevnf68 target=192.168.233.68"
+# Run with extra vars for example: ansible-playbook cgedge_vnf_create.yml -e "vm_name=cgedgevnf68 target=192.168.233.68"
 # Avaliable Options 
 ## esxi_hostname= cloud03.local, cloud02.local
 ## vm_template=cloud02_cgedge_r80dot20
@@ -22,11 +22,11 @@
   hosts: "{{ vm_name }}"
   gather_facts: no
   roles:
-  - role: roles/vm_ware_deploy_instance
-    connection: httpapi
-  - role: roles/chkp_lsm_gw
-    connection: httpapi
-    state: present
-  - role: roles/chkp_config_gaia_embedded
+  - role: ../roles/vm_ware_deploy_instance
+    connection: local
+#  - role: ../roles/chkp_lsm_gw
+#    connection: httpapi
+#    state: present
+  - role: ../roles/chkp_config_gaia_embedded
     connection: ssh
     ansible_user: api_user # Needed on for my ansible install on Dell . Fix ME!! bug!!
