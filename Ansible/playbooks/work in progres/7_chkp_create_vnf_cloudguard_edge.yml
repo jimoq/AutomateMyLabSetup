@@ -30,11 +30,11 @@
   hosts: chkp
   gather_facts: no
   roles:
-  - role: roles/vm_ware_deploy_instance
+  - role: ../../roles/vm_ware_deploy_instance
     connection: httpapi
-  - role: roles/chkp_lsm_gw
+  - role: ../../roles/chkp_lsm_gw
     connection: httpapi
     state: present
-  - role: roles/chkp_config_gaia_embedded
+  - role: ../../roles/chkp_config_gaia_embedded
     connection: ssh
-    ansible_user: api_user # Needed on for my ansible install on Dell . Fix ME!! bug!!
+    #ansible_user: api_user # Needed on for my ansible install on Dell . Fix ME!! bug!!
