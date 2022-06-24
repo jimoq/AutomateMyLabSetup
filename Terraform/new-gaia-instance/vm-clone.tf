@@ -54,9 +54,9 @@ resource "vsphere_virtual_machine" "vm" {
 #	linked_clone = true
 
   }
-  provisioner "local-exec" {
-  command = "ansible-playbook ../../Ansible/conf_gaia_instance_from_Terraform.yml -e \"target=var.gaia_instance_target vm_name=var.vsphere_virtual_machine_vm type=var.gaia_instance_type\""
-  }
+#  provisioner "local-exec" {
+#  command = "ansible-playbook ../../Ansible/conf_gaia_instance_from_Terraform.yml -e \"target=var.gaia_instance_target vm_name=var.vsphere_virtual_machine_vm type=var.gaia_instance_type\""
+#  }
 }
 
 data "vsphere_virtual_machine" "sg89" {

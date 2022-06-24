@@ -4,8 +4,16 @@ variable "vsphere_server" {}
 variable "vsphere_user" {}
 variable "vsphere_password" {}
 variable "vsphere_datacenter" {}
-variable "vsphere_datastore" {}
-variable "vsphere_host" {}
+
+variable "vsphere_datastore" {
+  description = "The datastore to to store the new VM"
+  default = "datastore1"
+}
+
+variable "vsphere_host" {
+  description = "The ESXi host to where the VM should be created"
+  default = "cloud03.local"
+}
 
 variable "vsphere_network" {
   description = "VM net to connet the virtual machine to"
@@ -14,7 +22,7 @@ variable "vsphere_network" {
 
 variable "vsphere_virtual_machine_template" {
   description = "The VM template to clone from"
-  default     = "gaia_r80.40"
+  default     = "cloud03_r81dot20"
 }
 
 variable "vsphere_virtual_machine_vm" {
