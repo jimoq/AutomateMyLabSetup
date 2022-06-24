@@ -39,6 +39,9 @@ resource "vsphere_virtual_machine" "vm" {
     network_id   = data.vsphere_network.network.id
     adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
   }
+  
+  wait_for_guest_net_timeout = 0
+  wait_for_guest_ip_timeout  = 0 
 
   disk {
     label            = "disk0"
@@ -59,10 +62,10 @@ resource "vsphere_virtual_machine" "vm" {
 #  }
 }
 
-data "vsphere_virtual_machine" "sg89" {
-  name          = vsphere_virtual_machine.vm.name
-  datacenter_id = data.vsphere_datacenter.dc.id
-}
+#data "vsphere_virtual_machine" "sg89" {
+#  name          = vsphere_virtual_machine.vm.name
+#  datacenter_id = data.vsphere_datacenter.dc.id
+#}
 
 output "virtual_machine_default_name_ips" {
   description = "The default IP address of each virtual machine deployed, indexed by name."

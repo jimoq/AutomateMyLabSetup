@@ -7,12 +7,12 @@ variable "vsphere_datacenter" {}
 
 variable "vsphere_datastore" {
   description = "The datastore to to store the new VM"
-  default = "datastore1"
+  default = "datastore_cloud02"
 }
 
 variable "vsphere_host" {
   description = "The ESXi host to where the VM should be created"
-  default = "cloud03.local"
+  default = "cloud02.local"
 }
 
 variable "vsphere_network" {
@@ -22,7 +22,7 @@ variable "vsphere_network" {
 
 variable "vsphere_virtual_machine_template" {
   description = "The VM template to clone from"
-  default     = "cloud03_r81dot20"
+  default     = "cloud02_r81dot20"
 }
 
 variable "vsphere_virtual_machine_vm" {
