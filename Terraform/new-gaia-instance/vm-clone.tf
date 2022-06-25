@@ -40,8 +40,10 @@ resource "vsphere_virtual_machine" "vm" {
     adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
   }
   
+# disabled due to old version of VMware Tools do not populate this property 
   wait_for_guest_net_timeout = 0
-  wait_for_guest_ip_timeout  = 0 
+# set to 0 to disable wait for IP
+  wait_for_guest_ip_timeout  = 5
 
   disk {
     label            = "disk0"
@@ -66,10 +68,3 @@ resource "vsphere_virtual_machine" "vm" {
 #  name          = vsphere_virtual_machine.vm.name
 #  datacenter_id = data.vsphere_datacenter.dc.id
 #}
-
-output "virtual_machine_default_name_ips" {
-  description = "The default IP address of each virtual machine deployed, indexed by name."
-
-  value = zipmap(vsphere_virtual_machine.vm.*.name, vsphere_virtual_machine.vm.*.default_ip_address)
-}
-
