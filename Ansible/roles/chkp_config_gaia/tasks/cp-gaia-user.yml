@@ -1,0 +1,10 @@
+- name: Add Gaia admin users
+  cp_gaia_user:
+    name: "{{ user.name }}"
+    real_name: "{{ user.real_name }}"
+    homedir: "{{ user.homedir }}"
+    shell: "{{ user.shell }}"
+    password_hash: "{{ user.password_hash }}"
+    roles: "{{ user.roles }}"
+    state: present
+  loop: "{{ gaia_admin_users }}"

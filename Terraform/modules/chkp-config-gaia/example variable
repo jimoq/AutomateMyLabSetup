@@ -1,0 +1,19 @@
+How can i replace the value of a variable dynamically in terraform based on a condition
+
+# vpcid with default value of empty string
+variable "vpcid" {
+  default = ""
+}
+
+# correctly defined local variable vpctake
+locals {
+  vpctake = "${var.vpcid == "" ? element(module.vpc.id, 0) : var.vpcid}"
+}
+
+module "subnet" {
+ vpc = "${local.vpctake}"
+}
+With this, if vpcid is provided from command line:
+
+terraform apply -var="vpcid=some-id"
+local.vpctake will be some-id. Otherwise value from element(module.vpc.id, 0) will be used.

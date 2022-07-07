@@ -1,0 +1,5 @@
+- name: Setting dns servers for the system
+  cp_gaia_dns:
+    suffix: "{{ dns_suffix }}"
+    primary: "{{ dns_primary }}"
+    secondary: "{{ dns_secondary }}"

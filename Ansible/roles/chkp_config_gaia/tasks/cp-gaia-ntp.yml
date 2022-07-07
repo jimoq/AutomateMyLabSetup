@@ -1,0 +1,10 @@
+- name: Setting ntp servers for the system
+  check_point.gaia.cp_gaia_ntp:
+    enabled: True
+    servers: 
+    - version: "{{ gaia_ntp_version }}"
+      type: primary
+      address: "{{ gaia_ntp_pri}}"
+    - version: "{{ gaia_ntp_version }}"
+      type: secondary
+      address: "{{ gaia_ntp_sec}}"

@@ -1,0 +1,8 @@
+- name: Set comment field of a physical interface
+  cp_gaia_physical_interface:
+    comments: "{{ item.comments }}"
+    enabled: "{{ item.eabled }}"
+    name: "{{ item.name }}"
+    ipv4_address: "{{ item.ipv4_address }}"
+    ipv4_mask_length: "{{"item.ipv4_mask_length}}"
+  loop: "{{ gaia_interface }}"

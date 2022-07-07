@@ -1,0 +1,1 @@
+gaia_ip = module.new-gaia-instance.vm_dhcp_address

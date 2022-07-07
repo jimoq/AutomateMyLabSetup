@@ -1,0 +1,55 @@
+# Login to Gaia API
+
+data "http" "gaia_login" {
+  provider = http-full
+  url = "https://${var.gaia_ip}/gaia_api/login"
+  method = "POST"
+  insecure_skip_verify = true
+  request_headers = {
+    content-type = "application/json"
+  }
+  request_body = jsonencode({
+    "user"     : "${var.gaia_api_user}",
+    "password" : "${var.gaia_api_password}"
+  })
+}
+
+locals {
+  # assign local variable local.gaia_sid the sid value from the json response
+  gaia_sid = jsondecode(data.http.gaia_login.body).sid
+}
+
+# Set timezone
+data "http" "gaia_timezone" {
+  provider = http-full
+  url = "https://${var.gaia_ip}/gaia_api/set-time-and-date"
+  method = "POST"
+  insecure_skip_verify = true
+  request_headers = {
+    content-type = "application/json"
+    X-chkp-sid : "${local.gaia_sid}"
+  }
+  request_body = jsonencode({
+    "timezone": "Europe / Stockholm"
+  })
+}
+
+# Check timezone
+data "http" "gaia_show_time_and_date" {
+  provider = http-full
+  url = "https://${var.gaia_ip}/gaia_api/show-time-and-date"
+  method = "POST"
+  insecure_skip_verify = true
+  request_headers = {
+    content-type = "application/json"
+    X-chkp-sid : "${local.gaia_sid}"
+  }
+  request_body = jsonencode({
+
+  })
+}
+
+output "data" {
+  value = jsondecode(data.http.gaia_show_time_and_date.body).timezone
+}
+
