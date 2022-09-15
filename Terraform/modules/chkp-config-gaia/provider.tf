@@ -11,7 +11,8 @@ provider "restapi" {
   # Configuration options
   uri      = "https://192.168.233.199/gaia_api"
   insecure = true
-  write_returns_object = true
+  write_returns_object = false
+  create_returns_object = false
   debug = true
 
   headers = {
