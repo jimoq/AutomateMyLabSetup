@@ -1,0 +1,13 @@
+// --- vSphere settings ---
+#vsphere_user = ""
+#vsphere_password = ""
+#vsphere_server = ""
+#vsphere_datacenter = ""
+#vsphere_datastore = ""
+#vsphere_host = ""
+#remote_ovf_url = "http://X.X.X.X"
+dvs_name = "dvs-automation-poc"
+#pg1000 ="pg-mgmt-1000"
+#pg1001 ="pg-isolated-1001"
+#pg1002 ="pg-isolated-1002"
+vsphere_folder_name = "automation-poc"
