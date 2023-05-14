@@ -1,0 +1,8 @@
+[check_point]
+192.168.100.110
+[check_point:vars]
+ansible_httpapi_use_ssl=True
+ansible_httpapi_validate_certs=False
+ansible_user=admin
+ansible_password=vpn123
+ansible_network_os=check_point.gaia.checkpoint

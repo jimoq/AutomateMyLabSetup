@@ -28,3 +28,6 @@
   - role: ../roles/vm_ware_deploy_instance
     delegate_to: localhost
   - role: ../roles/chkp_config_gaia
+    vars:
+      esxi_hostname: cloud02.local
+      vm_template: cloud02_r81dot10

@@ -1,0 +1,12 @@
+- hosts: localhost
+  gather_facts: no
+  vars:
+    images:
+      - foo
+      - bar
+  tasks:
+    - shell: "echo result-{{item}}"
+      register: "r"
+      with_items: "{{ images }}"
+
+    - debug: msg="item.item={{r}}"

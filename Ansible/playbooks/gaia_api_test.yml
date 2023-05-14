@@ -1,0 +1,11 @@
+---
+- name: Playbook name
+  hosts: check_point
+  connection: httpapi
+  gather_facts: false
+  tasks:
+    - name: Setting ntp servers for the system
+      check_point.gaia.cp_gaia_ntp:
+        enabled: False
+        servers: [{"version": 1, "type": "primary", "address": "1.1.1.1"}]
+
