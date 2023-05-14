@@ -1,7 +1,7 @@
 resource "vsphere_virtual_machine" "vmFromRemoteOvf" {
   depends_on = [ module.vmware ]
-  count = 3
-  name                 = "AutomationTest${count.index + 1}"
+  count = 1
+  name                 = "AutomationTestSG${count.index + 1}"
   datacenter_id        = data.vsphere_datacenter.datacenter.id
   datastore_id         = data.vsphere_datastore.datastore.id
   host_system_id       = data.vsphere_host.host.id
@@ -36,22 +36,52 @@ resource "vsphere_virtual_machine" "vmFromRemoteOvf" {
   }
   vapp {
     properties = {
-      "admin_hash"     = "${var.chkp_admin_password_plain}",
-      "password_type" = "Plain",
-      "ntp_primary" = "192.168.100.101",
-      "primary" = "172.23.39.5",
-      "solution_type" = "Security Gateway",
-      "run_ftw" = "Yes",
-      "ftw_sic_key" = "${var.chkp_otp_key}",
-      "hostname" = "testgateway${count.index + 1}",
-      "default_gw_v4" = "192.168.100.1",
-      "ipaddr_v4" = "192.168.100.1${count.index + 1}",
-      "masklen_v4" = "24"
-      "eth1_ipaddr_v4" = "50.50.50.1${count.index + 1}",
-      "eth1_masklen_v4" = "24",
-      "ntp_primary_version" = "3",
-      "is_gateway_cluster_member" = "Yes"
-      "clish_commands" = "set interface eth2 ipv4-address 60.60.60.1${count.index + 1} mask-length 24; set interface eth2 state on; add user ansibleuser uid 0 homedir /home/ansibleuser; set user ansibleuser password-hash '${var.chkp_passwd_hash}'; add rba user ansibleuser roles adminRole; set user ansibleuser shell /bin/bash; set timezone Etc / GMT+3"
+      "user_data" = "${base64encode(<<EOF
+          #cloud-config
+          hostname: sg25-blink
+          runcmd:
+            - chmod 0777 /var/log/tmp
+            - rm -rf /var/tmp/*;rmdir /var/tmp;ln -s /var/log/tmp /var/tmp
+            - clish -s -c "set static-route default nexthop gateway address 192.168.233.254 on"
+          clish:
+            - set user admin shell /bin/bash
+          blink_config:
+            gateway_cluster_member: Yes
+            admin_password_regular: vpn123
+            maintenance_password_regular: vpn123
+            download_from_checkpoint_non_security: false
+            download_info: false
+            upload_info: false
+            upload_crash_data: false
+            ftw_sic_key: secret
+          network:
+            version: 1
+            config:
+            - type: physical
+              name: eth0
+              subnets:
+                - type: static
+                  address: 192.168.233.25/24
+                  gateway: 127.0.0.9
+            - type: physical
+              name: eth1
+              subnets:
+                - type: static
+                  address: 1.1.2.2/30
+            - type: physical
+              name: eth2
+              mtu: 9000
+              subnets:
+                - type: static
+                  address: 2.2.2.250/24
+            - type: physical
+              name: eth3
+              mtu: 9000
+              subnets:
+                - type: static
+                  address: 3.3.3.250/24
+            EOF
+      )}" 
     }
   }
   lifecycle {

@@ -32,7 +32,7 @@ variable "mgmt_net" {
 
 variable "remote_ovf_url" {
   type = string
-  default = "http://192.168.100.53" 
+  default = "http://ursula.local/ovf" 
 }
 
 variable "vsphere_folder_name" {

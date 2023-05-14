@@ -43,5 +43,5 @@ module "vmware" {
   vsphere_datastore = var.vsphere_datastore
   vsphere_host = var.vsphere_host
   mgmt_net = var.mgmt_net
-  remote_ovf_url = "${var.remote_ovf_url}/Check_Point_R81.10_Cloudguard_Security_Gateway_VE.ova"
+  remote_ovf_url = "${var.remote_ovf_url}/R81.20-ivory_main-631-991001295-GW.ova"
 }
