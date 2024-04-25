@@ -14,9 +14,12 @@ set_terrform_env_var.sh
 .terraform/
 *.tfstate*
 fingerprints.json
-terraform-provider-checkpoint
 *.lock.hcl
 *.creds
+
+# Check Point terraform provider generated files
+terraform-provider-checkpoint
+sid.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -356,3 +359,4 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+Terraform/VMware/1.1-build_cpx_2024_upgrade_bp_env/tf-chkp-pol-test/sid.json

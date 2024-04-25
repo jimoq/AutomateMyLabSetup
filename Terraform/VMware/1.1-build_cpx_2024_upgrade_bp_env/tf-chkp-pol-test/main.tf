@@ -1,20 +1,37 @@
 terraform {
   required_providers {
     checkpoint = {
-      source  = "terraform.local/local/checkpoint"
-      version = "5.0.0"
+#      source  = "terraform.local/local/checkpoint" // use this when to test a local provider
+      source = "checkpointsw/checkpoint"
+      version = "~>2.7.0"
     }
   }
 }
 
 # Configure the Check Point Provider
-provider "checkpoint" {
+# Smart-1 Cloud example
+/*
+  provider "checkpoint" {
   server        = "chkp-jimo-msp-n3o54r70.maas.checkpoint.com"
   api_key       = "LBKb4CvodM+SdtjRI8AmjA=="
   context       = "web_api"
   cloud_mgmt_id = "77da4fab-c457-4646-8e63-d67e55345af8"
   timeout       = "120"
 }
+*/
+
+# Configure the Check Point Provider
+# Local Management example
+provider "checkpoint" {
+  server        = "192.168.233.40"
+#  api_key       = ""
+  username = "api_user"
+  password = "vpn123"
+#  domain   = "Domain Name"
+  context  = "web_api"
+  timeout       = "120"
+}
+
 
 module "policy" {
   #  depends_on = [ azurerm_virtual_machine.cp-gw ]
