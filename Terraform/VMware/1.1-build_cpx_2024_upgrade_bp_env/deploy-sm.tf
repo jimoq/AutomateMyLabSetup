@@ -1,6 +1,6 @@
-resource "vsphere_virtual_machine" "ws-mds-b" {
+resource "vsphere_virtual_machine" "cpx-sm" {
   depends_on           = [ module.vmware ]
-  name                 = "ws-mds-b"
+  name                 = "cpx-sm"
   datacenter_id        = data.vsphere_datacenter.datacenter.id
   datastore_id         = data.vsphere_datastore.datastore.id
   host_system_id       = data.vsphere_host.host.id
@@ -22,6 +22,11 @@ resource "vsphere_virtual_machine" "ws-mds-b" {
       network_id = network_interface.value
     }
   }
+  disk {
+    label = "disk0"
+    size  = 500
+    io_share_count = 1000
+  }
   ovf_deploy {
     allow_unverified_ssl_cert = true
     remote_ovf_url            =  module.vmware.remote_ovf_url
@@ -35,22 +40,21 @@ resource "vsphere_virtual_machine" "ws-mds-b" {
     properties = {
       "user_data" = "${base64encode(<<EOF
           #cloud-config
-          hostname: ws-mds-b
+          hostname: cpx-sm
           password: ${var.chkp_otp_key}
-          runcmd:
-            - chmod 0777 /var/log/tmp
-            - rm -rf /var/tmp/*;rmdir /var/tmp;ln -s /var/log/tmp /var/tmp
-            - ${"config_system --config-string '"   }${
-                "mgmt_admin_radio=gaia_admin&"      }${
-                "mgmt_gui_clients_radio=any&"       }${
-                "install_mds_secondary=true&"       }${
-                "install_mds_interface=eth0&"       }${
-                "ftw_sic_key=${var.chkp_otp_key}&"  }${
-                "download_info=true&"               }${
-                "reboot_if_required=true&"          }${
-                "maintenance_hash=grub.pbkdf2.sha512.10000.EED96942B7C4CD093DB77FD1C71CFB2DF901F2B8719FFAC15C2C1C8ACF5D8420A8059978CE3DFD5EE057071E1A30E5E34A1D380FA5D212E58E7C50AAFE26F0E0.F0824ED6973BB399CA79F2E743F41137E89DFC73D78B8B0F8D89F6D8F2D78B0AA75AF3939DD554403D32D08047293E263F11541B0816032754A9DB9784253509" }${
-                "'"
-               }
+          config_system:
+            domainname: lab.local
+            timezone: Europe/Stockholm
+            install_security_managment: true
+            install_mgmt_primary: true
+            mgmt_admin_radio: gaia_admin
+            mgmt_gui_clients_radio: any
+            download_info: true
+            reboot_if_required : true
+            maintenance_hash: grub.pbkdf2.sha512.10000.EED96942B7C4CD093DB77FD1C71CFB2DF901F2B8719FFAC15C2C1C8ACF5D8420A8059978CE3DFD5EE057071E1A30E5E34A1D380FA5D212E58E7C50AAFE26F0E0.F0824ED6973BB399CA79F2E743F41137E89DFC73D78B8B0F8D89F6D8F2D78B0AA75AF3939DD554403D32D08047293E263F11541B0816032754A9DB9784253509
+#          runcmd:
+#            - chmod 0777 /var/log/tmp
+#            - rm -rf /var/tmp/*;rmdir /var/tmp;ln -s /var/log/tmp /var/tmp
           clish:
             - set user admin shell /bin/bash
           sshd_config:
@@ -63,9 +67,9 @@ resource "vsphere_virtual_machine" "ws-mds-b" {
               name: eth0
               subnets:
                 - type: static
-                  address: 192.168.233.20/24
+                  address: 192.168.233.40/24
                   gateway: 192.168.233.254
-                  dns_nameserver: 192.168.233.233
+                  dns_nameservers: [192.168.233.233, 8.8.8.8]
       EOF
       )}"
     }
@@ -73,7 +77,8 @@ resource "vsphere_virtual_machine" "ws-mds-b" {
   lifecycle {
 
     ignore_changes = [
-      vapp[0]
+      vapp[0],
+      ovf_deploy[0]
     ]
   }
 }

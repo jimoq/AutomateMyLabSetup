@@ -43,5 +43,5 @@ module "vmware" {
   vsphere_datastore = var.vsphere_datastore
   vsphere_host = var.vsphere_host
   mgmt_net = var.mgmt_net
-  remote_ovf_url = "${var.remote_ovf_url}/CG-R81.20-631-991001243-GW.ova"
+  remote_ovf_url = "${var.remote_ovf_url}/ivory_main-631-991001385.ova"
 }

@@ -4,7 +4,7 @@ checkpoint_gw1
 checkpoint_gw2
 
 [checkpoint_mgmt]
-192.168.100.110 ansible_user=admin ansible_password=Cpwins2022!!
+192.168.233.10 ansible_user=api_user ansible_password=vpn123
 
 #[checkpoint_gw1]
 #203.0.113.121 ansible_user=admin ansible_password=Cpwins!1
@@ -16,5 +16,5 @@ checkpoint_gw2
 ansible_httpapi_use_ssl=True
 ansible_httpapi_validate_certs=False
 ansible_network_os=checkpoint
-ansible_checkpoint_domain=domain-d
+ansible_checkpoint_domain=jims-kund
 ansible_python_interpreter=/opt/CPsuite-R81.20/fw1/Python/bin/python3.7

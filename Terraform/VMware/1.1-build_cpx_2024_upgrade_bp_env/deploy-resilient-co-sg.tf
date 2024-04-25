@@ -1,7 +1,7 @@
-resource "vsphere_virtual_machine" "vmFromRemoteOvf" {
+resource "vsphere_virtual_machine" "resilientsg" {
   depends_on = [ module.vmware ]
-  count = 3
-  name                 = "ws-sg11${count.index + 1}"
+  count = 4
+  name                 = "cpx-co-sg5${count.index + 1}"
   datacenter_id        = data.vsphere_datacenter.datacenter.id
   datastore_id         = data.vsphere_datastore.datastore.id
   host_system_id       = data.vsphere_host.host.id
@@ -25,9 +25,14 @@ resource "vsphere_virtual_machine" "vmFromRemoteOvf" {
       network_id = network_interface.value
     }
   }
+  disk {
+    label = "disk0"
+    size  = 500
+    io_share_count = 1000
+  } 
   ovf_deploy {
     allow_unverified_ssl_cert = true
-    remote_ovf_url            = module.vmware.remote_ovf_url
+    remote_ovf_url            = "http://ursula.local/ovf/ivory_main-631-991001243-GW.ova"
     disk_provisioning         = module.vmware.disk_provisioning
     ovf_network_map           = module.vmware.ovf_network_map
     ip_protocol               = "IPV4"
@@ -39,15 +44,17 @@ resource "vsphere_virtual_machine" "vmFromRemoteOvf" {
       "CheckPoint.ftwSicKey" = "vpn123"
       "user_data" = "${base64encode(<<EOF
           #cloud-config
-          hostname: ws-sg11${count.index + 1}
+          hostname: cpx-co-sg5${count.index + 1}
           runcmd:
             - chmod 0777 /var/log/tmp
             - rm -rf /var/tmp/*;rmdir /var/tmp;ln -s /var/log/tmp /var/tmp
+#            - clish -c 'installer download-and-install Check_Point_R81_20_JUMBO_HF_MAIN_Bundle_T41_FULL.tgz not-interactive'
           clish:
             - set user admin shell /bin/bash
+#            - installer download-and-install Check_Point_R81_20_JUMBO_HF_MAIN_Bundle_T41_FULL.tgz not-interactive
 #            - set user admin password password-hash ${var.chkp_passwd_hash} # Does not work..
           blink_config:
-            gateway_cluster_member: no
+            gateway_cluster_member: yes
             admin_password_regular: vpn123
             maintenance_password_regular: vpn123
             download_from_checkpoint_non_security: true
@@ -62,26 +69,26 @@ resource "vsphere_virtual_machine" "vmFromRemoteOvf" {
               name: eth0
               subnets:
                 - type: static
-                  address: 192.168.233.11${count.index + 1}/24
+                  address: 192.168.233.5${count.index + 1}/24
                   gateway: 192.168.233.254
-                  dns_nameserver: 192.168.233.233
+                  dns_nameservers: [192.168.233.233, 8.8.8.8]
             - type: physical
               name: eth1
               subnets:
                 - type: static
-                  address: 1.1.2.11${count.index + 1}/30
+                  address: 1.1.2.5${count.index + 1}/30
             - type: physical
               name: eth2
               mtu: 9000
               subnets:
                 - type: static
-                  address: 2.2.2.11${count.index + 1}/24
+                  address: 2.2.2.5${count.index + 1}/24
             - type: physical
               name: eth3
               mtu: 9000
               subnets:
                 - type: static
-                  address: 3.3.3.11${count.index + 1}/24
+                  address: 3.3.3.5${count.index + 1}/24
             EOF
       )}" 
     }

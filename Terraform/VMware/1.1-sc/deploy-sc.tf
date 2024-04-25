@@ -1,6 +1,6 @@
-resource "vsphere_virtual_machine" "ws-mds-b" {
+resource "vsphere_virtual_machine" "ws-sc" {
   depends_on           = [ module.vmware ]
-  name                 = "ws-mds-b"
+  name                 = "ws-sc"
   datacenter_id        = data.vsphere_datacenter.datacenter.id
   datastore_id         = data.vsphere_datastore.datastore.id
   host_system_id       = data.vsphere_host.host.id
@@ -35,7 +35,7 @@ resource "vsphere_virtual_machine" "ws-mds-b" {
     properties = {
       "user_data" = "${base64encode(<<EOF
           #cloud-config
-          hostname: ws-mds-b
+          hostname: ws-sc
           password: ${var.chkp_otp_key}
           runcmd:
             - chmod 0777 /var/log/tmp
@@ -43,8 +43,8 @@ resource "vsphere_virtual_machine" "ws-mds-b" {
             - ${"config_system --config-string '"   }${
                 "mgmt_admin_radio=gaia_admin&"      }${
                 "mgmt_gui_clients_radio=any&"       }${
-                "install_mds_secondary=true&"       }${
-                "install_mds_interface=eth0&"       }${
+                "install_security_managment=true&"  }${
+                "install_mgmt_primary=true&"        }${
                 "ftw_sic_key=${var.chkp_otp_key}&"  }${
                 "download_info=true&"               }${
                 "reboot_if_required=true&"          }${
@@ -63,9 +63,9 @@ resource "vsphere_virtual_machine" "ws-mds-b" {
               name: eth0
               subnets:
                 - type: static
-                  address: 192.168.233.20/24
+                  address: 192.168.233.40/24
                   gateway: 192.168.233.254
-                  dns_nameserver: 192.168.233.233
+                  dns_nameservers: [192.168.233.233, 8.8.8.8]
       EOF
       )}"
     }

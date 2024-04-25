@@ -55,3 +55,8 @@ variable "remote_ovf_url" {
   type = string
   default = "http://x.x.x.x" 
 }
+
+variable "remote_ovf_gw_url" {
+  type = string
+  default = "http://x.x.x.x" 
+}
