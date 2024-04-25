@@ -15,6 +15,7 @@ set_terrform_env_var.sh
 *.tfstate*
 fingerprints.json
 terraform-provider-checkpoint
+*.lock.hcl
 *.creds
 
 # User-specific files (MonoDevelop/Xamarin Studio)
