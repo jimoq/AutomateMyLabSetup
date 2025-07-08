@@ -7,9 +7,9 @@
 #  ipv4_address = "192.0.2.1"
 #}
 
-resource "checkpoint_management_simple_gateway" "cpx-ro-cpsg" {
+resource "checkpoint_management_simple_gateway" "rugg-ro-cpsg" {
   count = 2
-  name = "cpx-ro-sg7${count.index + 1}"
+  name = "rugg-ro-sg7${count.index + 1}"
   ipv4_address = "192.168.233.7${count.index + 1}"
   one_time_password = "vpn123"
   comments = "Terraformed gateway 7${count.index + 1}"
