@@ -1,24 +1,24 @@
 resource "vsphere_virtual_machine" "resilientsg" {
-  depends_on = [ module.vmware ]
-  count = 4
-  name                 = "cpx-co-sg5${count.index + 1}"
-  datacenter_id        = data.vsphere_datacenter.datacenter.id
-  datastore_id         = data.vsphere_datastore.datastore.id
-  host_system_id       = data.vsphere_host.host.id
-  resource_pool_id     = data.vsphere_host.host.resource_pool_id
-  folder               = var.vsphere_folder_name
+  depends_on       = [module.vmware]
+  count            = 2
+  name             = "cpx-co-sg5${count.index + 1}"
+  datacenter_id    = data.vsphere_datacenter.datacenter.id
+  datastore_id     = data.vsphere_datastore.datastore.id
+  host_system_id   = data.vsphere_host.host.id
+  resource_pool_id = data.vsphere_host.host.resource_pool_id
+  folder           = var.vsphere_folder_name
 
   wait_for_guest_net_timeout = 0
   wait_for_guest_ip_timeout  = 0
-  
-  num_cpus             = module.vmware.num_cpus
-  num_cores_per_socket = module.vmware.num_cores_per_socket
-  memory               = module.vmware.memory
-  guest_id             = module.vmware.guest_id
-  scsi_type            = module.vmware.scsi_type
-  cpu_hot_add_enabled = true
+
+  num_cpus               = module.vmware.num_cpus
+  num_cores_per_socket   = module.vmware.num_cores_per_socket
+  memory                 = module.vmware.memory
+  guest_id               = module.vmware.guest_id
+  scsi_type              = module.vmware.scsi_type
+  cpu_hot_add_enabled    = true
   memory_hot_add_enabled = true
-  
+
   dynamic "network_interface" {
     for_each = module.vmware.ovf_network_map
     content {
@@ -26,18 +26,18 @@ resource "vsphere_virtual_machine" "resilientsg" {
     }
   }
   disk {
-    label = "disk0"
-    size  = 500
+    label          = "disk0"
+    size           = 500
     io_share_count = 1000
-  } 
+  }
   ovf_deploy {
     allow_unverified_ssl_cert = true
-    remote_ovf_url            = "http://ursula.local/ovf/ivory_main-631-991001243-GW.ova"
+    remote_ovf_url            = "${var.remote_ovf_url}${var.gw_ovf_file}"
     disk_provisioning         = module.vmware.disk_provisioning
     ovf_network_map           = module.vmware.ovf_network_map
     ip_protocol               = "IPV4"
     ip_allocation_policy      = "STATIC_MANUAL"
-    enable_hidden_properties = true
+    enable_hidden_properties  = true
   }
   vapp {
     properties = {
@@ -90,7 +90,7 @@ resource "vsphere_virtual_machine" "resilientsg" {
                 - type: static
                   address: 3.3.3.5${count.index + 1}/24
             EOF
-      )}" 
+      )}"
     }
   }
   lifecycle {

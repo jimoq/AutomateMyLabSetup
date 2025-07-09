@@ -8,11 +8,11 @@
 #}
 
 resource "checkpoint_management_simple_gateway" "cpx-ro-cpsg" {
-  count = 2
+  count = 1
   name = "cpx-ro-sg7${count.index + 1}"
   ipv4_address = "192.168.233.7${count.index + 1}"
   one_time_password = "vpn123"
-  comments = "Terraformed gateway 7${count.index + 1}"
+  comments = "Terraformed my sg7${count.index + 1}"
   anti_bot = "true"
   anti_virus = "true"
   application_control = "true"
@@ -49,19 +49,9 @@ resource "checkpoint_management_simple_gateway" "cpx-ro-cpsg" {
         ip_address_behind_this_interface = "network defined by the interface ip and net mask"
         }
   }
-  interfaces {
-      name = "eth3"
-      ipv4_address = "3.3.3.7${count.index + 1}"
-      ipv4_network_mask = "255.255.255.0"
-      anti_spoofing = "true"
-      topology = "Internal"
-      topology_settings = {
-        ip_address_behind_this_interface = "network defined by the interface ip and net mask"
-        }
-      }
   lifecycle {
   ## Lifcyle block needs to be fixed, is currnetly ignoring all atributes and will never propose updates to the object
-#    ignore_changes = all
+    ignore_changes = all
   }
 }
 

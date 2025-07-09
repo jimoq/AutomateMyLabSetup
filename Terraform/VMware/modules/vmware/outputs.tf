@@ -26,6 +26,10 @@ output "remote_ovf_url" {
   value = data.vsphere_ovf_vm_template.ovfRemote.remote_ovf_url
 }
 
+output "remote_ovf_gw_url" {
+  value = data.vsphere_ovf_vm_template.ovfRemote.remote_ovf_url
+}
+
 output "disk_provisioning" {
   value = data.vsphere_ovf_vm_template.ovfRemote.disk_provisioning
 }

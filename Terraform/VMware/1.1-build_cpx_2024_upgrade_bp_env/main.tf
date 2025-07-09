@@ -12,9 +12,9 @@ terraform {
 
 // --- Configure the vsphere Provider ---
 provider "vsphere" {
-  user = var.vsphere_user
-  password = var.vsphere_password
-  vsphere_server = var.vsphere_server
+  user                 = var.vsphere_user
+  password             = var.vsphere_password
+  vsphere_server       = var.vsphere_server
   allow_unverified_ssl = true
 }
 
@@ -24,24 +24,25 @@ data "vsphere_datacenter" "datacenter" {
 }
 
 data "vsphere_datastore" "datastore" {
-  name = var.vsphere_datastore
+  name          = var.vsphere_datastore
   datacenter_id = data.vsphere_datacenter.datacenter.id
 }
 
 data "vsphere_host" "host" {
-  name = var.vsphere_host
+  name          = var.vsphere_host
   datacenter_id = data.vsphere_datacenter.datacenter.id
 }
 
 module "vmware" {
   source = "../modules/vmware"
 
-  vsphere_user = var.vsphere_user
-  vsphere_password = var.vsphere_password
-  vsphere_server = var.vsphere_server
+  vsphere_user       = var.vsphere_user
+  vsphere_password   = var.vsphere_password
+  vsphere_server     = var.vsphere_server
   vsphere_datacenter = var.vsphere_datacenter
-  vsphere_datastore = var.vsphere_datastore
-  vsphere_host = var.vsphere_host
-  mgmt_net = var.mgmt_net
-  remote_ovf_url = "${var.remote_ovf_url}/ivory_main-631-991001385.ova"
+  vsphere_datastore  = var.vsphere_datastore
+  vsphere_host       = var.vsphere_host
+  mgmt_net           = var.mgmt_net
+  remote_ovf_url     = "${var.remote_ovf_url}R81.20_ivory_main-634-991001608.ova"
+
 }
